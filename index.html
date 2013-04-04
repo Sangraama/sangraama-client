@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<p>Client</p>
+	<button id="getXY" class="btn" type="button">Get x,y</button>
+  <div id="content"></div>
+  <table id="tableid"></table>
+	<script type="text/javascript">
+	  $('#getXY').click(function(){
+		  /*$.ajax({
+		      url : "http://localhost:8080/game/maps",
+		      data : {
+		        
+		      },
+		      success : function(data) {
+		        console.log(data);
+		        $("#content").html("<p>" + "</p>");
+		      }
+		    });*/
+		    $.ajax({
+
+	            url : 'http://localhost:8080/game/maps',
+	            type : 'GET',
+	            dataType : 'json',
+	            data : {'name':'gihan'},
+	            error: function(hqXHR, textStatus, errorThrown){
+                    var x=0;
+                    alert("fail0 " + hqXHR + " " + textStatus + " " + errorThrown);
+                },
+	            success : function(data) {
+	                var receivedData = [];
+	                console.log(data);                
+	            }
+	        });
+		  console.log("get X,Y");
+		   		  
+	  });
+	</script>
+</body>
+</html>
