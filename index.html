@@ -6,8 +6,8 @@
 <meta name="author" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="js/lib/bootstrap.min.js" type="text/javascript"></script>
 </head>
 <body>
   <p>Client</p>
@@ -31,106 +31,8 @@
   </div>
 
   <!-- Include JavaScripts -->
-  <script type="text/javascript" src="js/jquery.json-2.4.min.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.json-2.4.min.js"></script>
   <!--   <script type="text/javascript" src="js/jquery.websocket-0.0.4.js"></script> -->
-  <script type="text/javascript">
-      $('#getXY').click(function() {
-        /*$.ajax({
-            url : "http://localhost:8080/game/maps",
-            data : {
-              
-            },
-            success : function(data) {
-              console.log(data);
-              $("#content").html("<p>" + "</p>");
-            }
-          });*/
-        $.ajax({
-
-          url : 'http://localhost:8080/game/maps',
-          type : 'GET',
-          dataType : 'json',
-          data : {
-            'name' : 'gihan'
-          },
-          error : function(hqXHR, textStatus, errorThrown) {
-            var x = 0;
-            alert("fail0 " + hqXHR + " " + textStatus + " " + errorThrown);
-          },
-          success : function(data) {
-            var receivedData = [];
-            console.log(data);
-          }
-        });
-        console.log("get X,Y");
-
-      });
-    </script>
-  <script type="text/javascript">
-      // script to handle websockets
-      var ws = null ;
- 
-$('#connect').click(function() {
-    var hostProtocol;
-    var hostLocation='localhost:8080'
-    
-    if (window.location.protocol == 'http:') {
-        hostProtocol = 'ws://';
-    }else{
-        hostProtocol = 'wss://';
-    }
-    //var  URL  =  host  +  location . host   +  '/game/EventHandler' ;
-    var  URL  =  "ws://"  +   hostLocation  +  '/game/EventHandler' ;
-    console.log(URL);
-    if  ( 'MozWebSocket'  in window) {
-        ws = new  MozWebSocket (URL);
-    } else  if  ( 'WebSocket'  in window) {
-        ws = new  WebSocket (URL);
-    } else  {
-        alert ( 'Your browser does not support WebSockets' );
-        return ;
-    }
-    ws.onopen = function () {
-        // Paint message
-        addMessage ( 'Concected!' );
-    };
-    ws.onmessage = function (event) {
-        var player = $.evalJSON( event.data );
-        // Paint message
-        //addMessage (message);
-        console.log( 'x:'+player.x+' y:'+player.y );
-    };
-    ws.onclose = function () {
-        // Paint message
-        addMessage ( 'Offline!' );
-    };
-    ws.onerror = function (event) {
-        addMessage ( 'There was an error!' );
-    };
-});
-
-function addMessage(message){
-  $('#msgArea').append('\n'+ message );
-}
- 
-$('#disconnect').click( function() {
-    if  (ws != null ) {
-        ws.close ();
-        ws = null ;
-    }
-});
-     
-$('#send').click(function() {
-  var message=$('#msg').val();
-  console.log('send msg :'+message);
-  var msg = {
-      x : 1,
-      y : message
-  };
-    if  (ws != null ) {
-        ws.send ( $.toJSON(msg) );
-    }
-});
-    </script>
+  <script type="text/javascript" src="js/controller/connection.js"></script>
 </body>
 </html>
