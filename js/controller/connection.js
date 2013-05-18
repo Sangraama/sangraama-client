@@ -11,7 +11,8 @@ $('#connect').click(function() {
     hostProtocol = 'wss://';
   }
   // var URL = host + location . host + '/game/EventHandler' ;
-  var URL = "ws://" + hostLocation + '/game/org/sangraama/controller/EventHandler';
+   var URL = "ws://" + hostLocation + '/sangraama-server/org/sangraama/controller/playerservlet';
+  //var URL = "ws://" + hostLocation + '/sangraama-server/org/sangraama/controller/EventHandler';
   console.log(URL);
   if ('MozWebSocket' in window) {
     ws = new MozWebSocket(URL);
@@ -56,7 +57,9 @@ $('#send').click(function() {
   console.log('send msg :' + message);
   var msg = {
     x : 1,
-    y : message
+    y : message,
+    v_x : 0.01,
+    v_y : 0
   };
   if (ws != null) {
     ws.send($.toJSON(msg));
