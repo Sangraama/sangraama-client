@@ -3,22 +3,23 @@ var msg = new function(){
 		this.v_x = 0;
 		this.v_y = 0;
 }
+var D = false;
 
 $(document.documentElement).keydown(function(event) {
-	console.log("Key Down");
+	if(D) console.log("Key Down");
 	if (event.keyCode != prevCode) {
 		// handle cursor keys
 		if (event.keyCode == 37) {
-			console.log("Left");
+			if(D) console.log("Left");
 			msg.v_x = -1;
 		} else if (event.keyCode == 39) {
-			console.log("Right");
+			if(D) console.log("Right");
 			msg.v_x = 1;
 		} else if (event.keyCode == 40) {
-			console.log("Down");
+			if(D) console.log("Down");
 			msg.v_y = -1;
 		} else if (event.keyCode == 38) {
-			console.log("Up");
+			if(D) console.log("Up");
 			msg.v_y = -1;
 		}
 		prevCode = event.keyCode;
@@ -29,20 +30,20 @@ $(document.documentElement).keydown(function(event) {
 });
 
 $(document.documentElement).keyup(function(event) {
-	console.log("Key Up");
+	if(D) console.log("Key Up");
 	//if (event.keyCode != prevCode) {
 		// handle cursor keys
 		if (event.keyCode == 37) {
-			console.log("Left");
+			if(D) console.log("Left");
 			msg.v_x = 0;
 		} else if (event.keyCode == 39) {
-			console.log("Right");
+			if(D) console.log("Right");
 			msg.v_x = 0;
 		} else if (event.keyCode == 40) {
-			console.log("Down");
+			if(D) console.log("Down");
 			msg.v_y = 0;
 		} else if (event.keyCode == 38) {
-			console.log("Up");
+			if(D) console.log("Up");
 			msg.v_y = 0;
 		}
 		prevCode = 0;
