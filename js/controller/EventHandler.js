@@ -20,7 +20,7 @@ $(document.documentElement).keydown(function(event) {
 			msg.v_y = -1;
 		} else if (event.keyCode == 38) {
 			if(D) console.log("Up");
-			msg.v_y = -1;
+			msg.v_y = 1;
 		}
 		prevCode = event.keyCode;
 		if(ws != null){

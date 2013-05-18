@@ -23,17 +23,13 @@ $('#connect').click(function() {
     return;
   }
   ws.onopen = function() {
-    // Paint message
     addMessage('Concected!');
   };
   ws.onmessage = function(event) {
-    var player = $.evalJSON(event.data);
-    // Paint message
-    // addMessage (message);
-    console.log('x:' + player.x + ' y:' + player.y);
+    var delta = $.evalJSON(event.data);
+    console.log('userID:'+delta.userID+' dx:' + delta.dx + ' dy:' + delta.dy);
   };
   ws.onclose = function() {
-    // Paint message
     addMessage('Offline!');
   };
   ws.onerror = function(event) {
