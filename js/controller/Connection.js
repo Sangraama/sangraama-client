@@ -1,6 +1,5 @@
 // script to handle websockets
 var ws = null;
-var ws2 = null;
 
 $('#connect').click(function() {
   var hostProtocol;
@@ -24,34 +23,6 @@ $('#connect').click(function() {
     alert('Your browser does not support WebSockets');
     return;
   }
-  
-  // testing two websockets
-  var hostLocation2 = 'localhost:8081'
-  var URL2 = "ws://" + hostLocation2 + '/sangraama-server/org/sangraama/controller/playerservlet';
-  //var URL = "ws://" + hostLocation + '/sangraama-server/org/sangraama/controller/EventHandler';
-  
-  if ('MozWebSocket' in window) {
-    ws = new MozWebSocket(URL2);
-  } else if ('WebSocket' in window) {
-    ws = new WebSocket(URL2);
-  } else {
-    alert('Your browser does not support WebSockets');
-    return;
-  }
-  ws2.onopen = function() {
-	  addMessage('Hoo, raja, hoo');
-  };
-  
-  ws2.onmessage = function(event) {
-	    var delta = $.evalJSON(event.data);
-	    console.log('2 userID:'+delta.userID+' dx:' + delta.dx + ' dy:' + delta.dy);
-	  };
-	  ws2.onclose = function() {
-	    addMessage('Offline!');
-	  };
-	  ws2.onerror = function(event) {
-	    addMessage('There was an error!');
-	  };
   
   ws.onopen = function() {
     addMessage('Concected!');
