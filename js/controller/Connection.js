@@ -16,9 +16,9 @@ $('#connect').click(function() {
    
   console.log(URL);
   if ('MozWebSocket' in window) {
-    ws = new MozWebSocket(URL);
+    ws = new MozWebSocket(URL,"NewPlayer");
   } else if ('WebSocket' in window) {
-    ws = new WebSocket(URL);
+    ws = new WebSocket(URL,["NewPlayer","aa","dd"]);
   } else {
     alert('Your browser does not support WebSockets');
     return;
