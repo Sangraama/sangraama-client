@@ -12,7 +12,7 @@
 <body>
 <p>>>  Use arrow keys to move </p>
   
-  <div class="row">
+  <div class="span5">
     <form class="form-horizontal offset1 well span6">
       <div class="control-group warning">
         <input type="text" id="msg" class="input-xlarge">
@@ -24,6 +24,22 @@
       </div>
       <div class="control-group">
         <textarea rows="10" id="msgArea" class="input-xlarge"></textarea>
+      </div>
+    </form>
+  </div>
+  
+  <div class="span5">
+    <form class="form-horizontal offset1 well span6">
+      <div class="control-group warning">
+        <input type="text" id="passmsg" class="input-xlarge">
+      </div>
+      <div class="control-group">
+        <button id="passsend" class="btn btn-success" type="button">Pass Send</button>
+        <button id="passconnect" class="btn btn-warning" type="button">Pass Connection</button>
+        <button id="passdisconnect" class="btn btn-danger" type="button">Pass Disconnect</button>
+      </div>
+      <div class="control-group">
+        <textarea rows="10" id="passmsgArea" class="input-xlarge"></textarea>
       </div>
     </form>
   </div>
