@@ -10,7 +10,7 @@ var passServer = false;
 // ========= first form =====================
 $('#connect').click(function() {
   var hostProtocol;
-  var hostLocation = 'localhost:8081'
+  var hostLocation = 'localhost:8080'
 
   if (window.location.protocol == 'http:') {
     hostProtocol = 'ws://';
@@ -69,7 +69,7 @@ $('#passconnect').click(function() {
       hostProtocol = 'wss://';
     }
 
-     var URL = "ws://" + hostLocation + '/sangraama-server/org/sangraama/controller/playerservlet';
+     var URL = "ws://" + hostLocation + '/sangraama-server-clone/org/sangraama/controller/playerservlet';
      
     console.log(URL);
     if ('MozWebSocket' in window) {
@@ -84,13 +84,15 @@ $('#passconnect').click(function() {
     
     ws.onopen = function() {
       addMessage(' Pass Concection !');
-//      if(isConnect){
-//          var delta = $.evalJSON(event.data);
-//          console.log('userID:'+delta.userID+' dx:' + delta.dx + ' dy:' + delta.dy);
-//      }else{
-//          var delta = $.evalJSON(event.data);
-//          console.log('userID:'+delta.userID+' dx:' + delta.dx + ' dy:' + delta.dy);
-//      }
+      if(!isConnect){
+          msg.type = 'setcon';
+          msg.userID = server.userID;
+          if(ws != null){
+              ws.send($.toJSON(msg));
+          }
+          msg.type = '';
+          console.log('')
+      }
     };
     ws.onmessage = function(event) {
           var delta = $.evalJSON(event.data);

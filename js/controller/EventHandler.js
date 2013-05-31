@@ -1,5 +1,7 @@
 var prevCode = 0;
 var msg = new function(){
+        this.type = "";
+        this.userID = 0;
 		this.v_x = 0;
 		this.v_y = 0;
 }
