@@ -21,6 +21,7 @@
 <script type="text/javascript">
 	var director, scene, action;
 	var player = {
+		userID : 0,
 		v_x : 50,
 		v_y : 50
 	};
@@ -66,19 +67,22 @@
 		CAAT.loop(1);
 	}
 	function addPlayer(player) {
-
-		var fish = new CAAT.Foundation.Actor().setBackgroundImage(
-				director.getImage('arrow'), true).setLocation(player.dx,
-				player.dy).enableEvents(false);
-
-		scene.addChild(fish);
+		if (scene.findActorById(player.userId) == null) {
+			var fish = new CAAT.Foundation.Actor().setBackgroundImage(
+					director.getImage('arrow'), true).setLocation(player.dx,
+					player.dy).enableEvents(false);
+			scene.addChild(fish);
+		} else {
+			scene.findActorById(player.userId)
+					.setLocation(player.dx, player.dy);
+		}
 
 	}
 	function doKeyDown(evt) {
 		switch (evt.keyCode) {
 		case 38: /* Up arrow was pressed */
 			player.v_y = -1;
-		    console.log('up pressed');
+			console.log('up pressed');
 			break;
 		case 40: /* Down arrow was pressed */
 			player.v_y = 1;
@@ -104,7 +108,7 @@
 		default:
 			alert(evt.keyCode);
 		}
-		//updateServer();
+		updateServer();
 	}
 	function doKeyUp(evt) {
 		var regx;
@@ -137,7 +141,7 @@
 		default:
 			alert(evt.keyCode);
 		}
-		//updateServer();
+		updateServer();
 	}
 	function doMouseDown(evt) {
 		switch (evt.which) {
@@ -186,19 +190,21 @@
 		alert('Your browser does not support WebSockets');
 	}
 	ws.onopen = function() {
-
+		console.log('Connection opened');
 	};
 	ws.onmessage = function(event) {
 		var players = JSON.parse(event.data);
 		/* for ( var index in players) { */
-			console.log(players.dx);
-			addPlayer(players);
+		console.log(players.dx);
+		addPlayer(players);
 		/* } */
 
 	};
 	ws.onclose = function() {
+		console.log('Connection closed');
 	};
 	ws.onerror = function(event) {
+		console.log('Connection error');
 	};
 	function updateServer() {
 		ws.send(JSON.stringify(player));
