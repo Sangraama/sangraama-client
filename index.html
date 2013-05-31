@@ -1,53 +1,212 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description" content="">
-<meta name="author" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<script src="js/lib/jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="js/lib/bootstrap.min.js" type="text/javascript"></script>
+<title>Sangrama</title>
+<script src="js/lib/caat/caat.js"></script>
+<!-- <script src="js/lib/jquery.json-2.4.min.js"></script> -->
+<script src="js/lib/jquery-1.9.1.js"></script>
+<script src="js/lib/jquery-1.9.1.min.js"></script>
+
 </head>
 <body>
-<p>>>  Use arrow keys to move </p>
-  
-  <div class="span5">
-    <form class="form-horizontal offset1 well span6">
-      <div class="control-group warning">
-        <input type="text" id="msg" class="input-xlarge">
-      </div>
-      <div class="control-group">
-        <button id="send" class="btn btn-success" type="button">Send</button>
-        <button id="connect" class="btn btn-warning" type="button">Connect</button>
-        <button id="disconnect" class="btn btn-danger" type="button">Disconnect</button>
-      </div>
-      <div class="control-group">
-        <textarea rows="10" id="msgArea" class="input-xlarge"></textarea>
-      </div>
-    </form>
-  </div>
-  
-  <div class="span5">
-    <form class="form-horizontal offset1 well span6">
-      <div class="control-group warning">
-        <input type="text" id="passmsg" class="input-xlarge">
-      </div>
-      <div class="control-group">
-        <button id="passsend" class="btn btn-success" type="button">Pass Send</button>
-        <button id="passconnect" class="btn btn-warning" type="button">Pass Connection</button>
-        <button id="passdisconnect" class="btn btn-danger" type="button">Pass Disconnect</button>
-      </div>
-      <div class="control-group">
-        <textarea rows="10" id="passmsgArea" class="input-xlarge"></textarea>
-      </div>
-    </form>
-  </div>
+	<canvas id="experiment-canvas"></canvas>
 
-  <!-- Include JavaScripts -->
-  <script type="text/javascript" src="js/lib/jquery.json-2.4.min.js"></script>
-  <!--   <script type="text/javascript" src="js/jquery.websocket-0.0.4.js"></script> -->
-  <script type="text/javascript" src="js/controller/Connection.js"></script>
-  <script type="text/javascript" src="js/controller/EventHandler.js"></script>
+
 </body>
+
+
+<!-- <script src="../js/resources/caat/Core/ModuleManager.js"></script> -->
+
+<script type="text/javascript">
+	var director, scene, action;
+	var player = {
+		v_x : 50,
+		v_y : 50
+	};
+	(function() {
+		/**
+		 * Startup it all up when the document is ready.
+		 * Change for your favorite frameworks initialization code.
+		 */
+		// this function will be firer every time all dependencies have been solved.
+		// if you call again bring, this function could be fired again.
+		// simply load js files. call start when all of them have been loaded.
+		// load won't start until all 'bring' dependencies have been solved.
+		new CAAT.Module.Preloader.Preloader().addElement("arrow",
+				"img/arrow.jpg").load(function onAllAssetsLoaded(images) {
+			sprites(images);
+		});
+
+	})();
+	function sprites(images) {
+		CAAT.DEBUG = 1;
+		director = new CAAT.Foundation.Director().initialize(1000, 1000,
+				'experiment-canvas');
+		director.setImagesCache(images);
+		scene = director.createScene();
+		// when the scene is activated, avoid the director clearing the viewport since it'll be
+		// totally erased by the background.
+		scene.activated = function() {
+			director.setClear(false);
+		}
+
+		var gradient = director.ctx.createLinearGradient(0, 0, director.width,
+				director.height);
+		gradient.addColorStop(0, '#000000');
+		gradient.addColorStop(1, '#00007f');
+
+		var gr = new CAAT.Foundation.ActorContainer().setBounds(0, 0,
+				director.width, director.height).setFillStyle(gradient)
+				.enableEvents(false).cacheAsBitmap();
+
+		scene.addChild(gr);
+
+		gr.enableEvents(true);
+		CAAT.loop(1);
+	}
+	function addPlayer(player) {
+
+		var fish = new CAAT.Foundation.Actor().setBackgroundImage(
+				director.getImage('arrow'), true).setLocation(player.dx,
+				player.dy).enableEvents(false);
+
+		scene.addChild(fish);
+
+	}
+	function doKeyDown(evt) {
+		switch (evt.keyCode) {
+		case 38: /* Up arrow was pressed */
+			player.v_y = -1;
+		    console.log('up pressed');
+			break;
+		case 40: /* Down arrow was pressed */
+			player.v_y = 1;
+			console.log('down pressed');
+			break;
+		case 37: /* Left arrow was pressed */
+			player.v_x = -1;
+			console.log('left pressed');
+			break;
+		case 39: /* Right arrow was pressed */
+			player.v_x = 1;
+			console.log('right pressed');
+			break;
+		case 82: /* R was pressed */
+			action = action + 'ROTATE_RIGHT';
+			break;
+		case 76: /* L was pressed */
+			action = action + 'ROTATE_LEFT';
+			break;
+		case 32: /* Space was pressed */
+			action = action + 'ANGLE_MOVE';
+			break;
+		default:
+			alert(evt.keyCode);
+		}
+		//updateServer();
+	}
+	function doKeyUp(evt) {
+		var regx;
+		switch (evt.keyCode) {
+		case 38: /* Up arrow was released */
+
+			player.v_y = 0;
+			break;
+		case 40: /* Down arrow was released */
+			player.v_y = 0;
+			break;
+		case 37: /* Left arrow was released */
+			player.v_x = 0;
+			break;
+		case 39: /* Right arrow was released */
+			player.v_x = 0;
+			break;
+		case 82: /* R was released */
+			regx = new RegExp('ROTATE_RIGHT', 'g');
+			action = action.replace(regx, '');
+			break;
+		case 32: /* Space was released */
+			regx = new RegExp('ANGLE_MOVE', 'g');
+			action = action.replace(regx, '');
+			break;
+		case 76: /* L was released */
+			regx = new RegExp('ROTATE_LEFT', 'g');
+			action = action.replace(regx, '');
+			break;
+		default:
+			alert(evt.keyCode);
+		}
+		//updateServer();
+	}
+	function doMouseDown(evt) {
+		switch (evt.which) {
+		case 1:
+			action = action + 'SHOOT';
+			addPlayer(evt.clientX, evt.clientY);
+			break;
+		case 2:
+			alert('Middle mouse button pressed');
+			break;
+		case 3:
+			alert('Right mouse button pressed');
+			break;
+		default:
+			alert('You have a strange mouse');
+		}
+	}
+	function doMouseUp(evt) {
+		var regx;
+		switch (evt.which) {
+		case 1:
+			regx = new RegExp('SHOOT', 'g');
+			action = action.replace(regx, '');
+			break;
+		case 2:
+			alert('Middle mouse button released');
+			break;
+		case 3:
+			alert('Right mouse button released');
+			break;
+		default:
+			alert('You have a strange mouse');
+		}
+	}
+
+	var ws;
+	if ('MozWebSocket' in window) {
+		ws = new MozWebSocket(
+				'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
+				'NewPlayer');
+	} else if ('WebSocket' in window) {
+		ws = new WebSocket(
+				'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
+				'NewPlayer');
+	} else {
+		alert('Your browser does not support WebSockets');
+	}
+	ws.onopen = function() {
+
+	};
+	ws.onmessage = function(event) {
+		var players = JSON.parse(event.data);
+		/* for ( var index in players) { */
+			console.log(players.dx);
+			addPlayer(players);
+		/* } */
+
+	};
+	ws.onclose = function() {
+	};
+	ws.onerror = function(event) {
+	};
+	function updateServer() {
+		ws.send(JSON.stringify(player));
+	}
+
+	window.addEventListener('keydown', doKeyDown, true);
+	window.addEventListener('keyup', doKeyUp, true);
+	window.addEventListener('mousedown', doMouseDown, true);
+	window.addEventListener('mouseup', doMouseUp, true);
+</script>
 </html>
