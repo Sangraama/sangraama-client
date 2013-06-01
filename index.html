@@ -71,10 +71,13 @@
 			var fish = new CAAT.Foundation.Actor().setBackgroundImage(
 					director.getImage('arrow'), true).setLocation(player.dx,
 					player.dy).enableEvents(false);
+			fish.setId(player.userId);
 			scene.addChild(fish);
+			console.log('inside if');
 		} else {
 			scene.findActorById(player.userId)
 					.setLocation(player.dx, player.dy);
+			console.log('inside else');
 		}
 
 	}
