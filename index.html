@@ -181,34 +181,38 @@
 	}
 
 	var ws;
-	if ('MozWebSocket' in window) {
-		ws = new MozWebSocket(
-				'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
-				'NewPlayer');
-	} else if ('WebSocket' in window) {
-		ws = new WebSocket(
-				'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
-				'NewPlayer');
-	} else {
-		alert('Your browser does not support WebSockets');
-	}
-	ws.onopen = function() {
-		console.log('Connection opened');
-	};
-	ws.onmessage = function(event) {
-		var players = JSON.parse(event.data);
-		/* for ( var index in players) { */
-		console.log(players.dx);
-		addPlayer(players);
-		/* } */
+	connect('ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet');
+	function connect(host) {
+		if ('MozWebSocket' in window) {
+			ws = new MozWebSocket(host, 'NewPlayer');
+		} else if ('WebSocket' in window) {
+			ws = new WebSocket(host, 'NewPlayer');
+		} else {
+			alert('Your browser does not support WebSockets');
+		}
+		ws.onopen = function() {
+			console.log('Connection opened');
+		};
+		ws.onmessage = function(event) {
+			var players = JSON.parse(event.data);
+			/* for ( var index in players) { */
+			console.log(players.dx);
+			if (players.type == 1) {
+				addPlayer(players);
+			} else {
+				ws.close();
+				connect('ws://localhost:8081/sangraama-server/org/sangraama/controller/playerservlet');
+			}
+			/* } */
 
-	};
-	ws.onclose = function() {
-		console.log('Connection closed');
-	};
-	ws.onerror = function(event) {
-		console.log('Connection error');
-	};
+		};
+		ws.onclose = function() {
+			console.log('Connection closed');
+		};
+		ws.onerror = function(event) {
+			console.log('Connection error');
+		};
+	}
 	function updateServer() {
 		ws.send(JSON.stringify(player));
 	}
