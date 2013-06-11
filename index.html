@@ -21,6 +21,7 @@
 <script type="text/javascript">
 	var director, scene, action;
 	var player = {
+		type : '',
 		userID : 0,
 		v_x : 50,
 		v_y : 50
@@ -181,7 +182,9 @@
 	}
 
 	var ws;
-	connect('ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet');
+	connect(
+			'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
+			'NewPlayer');
 	function connect(host) {
 		if ('MozWebSocket' in window) {
 			ws = new MozWebSocket(host, 'NewPlayer');
@@ -201,7 +204,9 @@
 				addPlayer(players);
 			} else {
 				ws.close();
-				connect('ws://localhost:8081/sangraama-server/org/sangraama/controller/playerservlet');
+				connect(players.newServerURL, 'PassPlayer');
+				player.type = 'setcon';
+				ws.send(JSON.stringify(player));
 			}
 			/* } */
 
