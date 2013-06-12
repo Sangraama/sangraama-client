@@ -194,11 +194,11 @@
 	connect(
 			'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
 			'NewPlayer');
-	function connect(host) {
+	function connect(host, subProtocol) {
 		if ('MozWebSocket' in window) {
-			ws = new MozWebSocket(host, 'NewPlayer');
+			ws = new MozWebSocket(host, subProtocol);
 		} else if ('WebSocket' in window) {
-			ws = new WebSocket(host, 'NewPlayer');
+			ws = new WebSocket(host, subProtocol);
 		} else {
 			alert('Your browser does not support WebSockets');
 		}
