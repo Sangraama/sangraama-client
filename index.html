@@ -68,17 +68,26 @@
 		CAAT.loop(1);
 	}
 	function addPlayer(player) {
-		if (scene.findActorById(player.userId) == null) {
+		if (scene.findActorById(player.userID) == null) {
 			var fish = new CAAT.Foundation.Actor().setBackgroundImage(
 					director.getImage('arrow'), true).setLocation(player.dx,
 					player.dy).enableEvents(false);
-			fish.setId(player.userId);
+			fish.setId(player.userID);
 			scene.addChild(fish);
 			console.log('inside if');
 		} else {
-			scene.findActorById(player.userId)
+			scene.findActorById(player.userID)
 					.setLocation(player.dx, player.dy);
 			console.log('inside else');
+		}
+
+	}
+	function removePlayer(player) {
+		if (scene.findActorById(player.userID) != null) {
+
+			var fish = scene.findActorById(player.userID);
+			scene.removeChild(fish);
+			console.log('inside if');
 		}
 
 	}
@@ -203,6 +212,7 @@
 			if (players.type == 1) {
 				addPlayer(players);
 			} else {
+				removePlayer(players);
 				ws.close();
 				connect(players.newServerURL, 'PassPlayer');
 				player.type = 'setcon';
