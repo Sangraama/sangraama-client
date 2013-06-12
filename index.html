@@ -65,7 +65,7 @@
 
 	function drawRotatedImage(image, player) {
 		ctx.save();
-		ctx.translate(player.x, player.y);
+		ctx.translate(player.dx, player.dy);
 		ctx.rotate(0 * TO_RADIANS);
 		ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
 		ctx.restore();
