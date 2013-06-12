@@ -49,13 +49,14 @@
 		scene = director.createScene();
 		// when the scene is activated, avoid the director clearing the viewport since it'll be
 		// totally erased by the background.
-		scene.activated = function() {
-			director.setClear(false);
-		}
+
 		addGradient();
 		CAAT.loop(1);
 	}
 	function addGradient() {
+		scene.activated = function() {
+			director.setClear(false);
+		}
 		var gradient = director.ctx.createLinearGradient(0, 0, director.width,
 				director.height);
 		gradient.addColorStop(0, '#000000');
