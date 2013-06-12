@@ -23,8 +23,8 @@
 	var player = {
 		type : '',
 		userID : 0,
-		v_x : 50,
-		v_y : 50
+		v_x : 0,
+		v_y : 0
 	};
 	(function() {
 		/**
@@ -82,12 +82,10 @@
 		}
 
 	}
-	function removePlayer(player) {
-		if (scene.findActorById(player.userID) != null) {
-
-			var fish = scene.findActorById(player.userID);
-			scene.removeChild(fish);
-			console.log('inside if');
+	function removePlayer() {
+		var clList = scene.childrenList;
+		for ( var index in clList) {
+			scene.removeChild(clList[index]);
 		}
 
 	}
@@ -208,15 +206,18 @@
 		ws.onmessage = function(event) {
 			var players = JSON.parse(event.data);
 			/* for ( var index in players) { */
-			console.log(players.dx);
+			console.log(players.data);
 			if (players.type == 1) {
 				addPlayer(players);
 			} else {
-				removePlayer(players);
+				removePlayer();
 				ws.close();
 				connect(players.newServerURL, 'PassPlayer');
 				player.type = 'setcon';
+				player.userID = players.userID;
 				ws.send(JSON.stringify(player));
+				player.type = '';
+
 			}
 			/* } */
 
