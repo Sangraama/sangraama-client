@@ -194,19 +194,19 @@
 			var players = JSON.parse(event.data);
 			console.log(event.data);
 			clear();
-			//for ( var index in players) {
-			var inPlayer = players;
-			if (inPlayer.type == 1) {
-				drawRotatedImage(ship, inPlayer);
-			} else {
-				ws.close();
-				connect(players.newServerURL, 'PassPlayer');
-				player.type = 'setcon';
-				player.userID = players.userID;
-				ws.send(JSON.stringify(player));
-				player.type = '';
+			for ( var index in players) {
+				var inPlayer = players[index];
+				if (inPlayer.type == 1) {
+					drawRotatedImage(ship, inPlayer);
+				} else {
+					ws.close();
+					connect(players.newServerURL, 'PassPlayer');
+					player.type = 'setcon';
+					player.userID = players.userID;
+					ws.send(JSON.stringify(player));
+					player.type = '';
+				}
 			}
-			//}
 		};
 		ws.onclose = function() {
 			console.log('Connection closed');
