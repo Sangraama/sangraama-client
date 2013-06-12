@@ -52,7 +52,10 @@
 		scene.activated = function() {
 			director.setClear(false);
 		}
-
+		addGradient();
+		CAAT.loop(1);
+	}
+	function addGradient() {
 		var gradient = director.ctx.createLinearGradient(0, 0, director.width,
 				director.height);
 		gradient.addColorStop(0, '#000000');
@@ -65,7 +68,6 @@
 		scene.addChild(gr);
 
 		gr.enableEvents(true);
-		CAAT.loop(1);
 	}
 	function addPlayer(player) {
 		if (scene.findActorById(player.userID) == null) {
@@ -87,7 +89,7 @@
 		for ( var index in clList) {
 			scene.removeChild(clList[index]);
 		}
-
+		addGradient();
 	}
 	function doKeyDown(evt) {
 		switch (evt.keyCode) {
