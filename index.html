@@ -65,7 +65,7 @@
 		var gr = new CAAT.Foundation.ActorContainer().setBounds(0, 0,
 				director.width, director.height).setFillStyle(gradient)
 				.enableEvents(false).cacheAsBitmap();
-
+		gr.setId('a');
 		scene.addChild(gr);
 
 		gr.enableEvents(true);
@@ -88,7 +88,9 @@
 	function removePlayer() {
 		var clList = scene.childrenList;
 		for ( var index in clList) {
-			scene.removeChild(clList[index]);
+			if (clList[index].getId() != 'a') {
+				scene.removeChild(clList[index]);
+			}
 		}
 		//addGradient();
 	}
