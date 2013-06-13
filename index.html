@@ -17,7 +17,7 @@
 </head>
 
 <body>
-	<canvas id="canvas" width="1230" height="590">
+	<canvas id="canvas" width="1230" height="500">
         This text is displayed if your browser does not support HTML5 Canvas.
     </canvas>
 </body>
@@ -30,7 +30,7 @@
 	var rA = 3;
 	var dy = 5;
 	var WIDTH = 1250;
-	var HEIGHT = 590;
+	var HEIGHT = 500;
 	var ship = new Image();
 	var bullet = new Image();
 	var TO_RADIANS = Math.PI / 180;
@@ -59,7 +59,7 @@
 		ship.src = 'img/arrow.jpg';
 		canvas = document.getElementById("canvas");
 		ctx = canvas.getContext("2d");
-		//player.id = Math.floor(Math.random() * 101)
+		player.id = Math.floor(Math.random() * 101)
 		drawRotatedImage(ship, 50, 50);
 	};
 
@@ -175,20 +175,18 @@
 		}
 	}
 
-	connect(
-			'ws://localhost:8080/sangraama-server/org/sangraama/controller/playerservlet',
-			'NewPlayer');
+	connect('ws://localhost:8887/player');
 	var ws;
-	function connect(host, protocol) {
+	function connect(host) {
 		if ('MozWebSocket' in window) {
-			ws = new MozWebSocket(host, protocol);
+			ws = new MozWebSocket(host);
 		} else if ('WebSocket' in window) {
-			ws = new WebSocket(host, protocol);
+			ws = new WebSocket(host);
 		} else {
 			alert('Your browser does not support WebSockets');
 		}
 		ws.onopen = function() {
-			console.log('Connection opened');
+			console.log('Connection opened 8887');
 		};
 		ws.onmessage = function(event) {
 			var players = JSON.parse(event.data);
@@ -198,13 +196,6 @@
 				var inPlayer = players[index];
 				if (inPlayer.type == 1) {
 					drawRotatedImage(ship, inPlayer);
-				} else {
-					ws.close();
-					connect(players.newServerURL, 'PassPlayer');
-					player.type = 'setcon';
-					player.userID = players.userID;
-					ws.send(JSON.stringify(player));
-					player.type = '';
 				}
 			}
 		};
@@ -215,6 +206,7 @@
 			console.log('Connection error');
 		};
 	}
+
 	function updateServer() {
 		ws.send(JSON.stringify(player));
 	}
