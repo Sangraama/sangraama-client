@@ -38,6 +38,9 @@
 	var player = {
 		type : 1,
 		userID : 0,
+		x : 0,
+		y : 0,
+		angle : 0,
 		v_x : 0,
 		v_y : 0,
 		v_a : 0
@@ -59,14 +62,16 @@
 		ship.src = 'img/arrow.jpg';
 		canvas = document.getElementById("canvas");
 		ctx = canvas.getContext("2d");
-		player.id = Math.floor(Math.random() * 101)
-		drawRotatedImage(ship, 50, 50);
+		player.id = Math.floor(Math.random() * 101);
+		player.x = Math.floor(Math.random() * 1200);
+		player.y = Math.floor(Math.random() * 500);
+		drawRotatedImage(ship, player);
 	};
 
 	function drawRotatedImage(image, player) {
 		ctx.save();
-		ctx.translate(player.dx, player.dy);
-		ctx.rotate(0 * TO_RADIANS);
+		ctx.translate(player.x, player.y);
+		ctx.rotate(player.angle * TO_RADIANS);
 		ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
 		ctx.restore();
 	}
@@ -97,10 +102,10 @@
 			console.log('right pressed');
 			break;
 		case 82: /* R was pressed */
-
+			player.v_a = 1;
 			break;
 		case 76: /* L was pressed */
-
+			player.v_a = -1;
 			break;
 		case 32: /* Space was pressed */
 
@@ -128,13 +133,13 @@
 			player.v_x = 0;
 			break;
 		case 82: /* R was released */
-
+			player.v_a = 0;
 			break;
 		case 32: /* Space was released */
 
 			break;
 		case 76: /* L was released */
-
+			player.v_a = 0;
 			break;
 		default:
 			alert(evt.keyCode);
@@ -176,6 +181,7 @@
 	}
 
 	connect('ws://localhost:8887/player');
+
 	var ws;
 	function connect(host) {
 		if ('MozWebSocket' in window) {
