@@ -28,8 +28,8 @@
 				Game</button>
 		</div>
 	</div>
-
 	<script type="text/javascript">
+        var D = false; // debug
         var playerObject;
         var canvas;
         var ctx;
@@ -93,23 +93,152 @@
             ctx.restore();
         }
 
+        $('#start').click(function() {
+            player.id = Math.floor(Math.random() * 1000) + 1;
+            console.log('player id:' + player.id);
+            var hostLocation = 'localhost:8080'
+            var URL = hostLocation + '/sangraama-server/sangraama/player';
+            // start wsList with 0 index
+            wsList[0] = new WebSocketHandler(URL, 0);
+            wsList[0].connect();
+        });
+
+        $('#stop').click(function() {
+            if (ws.OPEN == ws.readyState) {
+                ws.close();
+                console.log('Stopped the Game');
+            }
+        });
+
+        var wsList = new Array();
+        /* this structure was built using 1.1 method in tutorial
+        http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
+        var WebSocketHandler = function(hostAdd, wsIndex) {
+            var ws = null;
+            this.wsIndex = wsIndex;
+            this.host = hostAdd;
+
+            this.getWS = function() {
+                return ws;
+            };
+
+            this.connect = function() {
+                var wsIndex = this.wsIndex;
+                console.log('call connect ... ' + this.wsIndex);
+                var hostProtocol;
+
+                if (window.location.protocol == 'http:') {
+                    hostProtocol = 'ws://';
+                } else {
+                    hostProtocol = 'wss://';
+                }
+                var hostURL = hostProtocol + this.host;
+                console.log(this.host);
+                if ('MozWebSocket' in window) {
+                    ws = new MozWebSocket(hostURL);
+                } else if ('WebSocket' in window) {
+                    ws = new WebSocket(hostURL);
+                } else {
+                    alert('Your browser does not support WebSockets');
+                }
+                ws.onopen = function() {
+                    console.log('Connection opened ' + hostURL);
+                    wsList[wsIndex].getWS().send(JSON.stringify(player));
+                };
+                ws.onmessage = function(event) {
+                    var players = JSON.parse(event.data);
+                    console.log(event.data);
+                    clear();
+                    for ( var index in players) {
+                        var inPlayer = players[index];
+                        //console.log('in switch type ' + inPlayer.type);
+                        switch (inPlayer.type) {
+                        case 1: // update client graphichs
+                            drawRotatedImage(ship, inPlayer);
+                            //console.log('check user id :'+inPlayer.userID+"="+inPlayer.dx);
+                            //if(inPlayer.userID == 1){
+                                // only for demo
+                                if(inPlayer.dx == '1002'){
+                                    console.log('out of map');
+                                    player.type = 2;
+                                    player.x = inPlayer.dx;
+                                    player.y = inPlayer.dy;
+                                    updateServer();
+                                    player.type = 1;
+                                }
+                            //} 
+                            break;
+                        case 2: // connecting to another server
+                            var URL = inPlayer.url + ':' + inPlayer.port + '/' + inPlayer.dir
+                                    + '/sangraama/player'
+                            console.log('Type 2 msg. ' + URL);
+                            var i = 0;
+                            do { // search from begining of list is there any available slot
+                                console.log('Times ' + i + wsList[i]);
+                                if (wsList[i] == undefined) {
+                                    reconnect(URL, i);
+                                    break;
+                                } else if (wsList[i].getWS().readyState == 3) {
+                                    reconnect(URL, i);
+                                    break;
+                                }
+                                i++;
+                            } while (i < 10);
+                            break;
+                        case 3: // close existing connection
+
+                            break;
+                        case 4: // close connection and connect to another server
+
+                            break;
+                        default:
+                            console.log("Warning. Unsupported message type " + inPlayer.type);
+                        }
+                    }
+                };
+                ws.onclose = function() {
+                    console.log('Connection closed ' + hostURL);
+                };
+                ws.onerror = function(event) {
+                    console.log('Connection error ' + hostURL);
+                };
+            };
+        }
+
+        function updateServer() {
+            //console.log(wsList[primaryCon].getWS().readyState);
+            if (1 == wsList[primaryCon].getWS().readyState) {
+                wsList[primaryCon].getWS().send(JSON.stringify(player));
+            }
+        }
+
+        function reconnect(host, num) {
+            console.log('Reconnect to ' + host + ' with ' + num);
+            wsList[num] = new WebSocketHandler(host, num);
+            wsList[num].connect();
+        }
+
         function doKeyDown(evt) {
             switch (evt.keyCode) {
             case 38: /* Up arrow was pressed */
                 player.v_y = -1;
-                console.log('up pressed');
+                if (D)
+                    console.log('up pressed');
                 break;
             case 40: /* Down arrow was pressed */
                 player.v_y = 1;
-                console.log('down pressed');
+                if (D)
+                    console.log('down pressed');
                 break;
             case 37: /* Left arrow was pressed */
                 player.v_x = -1;
-                console.log('left pressed');
+                if (D)
+                    console.log('left pressed');
                 break;
             case 39: /* Right arrow was pressed */
                 player.v_x = 1;
-                console.log('right pressed');
+                if (D)
+                    console.log('right pressed');
                 break;
             case 82: /* R was pressed */
                 player.v_a = 1;
@@ -159,141 +288,41 @@
         function doMouseDown(evt) {
             switch (evt.which) {
             case 1:
-                console.log('Left mouse button pressed');
+                if (D)
+                    console.log('Left mouse button pressed');
                 break;
             case 2:
-                console.log('Middle mouse button pressed');
+                if (D)
+                    console.log('Middle mouse button pressed');
                 break;
             case 3:
-                console.log('Right mouse button pressed');
+                if (D)
+                    console.log('Right mouse button pressed');
                 break;
             default:
-                console.log('You have a strange mouse');
+                if (D)
+                    console.log('You have a strange mouse');
             }
         }
 
         function doMouseUp(evt) {
             switch (evt.which) {
             case 1:
-                console.log('Left mouse button released');
+                if (D)
+                    console.log('Left mouse button released');
                 break;
             case 2:
-                console.log('Middle mouse button released');
+                if (D)
+                    console.log('Middle mouse button released');
                 break;
             case 3:
-                console.log('Right mouse button released');
+                if (D)
+                    console.log('Right mouse button released');
                 break;
             default:
-                console.log('You have a strange mouse');
+                if (D)
+                    console.log('You have a strange mouse');
             }
-        }
-
-        $('#start').click(function() {
-            player.id = Math.floor(Math.random() * 1000) + 1;
-            console.log('player id:' + player.id);
-            var hostLocation = 'localhost:8080'
-            var URL = hostLocation + '/sangraama-server/sangraama/player';
-            // start wsList with 0 index
-            wsList[0] = new WebSocketHandler(URL, 0);
-            wsList[0].connect(URL);
-        });
-
-        $('#stop').click(function() {
-            if (ws.OPEN == ws.readyState) {
-                ws.close();
-                console.log('Stopped the Game');
-            }
-        });
-
-        var wsList = new Array();
-        /* this structure was built using 1.1 method in tutorial
-        http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
-        function WebSocketHandler(host, wsIndex) {
-            this.ws = null;
-            this.wsIndex = wsIndex;
-            this.host = host;
-
-            this.connect = function connect(host) {
-                this.host = host;
-                console.log('call connect ...');
-                var hostProtocol;
-
-                if (window.location.protocol == 'http:') {
-                    hostProtocol = 'ws://';
-                } else {
-                    hostProtocol = 'wss://';
-                }
-                host = hostProtocol + host;
-                console.log(host);
-                if ('MozWebSocket' in window) {
-                    this.ws = new MozWebSocket(host);
-                } else if ('WebSocket' in window) {
-                    this.ws = new WebSocket(host);
-                } else {
-                    alert('Your browser does not support WebSockets');
-                }
-                this.ws.onopen = function() {
-                    console.log('Connection opened ' + host);
-                    updateServer();
-                };
-                this.ws.onmessage = function(event) {
-                    var players = JSON.parse(event.data);
-                    console.log(event.data);
-                    clear();
-                    for ( var index in players) {
-                        var inPlayer = players[index];
-                        //console.log('in switch type ' + inPlayer.type);
-                        switch (inPlayer.type) {
-                        case 1: // update client graphichs
-                            drawRotatedImage(ship, inPlayer);
-                            break;
-                        case 2: // connecting to another server
-                            var URL = inPlayer.url + ':' + inPlayer.port + '/' + inPlayer.dir
-                                    + '/sangraama/player'
-                            console.log('Type 2 msg. ' + URL);
-                            var i = 0;
-                            do { // search from begining of list is there any available slot
-                                console.log('Times ' + i + wsList[i]);
-                                if (wsList[i] == undefined) {
-                                    reconnect(URL, i);
-                                    break;
-                                } else if (wsList[i].ws.readyState == wsList[i].ws.CLOSE) {
-                                    reconnect(URL, i);
-                                    break;
-                                }
-                                i++;
-                            } while (i < 10);
-                            break;
-                        case 3: // close existing connection
-
-                            break;
-                        case 4: // close connection and connect to another server
-
-                            break;
-                        default:
-                            console.log("Warning. Unsupported message type " + inPlayer.type);
-                        }
-                    }
-                };
-                this.ws.onclose = function() {
-                    console.log('Connection closed ' + host);
-                };
-                this.ws.onerror = function(event) {
-                    console.log('Connection error ' + host);
-                };
-            }
-        }
-
-        function updateServer() {
-            if (wsList[primaryCon].ws.OPEN == wsList[primaryCon].ws.readyState) {
-                wsList[primaryCon].ws.send(JSON.stringify(player));
-            }
-        }
-
-        function reconnect(host, num) {
-            console.log('Reconnect to ' + host + ' with ' + num);
-            wsList[num] = new WebSocketHandler(host, num);
-            wsList[num].connect(host);
         }
 
         window.addEventListener('keydown', doKeyDown, true);
