@@ -10,6 +10,7 @@ function connectTwo(host) {
     }
     wsTwo.onopen = function() {
         console.log('Connection Two opened ' + host);
+        updateServerTwo();
     };
     wsTwo.onmessage = function(event) {
         var players = JSON.parse(event.data);

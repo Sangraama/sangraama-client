@@ -44,7 +44,7 @@
         var FROM_RADIANS = 180 / Math.PI;
         var player = {
             type : 1,
-            userID : 0,
+            userID : 1,
             x : 0,
             y : 0,
             angle : 0,
@@ -69,9 +69,9 @@
             ship.src = 'img/arrow.jpg';
             canvas = document.getElementById("canvas");
             ctx = canvas.getContext("2d");
-            player.id = Math.floor(Math.random() * 101);
-            player.x = Math.floor(Math.random() * 1200);
-            player.y = Math.floor(Math.random() * 500);
+            player.id = Math.floor(Math.random() * 100) + 10;
+            player.x = Math.floor(Math.random() * 900);
+            player.y = Math.floor(Math.random() * 400);
             drawRotatedImage(ship, player);
         };
 
@@ -191,21 +191,23 @@
                 function() {
                     //connect('ws://localhost:8080/sangraama-server/sangraama/player');
 
+                    player.id = Math.floor(Math.random() * 1000)+1;
+                    console.log('player id:'+player.id);
                     var hostLocation = 'localhost:8080'
                     var URL = "ws://" + hostLocation
                             + '/sangraama-server/sangraama/player';
                     connect(URL);
 
-                    player.id = Math.floor(Math.random() * 101);
-                    player.x = Math.floor(Math.random() * 1200);
-                    player.y = Math.floor(Math.random() * 500);
+                    player.id = Math.floor(Math.random() * 1000)+1;
+                    player.x = Math.floor(Math.random() * 900);
+                    player.y = Math.floor(Math.random() * 400);
                     var hostLocationTwo = 'localhost:8081'
                     
                     // change sangraama-server-clone as necessary
                     var URL = "ws://" + hostLocationTwo
                             + '/sangraama-server-clone/sangraama/player';
                     // this method is implement in js/controller/TwoConnection.js
-                    connectTwo(URL);
+                    //connectTwo(URL);
                 });
 
         var ws = null;
@@ -220,6 +222,7 @@
             }
             ws.onopen = function() {
                 console.log('Connection opened ' + host);
+                updateServer();
             };
             ws.onmessage = function(event) {
                 var players = JSON.parse(event.data);
