@@ -27,216 +27,230 @@
 				Game</button>
 		</div>
 	</div>
-</body>
+	<script type="text/javascript" src="js/controller/TwoConnection.js"></script>
 
-<script type="text/javascript">
-    var playerObject;
-    var canvas;
-    var ctx;
-    var dx = 5;
-    var rA = 3;
-    var dy = 5;
-    var WIDTH = 1250;
-    var HEIGHT = 500;
-    var ship = new Image();
-    var bullet = new Image();
-    var TO_RADIANS = Math.PI / 180;
-    var FROM_RADIANS = 180 / Math.PI;
-    var player = {
-        type : 1,
-        userID : 0,
-        x : 0,
-        y : 0,
-        angle : 0,
-        v_x : 0,
-        v_y : 0,
-        v_a : 0
-    };
-
-    function rect(x, y, w, h) {
-        ctx.beginPath();
-        ctx.rect(x, y, w, h);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-    }
-
-    function clear() {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    }
-
-    window.onload = function() {
-        ship.src = 'img/arrow.jpg';
-        canvas = document.getElementById("canvas");
-        ctx = canvas.getContext("2d");
-        player.id = Math.floor(Math.random() * 101);
-        player.x = Math.floor(Math.random() * 1200);
-        player.y = Math.floor(Math.random() * 500);
-        drawRotatedImage(ship, player);
-    };
-
-    function drawRotatedImage(image, player) {
-        ctx.save();
-        ctx.translate(player.x, player.y);
-        ctx.rotate(player.angle * TO_RADIANS);
-        ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
-        ctx.restore();
-    }
-    function drawShootImage(image, x, y, shootAngle) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(shootAngle * TO_RADIANS);
-        ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
-        ctx.restore();
-    }
-
-    function doKeyDown(evt) {
-        switch (evt.keyCode) {
-        case 38: /* Up arrow was pressed */
-            player.v_y = -1;
-            console.log('up pressed');
-            break;
-        case 40: /* Down arrow was pressed */
-            player.v_y = 1;
-            console.log('down pressed');
-            break;
-        case 37: /* Left arrow was pressed */
-            player.v_x = -1;
-            console.log('left pressed');
-            break;
-        case 39: /* Right arrow was pressed */
-            player.v_x = 1;
-            console.log('right pressed');
-            break;
-        case 82: /* R was pressed */
-            player.v_a = 1;
-            break;
-        case 76: /* L was pressed */
-            player.v_a = -1;
-            break;
-        case 32: /* Space was pressed */
-
-            break;
-        default:
-            console.log(evt.keyCode);
-        }
-
-        updateServer();
-    }
-
-    function doKeyUp(evt) {
-
-        switch (evt.keyCode) {
-        case 38: /* Up arrow was released */
-            player.v_y = 0;
-            break;
-        case 40: /* Down arrow was released */
-            player.v_y = 0;
-            break;
-        case 37: /* Left arrow was released */
-            player.v_x = 0;
-            break;
-        case 39: /* Right arrow was released */
-            player.v_x = 0;
-            break;
-        case 82: /* R was released */
-            player.v_a = 0;
-            break;
-        case 32: /* Space was released */
-
-            break;
-        case 76: /* L was released */
-            player.v_a = 0;
-            break;
-        default:
-            console.log(evt.keyCode);
-        }
-        updateServer();
-
-    }
-
-    function doMouseDown(evt) {
-        switch (evt.which) {
-        case 1:
-            console.log('Left mouse button pressed');
-            break;
-        case 2:
-            console.log('Middle mouse button pressed');
-            break;
-        case 3:
-            console.log('Right mouse button pressed');
-            break;
-        default:
-            console.log('You have a strange mouse');
-        }
-    }
-
-    function doMouseUp(evt) {
-        switch (evt.which) {
-        case 1:
-            console.log('Left mouse button released');
-            break;
-        case 2:
-            console.log('Middle mouse button released');
-            break;
-        case 3:
-            console.log('Right mouse button released');
-            break;
-        default:
-            console.log('You have a strange mouse');
-        }
-    }
-
-    $('#start').click(function() {
-        //connect('ws://localhost:8080/sangraama-server/sangraama/player');
-        
-        var hostLocation = 'localhost:8080'
-        var URL = "ws://" + hostLocation + '/sangraama-server/sangraama/player';
-        connect(URL);
-    });
-
-    var ws = null;
-    function connect(host) {
-        console.log(host);
-        if ('MozWebSocket' in window) {
-            ws = new MozWebSocket(host);
-        } else if ('WebSocket' in window) {
-            ws = new WebSocket(host);
-        } else {
-            alert('Your browser does not support WebSockets');
-        }
-        ws.onopen = function() {
-            console.log('Connection opened ' + host);
+	<script type="text/javascript">
+        var playerObject;
+        var canvas;
+        var ctx;
+        var dx = 5;
+        var rA = 3;
+        var dy = 5;
+        var WIDTH = 1250;
+        var HEIGHT = 500;
+        var ship = new Image();
+        var bullet = new Image();
+        var TO_RADIANS = Math.PI / 180;
+        var FROM_RADIANS = 180 / Math.PI;
+        var player = {
+            type : 1,
+            userID : 0,
+            x : 0,
+            y : 0,
+            angle : 0,
+            v_x : 0,
+            v_y : 0,
+            v_a : 0
         };
-        ws.onmessage = function(event) {
-            var players = JSON.parse(event.data);
-            console.log(event.data);
-            clear();
-            for ( var index in players) {
-                var inPlayer = players[index];
-                if (inPlayer.type == 1) {
-                    drawRotatedImage(ship, inPlayer);
-                }
+
+        function rect(x, y, w, h) {
+            ctx.beginPath();
+            ctx.rect(x, y, w, h);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function clear() {
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        }
+
+        window.onload = function() {
+            ship.src = 'img/arrow.jpg';
+            canvas = document.getElementById("canvas");
+            ctx = canvas.getContext("2d");
+            player.id = Math.floor(Math.random() * 101);
+            player.x = Math.floor(Math.random() * 1200);
+            player.y = Math.floor(Math.random() * 500);
+            drawRotatedImage(ship, player);
+        };
+
+        function drawRotatedImage(image, player) {
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            ctx.rotate(player.angle * TO_RADIANS);
+            ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+            ctx.restore();
+        }
+        function drawShootImage(image, x, y, shootAngle) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(shootAngle * TO_RADIANS);
+            ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+            ctx.restore();
+        }
+
+        function doKeyDown(evt) {
+            switch (evt.keyCode) {
+            case 38: /* Up arrow was pressed */
+                player.v_y = -1;
+                console.log('up pressed');
+                break;
+            case 40: /* Down arrow was pressed */
+                player.v_y = 1;
+                console.log('down pressed');
+                break;
+            case 37: /* Left arrow was pressed */
+                player.v_x = -1;
+                console.log('left pressed');
+                break;
+            case 39: /* Right arrow was pressed */
+                player.v_x = 1;
+                console.log('right pressed');
+                break;
+            case 82: /* R was pressed */
+                player.v_a = 1;
+                break;
+            case 76: /* L was pressed */
+                player.v_a = -1;
+                break;
+            case 32: /* Space was pressed */
+
+                break;
+            default:
+                console.log(evt.keyCode);
             }
-        };
-        ws.onclose = function() {
-            console.log('Connection closed');
-        };
-        ws.onerror = function(event) {
-            console.log('Connection error');
-        };
-    }
 
-    function updateServer() {
-        if (ws != null) {
-            ws.send(JSON.stringify(player));
+            updateServer();
         }
-    }
-    window.addEventListener('keydown', doKeyDown, true);
-    window.addEventListener('keyup', doKeyUp, true);
-    window.addEventListener('mousedown', doMouseDown, true);
-    window.addEventListener('mouseup', doMouseUp, true);
-</script>
 
+        function doKeyUp(evt) {
+
+            switch (evt.keyCode) {
+            case 38: /* Up arrow was released */
+                player.v_y = 0;
+                break;
+            case 40: /* Down arrow was released */
+                player.v_y = 0;
+                break;
+            case 37: /* Left arrow was released */
+                player.v_x = 0;
+                break;
+            case 39: /* Right arrow was released */
+                player.v_x = 0;
+                break;
+            case 82: /* R was released */
+                player.v_a = 0;
+                break;
+            case 32: /* Space was released */
+
+                break;
+            case 76: /* L was released */
+                player.v_a = 0;
+                break;
+            default:
+                console.log(evt.keyCode);
+            }
+            updateServer();
+
+        }
+
+        function doMouseDown(evt) {
+            switch (evt.which) {
+            case 1:
+                console.log('Left mouse button pressed');
+                break;
+            case 2:
+                console.log('Middle mouse button pressed');
+                break;
+            case 3:
+                console.log('Right mouse button pressed');
+                break;
+            default:
+                console.log('You have a strange mouse');
+            }
+        }
+
+        function doMouseUp(evt) {
+            switch (evt.which) {
+            case 1:
+                console.log('Left mouse button released');
+                break;
+            case 2:
+                console.log('Middle mouse button released');
+                break;
+            case 3:
+                console.log('Right mouse button released');
+                break;
+            default:
+                console.log('You have a strange mouse');
+            }
+        }
+
+        $('#start').click(
+                function() {
+                    //connect('ws://localhost:8080/sangraama-server/sangraama/player');
+
+                    var hostLocation = 'localhost:8080'
+                    var URL = "ws://" + hostLocation
+                            + '/sangraama-server/sangraama/player';
+                    connect(URL);
+
+                    player.id = Math.floor(Math.random() * 101);
+                    player.x = Math.floor(Math.random() * 1200);
+                    player.y = Math.floor(Math.random() * 500);
+                    var hostLocationTwo = 'localhost:8081'
+                    
+                    // change sangraama-server-clone as necessary
+                    var URL = "ws://" + hostLocationTwo
+                            + '/sangraama-server-clone/sangraama/player';
+                    // this method is implement in js/controller/TwoConnection.js
+                    connectTwo(URL);
+                });
+
+        var ws = null;
+        function connect(host) {
+            console.log(host);
+            if ('MozWebSocket' in window) {
+                ws = new MozWebSocket(host);
+            } else if ('WebSocket' in window) {
+                ws = new WebSocket(host);
+            } else {
+                alert('Your browser does not support WebSockets');
+            }
+            ws.onopen = function() {
+                console.log('Connection opened ' + host);
+            };
+            ws.onmessage = function(event) {
+                var players = JSON.parse(event.data);
+                console.log(event.data);
+                clear();
+                for ( var index in players) {
+                    var inPlayer = players[index];
+                    if (inPlayer.type == 1) {
+                        drawRotatedImage(ship, inPlayer);
+                    }
+                }
+            };
+            ws.onclose = function() {
+                console.log('Connection closed');
+            };
+            ws.onerror = function(event) {
+                console.log('Connection error');
+            };
+        }
+
+        function updateServer() {
+            if (ws != null) {
+                ws.send(JSON.stringify(player));
+            }
+        }
+        window.addEventListener('keydown', doKeyDown, true);
+        window.addEventListener('keyup', doKeyUp, true);
+        window.addEventListener('mousedown', doMouseDown, true);
+        window.addEventListener('mouseup', doMouseUp, true);
+    </script>
+
+</body>
 </html>
 
