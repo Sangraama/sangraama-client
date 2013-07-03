@@ -82,7 +82,7 @@
 		function drawRotatedImage(image, player) {
 			ctx.save();
 			ctx.translate(player.dx, player.dy);
-			ctx.rotate(0 * TO_RADIANS);
+			ctx.rotate(player.da * TO_RADIANS);
 			ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
 			ctx.restore();
 		}
@@ -95,7 +95,7 @@
 		}
 
 		$('#start').click(function() {
-			player.id = Math.floor(Math.random() * 1000) + 1;
+			player.userID = Math.floor(Math.random() * 1000) + 1;
 			console.log('player id:' + player.id);
 			var hostLocation = 'localhost:8080'
 			var URL = hostLocation + '/sangraama-server/sangraama/player';
@@ -156,7 +156,7 @@
 						switch (inPlayer.type) {
 						case 1: // update client graphichs
 							drawRotatedImage(ship, inPlayer);
-							//console.log('check user id :'+inPlayer.userID+"="+inPlayer.dx);
+							console.log(inPlayer);
 							//if(inPlayer.userID == 1){
 							// only for demo
 							if (inPlayer.dx == '1002') {
@@ -224,21 +224,25 @@
 			switch (evt.keyCode) {
 			case 38: /* Up arrow was pressed */
 				player.v_y = -1;
+				player.v_a = 270;
 				if (D)
 					console.log('up pressed');
 				break;
 			case 40: /* Down arrow was pressed */
 				player.v_y = 1;
+				player.v_a = 90;
 				if (D)
 					console.log('down pressed');
 				break;
 			case 37: /* Left arrow was pressed */
 				player.v_x = -1;
+				player.v_a = 180;
 				if (D)
 					console.log('left pressed');
 				break;
 			case 39: /* Right arrow was pressed */
 				player.v_x = 1;
+				player.v_a = 0;
 				if (D)
 					console.log('right pressed');
 				break;
@@ -262,15 +266,19 @@
 			switch (evt.keyCode) {
 			case 38: /* Up arrow was released */
 				player.v_y = 0;
+				//player.v_a = 0;
 				break;
 			case 40: /* Down arrow was released */
 				player.v_y = 0;
+				//player.v_a = 0;
 				break;
 			case 37: /* Left arrow was released */
 				player.v_x = 0;
+				//player.v_a = 0;
 				break;
 			case 39: /* Right arrow was released */
 				player.v_x = 0;
+				//player.v_a = 0;
 				break;
 			case 82: /* R was released */
 				player.v_a = 0;
