@@ -5,8 +5,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="description" content="">
 <meta name="author" content="">
+<!-- Add style sheets and responsive design -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- Add java script libraries -->
 <script type="text/javascript" src="js/lib/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/lib/underscore.js"></script>
@@ -16,334 +19,358 @@
 </head>
 
 <body>
-	<div class="row">
-		<canvas id="sangraama_canvas" width="1000" height="500"
-			style="background: #819FF7"> This text is displayed because
-		of your browser does not support HTML5 Canvas. Please try with a
-		latest web browser. </canvas>
-	</div>
-	<div class="row offset1">
-		<div class="control-group">
-			<button id="start" class="btn btn-warning" type="button">Start
-				Game</button>
-			<button id="stop" class="btn btn-danger" type="button">Stop
-				Game</button>
-		</div>
-	</div>
-	<script type="text/javascript">
-        var D = false; // debug
-        var playerObject;
-        var canvas;
-        var ctx;
-        var dx = 5;
-        var rA = 3;
-        var dy = 5;
-        var WIDTH = 1250;
-        var HEIGHT = 500;
-        var ship = new Image();
-        var bullet = new Image();
-        var TO_RADIANS = Math.PI / 180;
-        var FROM_RADIANS = 180 / Math.PI;
-        var player = {
-            type : 1,
-            userID : 1,
-            x : 0,
-            y : 0,
-            angle : 0,
-            v_x : 0,
-            v_y : 0,
-            v_a : 0,
-            s : 0
+  <div class="container-fluid">
+    <div id="sangraama_canvas" class="row-fluid">
+      <canvas id="sangraama_canvas" width="1000" height="500"
+        style="background: #819FF7"> This text is displayed
+      because of your browser does not support HTML5 Canvas. Please try
+      with a latest web browser. </canvas>
+    </div>
+    <div class="row-fluid offset1">
+      <div class="control-group">
+        <button id="start" class="btn btn-warning" type="button">Start
+          Game</button>
+        <button id="stop" class="btn btn-danger" type="button">Stop
+          Game</button>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      var D = false; // debug
+      var playerObject;
+      var canvas;
+      var ctx;
+      var dx = 5;
+      var rA = 3;
+      var dy = 5;
+      var WIDTH = 1250;
+      var HEIGHT = 500;
+      var ship = new Image();
+      var bullet = new Image();
+      var TO_RADIANS = Math.PI / 180;
+      var FROM_RADIANS = 180 / Math.PI;
+      var player = {
+        type : 1,
+        userID : 1,
+        x : 0,
+        y : 0,
+        angle : 0,
+        v_x : 0,
+        v_y : 0,
+        v_a : 0,
+        s : 0
+      };
+      // connection handling
+      var primaryCon = 0;
+
+      function rect(x, y, w, h) {
+        ctx.beginPath();
+        ctx.rect(x, y, w, h);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      function clear() {
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      }
+
+      window.onload = function() {
+        ship.src = 'img/arrow.jpg';
+        bullet.src = 'img/bullet.png';
+        canvas = document.getElementById("sangraama_canvas");
+        ctx = canvas.getContext("2d");
+        player.id = Math.floor(Math.random() * 101);
+        //player.x = Math.floor(Math.random() * 900);
+        player.x = Math.floor(Math.random() * 1001);//create at edge
+        player.y = Math.floor(Math.random() * 501);
+        drawRotatedImage(ship, player);
+      };
+
+      function drawRotatedImage(image, player) {
+        ctx.save();
+        ctx.translate(player.dx, player.dy);
+        ctx.rotate(player.da * TO_RADIANS);
+        ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+        ctx.restore();
+      }
+      function drawShootImage(image, bullet) {
+        ctx.save();
+        ctx.translate(bullet.dx, bullet.dy);
+        ctx.rotate(bullet.a * TO_RADIANS);
+        ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+        ctx.restore();
+      }
+
+      $('#start').click(function() {
+        player.userID = Math.floor(Math.random() * 1000) + 1;
+        console.log('player id:' + player.id);
+        var hostLocation = 'localhost:8080'
+        var URL = hostLocation + '/sangraama-server/sangraama/player';
+        // start wsList with 0 index
+        wsList[0] = new WebSocketHandler(URL, 0);
+        wsList[0].connect();
+      });
+
+      $('#stop').click(function() {
+        // Close all opened websockets
+        for(varr i=0; i<wsList.length; i++){
+          if (wsList[i] != null) { 
+            wsLsit[i].close(i);// try closing connection
+            console.log('Stopped the Game');
+          }
+        }
+      });
+
+      var wsList = new Array();
+      /* this structure was built using 1.1 method in tutorial
+      http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
+      var WebSocketHandler = function(hostAddress, wsIndex) {
+        var ws = null;
+        // The assigned index in the ws array
+        this.wsIndex = wsIndex;
+        this.host = hostAddress;
+        // Get the websocket
+        this.getWS = function() {
+          return ws;
         };
-        // connection handling
-        var primaryCon = 0;
-
-        function rect(x, y, w, h) {
-            ctx.beginPath();
-            ctx.rect(x, y, w, h);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-        }
-
-        function clear() {
-            ctx.clearRect(0, 0, WIDTH, HEIGHT);
-        }
-
-        window.onload = function() {
-            ship.src = 'img/arrow.jpg';
-            bullet.src = 'img/bullet.png';
-            canvas = document.getElementById("sangraama_canvas");
-            ctx = canvas.getContext("2d");
-            player.id = Math.floor(Math.random() * 101);
-            //player.x = Math.floor(Math.random() * 900);
-            player.x = Math.floor(Math.random() * 1001);//create at edge
-            player.y = Math.floor(Math.random() * 501);
-            drawRotatedImage(ship, player);
+        // Get the state of websocket
+        this.isReadyState = function() {
+          return ws.readyState;
         };
-
-        function drawRotatedImage(image, player) {
-            ctx.save();
-            ctx.translate(player.dx, player.dy);
-            ctx.rotate(player.da * TO_RADIANS);
-            ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
-            ctx.restore();
+        // close the websocket
+        this.close = function(index){
+          if(index == wsIndex && ws.readyState <= ws.OPEN){ // if ws is connecting or opened
+            ws.close();
+            return true;
+          }else{
+            return false;
+          }
+        };
+        // send data to server [should only allow to primary connection]
+        this.send = function(data){
+          if(ws.readyState == ws.OPEN){
+            ws.send(data);
+          }
         }
-        function drawShootImage(image, bullet) {
-            ctx.save();
-            ctx.translate(bullet.dx, bullet.dy);
-            ctx.rotate(bullet.a * TO_RADIANS);
-            ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
-            ctx.restore();
-        }
+        // Connecting to server and functions for handle server messages
+        this.connect = function() {
+          var wsIndex = this.wsIndex;
+          console.log('call connect ... ' + this.wsIndex);
+          var hostProtocol;
 
-        $('#start').click(function() {
-            player.userID = Math.floor(Math.random() * 1000) + 1;
-            console.log('player id:' + player.id);
-            var hostLocation = 'localhost:8080'
-            var URL = hostLocation + '/sangraama-server/sangraama/player';
-            // start wsList with 0 index
-            wsList[0] = new WebSocketHandler(URL, 0);
-            wsList[0].connect();
-        });
+          //if (window.location.protocol == 'http:') {
+          hostProtocol = 'ws://';
+          //} else {
+          //	hostProtocol = 'wss://';
+          //}
+          var hostURL = hostProtocol + this.host;
+          console.log(this.host);
+          if ('MozWebSocket' in window) {
+            ws = new MozWebSocket(hostURL);
+          } else if ('WebSocket' in window) {
+            ws = new WebSocket(hostURL);
+          } else {
+            alert('Your browser does not support WebSockets');
+          }
+          ws.onopen = function() {
+            console.log('Connection opened ' + hostURL);
+            wsList[wsIndex].getWS().send(JSON.stringify(player));
+          };
+          ws.onmessage = function(event) {
+            var players = JSON.parse(event.data);
 
-        $('#stop').click(function() {
-            if (ws.OPEN == ws.readyState) {
-                ws.close();
-                console.log('Stopped the Game');
-            }
-        });
-
-        var wsList = new Array();
-        /* this structure was built using 1.1 method in tutorial
-        http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
-        var WebSocketHandler = function(hostAdd, wsIndex) {
-            var ws = null;
-            this.wsIndex = wsIndex;
-            this.host = hostAdd;
-
-            this.getWS = function() {
-                return ws;
-            };
-
-            this.connect = function() {
-                var wsIndex = this.wsIndex;
-                console.log('call connect ... ' + this.wsIndex);
-                var hostProtocol;
-
-                //if (window.location.protocol == 'http:') {
-                hostProtocol = 'ws://';
-                //} else {
-                //	hostProtocol = 'wss://';
-                //}
-                var hostURL = hostProtocol + this.host;
-                console.log(this.host);
-                if ('MozWebSocket' in window) {
-                    ws = new MozWebSocket(hostURL);
-                } else if ('WebSocket' in window) {
-                    ws = new WebSocket(hostURL);
-                } else {
-                    alert('Your browser does not support WebSockets');
+            clear();
+            for ( var index in players) {
+              var inPlayer = players[index];
+              var bullets = inPlayer.bulletDeltaList;
+              switch (inPlayer.type) {
+              case 1: // update client graphichs
+                drawRotatedImage(ship, inPlayer);
+                for ( var bulletIndex in bullets) {
+                  drawShootImage(bullet, bullets[bulletIndex]);
+                  console.log(bullets[bulletIndex]);
                 }
-                ws.onopen = function() {
-                    console.log('Connection opened ' + hostURL);
-                    wsList[wsIndex].getWS().send(JSON.stringify(player));
-                };
-                ws.onmessage = function(event) {
-                    var players = JSON.parse(event.data);
+                //if(inPlayer.userID == 1){
+                // only for demo 1002
+                if (inPlayer.dx == '1002') {
+                  console.log('out of map');
+                  player.type = 2;
+                  player.x = inPlayer.dx;
+                  player.y = inPlayer.dy;
+                  updateServer();
+                  player.type = 1;
+                }
+                //} 
+                break;
+              case 2: // connecting to another server
+                var URL = inPlayer.url + ':' + inPlayer.port + '/'
+                    + inPlayer.dir + '/sangraama/player'
+                console.log('Type 2 msg. ' + URL);
+                var i = 0;
+                do { // search from begining of list is there any available slot
+                  console.log('Times ' + i + wsList[i]);
+                  if (wsList[i] == undefined) {
+                    reconnect(URL, i);
+                    break;
+                  } else if (wsList[i].readyState == 3) {
+                    reconnect(URL, i);
+                    break;
+                  }
+                  i++;
+                } while (i < 10);
+                break;
+              case 3: // close existing connection
 
-                    clear();
-                    for ( var index in players) {
-                        var inPlayer = players[index];
-                        var bullets = inPlayer.bulletDeltaList;
-                        switch (inPlayer.type) {
-                        case 1: // update client graphichs
-                            drawRotatedImage(ship, inPlayer);
-                            for ( var bulletIndex in bullets) {
-                                drawShootImage(bullet, bullets[bulletIndex]);
-                                console.log(bullets[bulletIndex]);
-                            }
-                            //if(inPlayer.userID == 1){
-                            // only for demo
-                            if (inPlayer.dx == '1002') {
-                                console.log('out of map');
-                                player.type = 2;
-                                player.x = inPlayer.dx;
-                                player.y = inPlayer.dy;
-                                updateServer();
-                                player.type = 1;
-                            }
-                            //} 
-                            break;
-                        case 2: // connecting to another server
-                            var URL = inPlayer.url + ':' + inPlayer.port + '/' + inPlayer.dir
-                                    + '/sangraama/player'
-                            console.log('Type 2 msg. ' + URL);
-                            var i = 0;
-                            do { // search from begining of list is there any available slot
-                                console.log('Times ' + i + wsList[i]);
-                                if (wsList[i] == undefined) {
-                                    reconnect(URL, i);
-                                    break;
-                                } else if (wsList[i].readyState == 3) {
-                                    reconnect(URL, i);
-                                    break;
-                                }
-                                i++;
-                            } while (i < 10);
-                            break;
-                        case 3: // close existing connection
+                break;
+              case 4: // close connection and connect to another server
 
-                            break;
-                        case 4: // close connection and connect to another server
-
-                            break;
-                        default:
-                            console.log("Warning. Unsupported message type " + inPlayer.type);
-                        }
-                    }
-                };
-                ws.onclose = function() {
-                    console.log('Connection closed ' + hostURL);
-                };
-                ws.onerror = function(event) {
-                    console.log('Connection error ' + hostURL);
-                };
-            };
-        }
-
-        function updateServer() {
-            //console.log(wsList[primaryCon].getWS().readyState);
-            //if (1 == wsList[primaryCon].readyState) {
-            wsList[primaryCon].getWS().send(JSON.stringify(player));
-            //	}
-        }
-
-        function reconnect(host, num) {
-            console.log('Reconnect to ' + host + ' with ' + num);
-            wsList[num] = new WebSocketHandler(host, num);
-            wsList[num].connect();
-        }
-
-        function doKeyDown(evt) {
-            switch (evt.keyCode) {
-            case 38: /* Up arrow was pressed */
-                player.v_y = -1;
-                player.v_a = 270;
-                if (D)
-                    console.log('up pressed');
                 break;
-            case 40: /* Down arrow was pressed */
-                player.v_y = 1;
-                player.v_a = 90;
-                if (D)
-                    console.log('down pressed');
-                break;
-            case 37: /* Left arrow was pressed */
-                player.v_x = -1;
-                player.v_a = 180;
-                if (D)
-                    console.log('left pressed');
-                break;
-            case 39: /* Right arrow was pressed */
-                player.v_x = 1;
-                player.v_a = 0;
-                if (D)
-                    console.log('right pressed');
-                break;
-            case 82: /* R was pressed */
-                player.v_a += 1;
-                break;
-            case 76: /* L was pressed */
-                player.v_a += (360-1);
-                break;
-            case 32: /* Space was pressed */
-                player.s = 1;
-                break;
-            default:
-                console.log(evt.keyCode);
+              default:
+                console.log("Warning. Unsupported message type "
+                    + inPlayer.type);
+              }
             }
-            updateServer(primaryCon);
+          };
+          ws.onclose = function() {
+            console.log('Connection closed ' + hostURL);
+          };
+          ws.onerror = function(event) {
+            console.log('Connection error ' + hostURL);
+          };
+        };
+      }
+
+      function updateServer() {
+        // only allow primary connection to update server
+        wsList[primaryCon].send(JSON.stringify(player));
+      }
+
+      function reconnect(host, num) {
+        console.log('Reconnect to ' + host + ' with ' + num);
+        wsList[num] = new WebSocketHandler(host, num);
+        wsList[num].connect();
+      }
+
+      function doKeyDown(evt) {
+        switch (evt.keyCode) {
+        case 38: /* Up arrow was pressed */
+          player.v_y = -1;
+          player.v_a = 270;
+          if (D)
+            console.log('up pressed');
+          break;
+        case 40: /* Down arrow was pressed */
+          player.v_y = 1;
+          player.v_a = 90;
+          if (D)
+            console.log('down pressed');
+          break;
+        case 37: /* Left arrow was pressed */
+          player.v_x = -1;
+          player.v_a = 180;
+          if (D)
+            console.log('left pressed');
+          break;
+        case 39: /* Right arrow was pressed */
+          player.v_x = 1;
+          player.v_a = 0;
+          if (D)
+            console.log('right pressed');
+          break;
+        case 82: /* R was pressed */
+          player.v_a += 1;
+          break;
+        case 76: /* L was pressed */
+          player.v_a += (360 - 1);
+          break;
+        case 32: /* Space was pressed */
+          player.s = 1;
+          break;
+        default:
+          console.log(evt.keyCode);
         }
+        updateServer();
+      }
 
-        function doKeyUp(evt) {
+      function doKeyUp(evt) {
 
-            switch (evt.keyCode) {
-            case 38: /* Up arrow was released */
-                player.v_y = 0;
-                //player.v_a = 0;
-                break;
-            case 40: /* Down arrow was released */
-                player.v_y = 0;
-                //player.v_a = 0;
-                break;
-            case 37: /* Left arrow was released */
-                player.v_x = 0;
-                //player.v_a = 0;
-                break;
-            case 39: /* Right arrow was released */
-                player.v_x = 0;
-                //player.v_a = 0;
-                break;
-            case 82: /* R was released */
-                player.v_a = player.v_a;
-                break;
-            case 32: /* Space was released */
-                player.s = 0;
-                break;
-            case 76: /* L was released */
-                player.v_a = player.v_a;
-                break;
-            default:
-                console.log(evt.keyCode);
-            }
-            updateServer(primaryCon);
+        switch (evt.keyCode) {
+        case 38: /* Up arrow was released */
+          player.v_y = 0;
+          //player.v_a = 0;
+          break;
+        case 40: /* Down arrow was released */
+          player.v_y = 0;
+          //player.v_a = 0;
+          break;
+        case 37: /* Left arrow was released */
+          player.v_x = 0;
+          //player.v_a = 0;
+          break;
+        case 39: /* Right arrow was released */
+          player.v_x = 0;
+          //player.v_a = 0;
+          break;
+        case 82: /* R was released */
+          player.v_a = player.v_a;
+          break;
+        case 32: /* Space was released */
+          player.s = 0;
+          break;
+        case 76: /* L was released */
+          player.v_a = player.v_a;
+          break;
+        default:
+          console.log(evt.keyCode);
         }
+        updateServer();
+      }
 
-        function doMouseDown(evt) {
-            switch (evt.which) {
-            case 1:
-                if (D)
-                    console.log('Left mouse button pressed');
-                break;
-            case 2:
-                if (D)
-                    console.log('Middle mouse button pressed');
-                break;
-            case 3:
-                if (D)
-                    console.log('Right mouse button pressed');
-                break;
-            default:
-                if (D)
-                    console.log('You have a strange mouse');
-            }
+      function doMouseDown(evt) {
+        switch (evt.which) {
+        case 1:
+          if (D)
+            console.log('Left mouse button pressed');
+          break;
+        case 2:
+          if (D)
+            console.log('Middle mouse button pressed');
+          break;
+        case 3:
+          if (D)
+            console.log('Right mouse button pressed');
+          break;
+        default:
+          if (D)
+            console.log('You have a strange mouse');
         }
+      }
 
-        function doMouseUp(evt) {
-            switch (evt.which) {
-            case 1:
-                if (D)
-                    console.log('Left mouse button released');
-                break;
-            case 2:
-                if (D)
-                    console.log('Middle mouse button released');
-                break;
-            case 3:
-                if (D)
-                    console.log('Right mouse button released');
-                break;
-            default:
-                if (D)
-                    console.log('You have a strange mouse');
-            }
+      function doMouseUp(evt) {
+        switch (evt.which) {
+        case 1:
+          if (D)
+            console.log('Left mouse button released');
+          break;
+        case 2:
+          if (D)
+            console.log('Middle mouse button released');
+          break;
+        case 3:
+          if (D)
+            console.log('Right mouse button released');
+          break;
+        default:
+          if (D)
+            console.log('You have a strange mouse');
         }
+      }
 
-        window.addEventListener('keydown', doKeyDown, true);
-        window.addEventListener('keyup', doKeyUp, true);
-        window.addEventListener('mousedown', doMouseDown, true);
-        window.addEventListener('mouseup', doMouseUp, true);
+      window.addEventListener('keydown', doKeyDown, true);
+      window.addEventListener('keyup', doKeyUp, true);
+      window.addEventListener('mousedown', doMouseDown, true);
+      window.addEventListener('mouseup', doMouseUp, true);
     </script>
 
 </body>
