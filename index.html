@@ -15,28 +15,33 @@
 <script type="text/javascript" src="js/lib/underscore.js"></script>
 <script type="text/javascript" src="js/lib/jquery.json-2.4.min.js"></script>
 <script type="text/javascript" src="js/lib/jquery.websocket-0.0.4.js"></script>
-
+<!-- Add Sangraama customize java scripts -->
+<script type="text/javascript" src="js/utils.js"></script>
 </head>
 
-<body>
-  <div class="container-fluid">
-    <div id="sangraama_canvas" class="row-fluid">
-      <canvas id="sangraama_canvas" width="1000" height="500"
-        style="background: #819FF7"> This text is displayed
-      because of your browser does not support HTML5 Canvas. Please try
-      with a latest web browser. </canvas>
+<body id="body">
+
+    <div class="row-fluid">
+      <div id="sangraama_container" class="span12"></div>
+      <!--       <canvas id="sangraama_canvas" width="1000" height="500" -->
+      <!--         style="background: #819FF7"> This text is displayed -->
+      <!--       because of your browser does not support HTML5 Canvas. Please try -->
+      <!--       with a latest web browser. </canvas> -->
     </div>
-    <div class="row-fluid offset1">
-      <div class="control-group">
-        <button id="start" class="btn btn-warning" type="button">Start
-          Game</button>
-        <button id="stop" class="btn btn-danger" type="button">Stop
-          Game</button>
+    <div class="row-fluid">
+      <div class="span4  offset1">
+        <div class="control-group">
+          <button id="start" class="btn btn-warning" type="button">Start
+            Game</button>
+          <button id="stop" class="btn btn-danger" type="button">Stop
+            Game</button>
+        </div>
       </div>
     </div>
-  </div>
+
   <script type="text/javascript">
-      var D = false; // debug
+    <!--
+      var D = true; // debug
       var playerObject;
       var canvas;
       var ctx;
@@ -76,10 +81,20 @@
       }
 
       window.onload = function() {
+        var container = document.getElementById('sangraama_container');
+        canvas = document.createElement('canvas');
+        canvas.id = 'sangraama_canvas';
+        ctx = canvas.getContext("2d");
+        // Get current screen size
+        var screenSize = viewport();
+        canvas.setAttribute('width', screenSize.width);
+        canvas.setAttribute('height', screenSize.height - 40);
+        ctx.fillStyle = '#819FF7';
+        ctx.fillRect(0, 0, screenSize.width, screenSize.height);
+        container.appendChild(canvas);
+
         ship.src = 'img/arrow.jpg';
         bullet.src = 'img/bullet.png';
-        canvas = document.getElementById("sangraama_canvas");
-        ctx = canvas.getContext("2d");
         player.id = Math.floor(Math.random() * 101);
         //player.x = Math.floor(Math.random() * 900);
         player.x = Math.floor(Math.random() * 1001);//create at edge
@@ -114,8 +129,8 @@
 
       $('#stop').click(function() {
         // Close all opened websockets
-        for(varr i=0; i<wsList.length; i++){
-          if (wsList[i] != null) { 
+        for ( var i = 0; i < wsList.length; i++) {
+          if (wsList[i] != null) {
             wsLsit[i].close(i);// try closing connection
             console.log('Stopped the Game');
           }
@@ -139,17 +154,17 @@
           return ws.readyState;
         };
         // close the websocket
-        this.close = function(index){
-          if(index == wsIndex && ws.readyState <= ws.OPEN){ // if ws is connecting or opened
+        this.close = function(index) {
+          if (index == wsIndex && ws.readyState <= ws.OPEN) { // if ws is connecting or opened
             ws.close();
             return true;
-          }else{
+          } else {
             return false;
           }
         };
         // send data to server [should only allow to primary connection]
-        this.send = function(data){
-          if(ws.readyState == ws.OPEN){
+        this.send = function(data) {
+          if (ws.readyState == ws.OPEN) {
             ws.send(data);
           }
         }
@@ -243,6 +258,8 @@
 
       function updateServer() {
         // only allow primary connection to update server
+        if (D)
+          console.log('Send update to server');
         wsList[primaryCon].send(JSON.stringify(player));
       }
 
@@ -285,6 +302,8 @@
           player.v_a += (360 - 1);
           break;
         case 32: /* Space was pressed */
+          if (D)
+            console.log('Player shoot');
           player.s = 1;
           break;
         default:
@@ -371,6 +390,7 @@
       window.addEventListener('keyup', doKeyUp, true);
       window.addEventListener('mousedown', doMouseDown, true);
       window.addEventListener('mouseup', doMouseUp, true);
+    //-->
     </script>
 
 </body>
