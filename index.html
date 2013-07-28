@@ -76,6 +76,15 @@
         ctx.stroke();
       }
 
+      // Settings and functionalities of client-side canvas
+      var sCanvas = new function(){
+        this.canvas;
+        var ctx;
+        this.WIDTH = 1250;
+        this.HEIGHT = 500;
+      }
+
+
       function clear() {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
       }
@@ -137,15 +146,22 @@
         }
       });
 
-      var Tile = Class.extend({
+      var Tile = function(){
         // not supporting custome size tiles
-        init: function(coordArr){
-          this.dancing = coordArr;
+        this.tiles;
+        this.init = function(coordArr){
+          this.tiles = coordArr;
         },
-        isInsideTile: function(x,y){
+        this.isInsideTile = function(x,y){
           return false;
+        },
+        this.getSubTile = function(index){
+          return this.tiles[index];
+        },
+        this.printTiles = function(){
+          _.map(this.tiles, function(tile){ console.log(tile.x); });
         }
-      });
+      };
 
       var wsList = new Array();
       /* this structure was built using 1.1 method in tutorial
@@ -160,7 +176,9 @@
 
         // Set tile size
         this.setTile = function(coordArr){
-          this.tile = new Tile(coordArr);
+          this.tile = new Tile();
+          this.tile.init(coordArr);
+          this.tile.printTiles();
         }
 
         // Get the websocket
@@ -223,11 +241,12 @@
             // Can be replace by map
             for ( var index in data) {
               var inPlayer = data[index];
-              // console.log(inPlayer.userID);
-              var bullets = inPlayer.bulletDeltaList;
+              //console.log(inPlayer.userID + ' type: ' + inPlayer.type);
+              
               switch (inPlayer.type) {
               case 1: // update client graphichs
                 // if(D) console.log('Case 1');
+                var bullets = inPlayer.bulletDeltaList;
                 drawRotatedImage(ship, inPlayer);
                 for ( var bulletIndex in bullets) {
                   drawShootImage(bullet, bullets[bulletIndex]);
@@ -235,14 +254,14 @@
                 }
 
                 // only for demo 1002
-                if (inPlayer.dx == '1002') {
+                /*if (inPlayer.dx == '1002') {
                   console.log('out of map');
                   player.type = 2;
                   player.x = inPlayer.dx;
                   player.y = inPlayer.dy;
                   updateServer();
                   player.type = 1;
-                }
+                }*/
 
                 //} 
                 break;
@@ -275,7 +294,8 @@
 
                 break;
               case 11: /* set size of the tile */
-                //wsList[wsIndex].setTile();
+                console.log('Type:'+inPlayer.type+' Set tile size of server');
+                wsList[wsIndex].setTile(JSON.parse(inPlayer.tiles));
                 break;
               default:
                 console.log("Warning. Unsupported message type "
