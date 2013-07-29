@@ -111,7 +111,7 @@
         bullet.src = 'img/bullet.png';
         player.id = Math.floor(Math.random() * 101);
         //player.x = Math.floor(Math.random() * 900);
-        player.x = Math.floor(Math.random() * 1001);//create at edge
+        player.x = Math.floor(Math.random() * 2 + 997);//create at edge
         player.y = Math.floor(Math.random() * 501);
         drawRotatedImage(ship, player);
       };
@@ -145,11 +145,28 @@
         // Close all opened websockets
         for ( var i = 0; i < wsList.length; i++) {
           if (wsList[i] != null) {
-            wsLsit[i].close(i);// try closing connection
+            wsList[i].close(i);// try closing connection
             console.log('Stopped the Game');
           }
         }
       });
+
+      var Tile = function(){
+        // not supporting custome size tiles
+        this.tiles;
+        this.init = function(coordArr){
+          this.tiles = coordArr;
+        },
+        this.isInsideTile = function(x,y){
+          return false;
+        },
+        this.getSubTile = function(index){
+          return this.tiles[index];
+        },
+        this.printTiles = function(){
+          _.map(this.tiles, function(tile){ console.log(tile.x); });
+        }
+      };
 
       var wsList = new Array();
       /* this structure was built using 1.1 method in tutorial
@@ -158,12 +175,26 @@
         var ws = null;
         // The assigned index in the ws array
         this.wsIndex = wsIndex;
-        this.host = hostAddress;
+        this.hostAddress = hostAddress;
+        // Store size of tile which connected with this ws
+        this.tile = null;
+
+        // Set tile size
+        this.setTile = function(coordArr){
+          this.tile = new Tile();
+          this.tile.init(coordArr);
+          this.tile.printTiles();
+        }
+
         // Get the websocket
         this.getWS = function() {
           return ws;
         };
-        // Get the state of websocket
+        /* Get the state of websocket
+        CONNECTING  0 The connection is not yet open.
+        OPEN        1 The connection is open and ready to communicate.
+        CLOSING     2 The connection is in the process of closing.
+        CLOSED      3 The connection is closed or couldn't be opened.*/
         this.isReadyState = function() {
           return ws.readyState;
         };
@@ -193,8 +224,9 @@
           //} else {
           //	hostProtocol = 'wss://';
           //}
-          var hostURL = hostProtocol + this.host;
-          console.log(this.host);
+          var hostURL = hostProtocol + this.hostAddress;
+          console.log(this.hostAddress);
+          /*Open a websocket which will depend on browser*/
           if ('MozWebSocket' in window) {
             ws = new MozWebSocket(hostURL);
           } else if ('WebSocket' in window) {
@@ -202,57 +234,73 @@
           } else {
             alert('Your browser does not support WebSockets');
           }
+
           ws.onopen = function() {
             console.log('Connection opened ' + hostURL);
             wsList[wsIndex].getWS().send(JSON.stringify(player));
           };
           ws.onmessage = function(event) {
-            var players = JSON.parse(event.data);
+            var data = JSON.parse(event.data);
 
             clear();
-            for ( var index in players) {
-              var inPlayer = players[index];
-              var bullets = inPlayer.bulletDeltaList;
+            // Can be replace by map
+            for ( var index in data) {
+              var inPlayer = data[index];
+              //console.log(inPlayer.userID + ' type: ' + inPlayer.type);
+              
               switch (inPlayer.type) {
               case 1: // update client graphichs
+                // if(D) console.log('Case 1');
+                var bullets = inPlayer.bulletDeltaList;
                 drawRotatedImage(ship, inPlayer);
                 for ( var bulletIndex in bullets) {
                   drawShootImage(bullet, bullets[bulletIndex]);
                   console.log(bullets[bulletIndex]);
                 }
-                //if(inPlayer.userID == 1){
+
                 // only for demo 1002
-                if (inPlayer.dx == '1002') {
+                /*if (inPlayer.dx == '1002') {
                   console.log('out of map');
                   player.type = 2;
                   player.x = inPlayer.dx;
                   player.y = inPlayer.dy;
                   updateServer();
                   player.type = 1;
-                }
+                }*/
+
                 //} 
                 break;
-              case 2: // connecting to another server
-                var URL = inPlayer.info.url + '/sangraama/player'
-                console.log('Type 2 msg. ' + URL);
+              case 2: /* connecting to another server and make it primary server */
+                var info = JSON.parse(inPlayer.info);
+                console.log('Type 2 msg. ' + info.url);
                 var i = 0;
                 do { // search from begining of list is there any available slot
-                  console.log('Times ' + i + wsList[i]);
-                  if (wsList[i] == undefined) {
-                    reconnect(URL, i);
+                  console.log('Times ' + i + wsList[i].host);
+                  if (wsList[i].host == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for 
+                    this address ignore connecting again*/ 
                     break;
-                  } else if (wsList[i].readyState == 3) {
-                    reconnect(URL, i);
+                  } if (wsList[i] == undefined) { // if ws isn't initialized
+                    reconnect(info.url, i);
+                    break;
+                  } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
+                    reconnect(info.url, i);
                     break;
                   }
                   i++;
                 } while (i < 10);
                 break;
-              case 3: // close existing connection
+              case 3: /* close connection and connect to another server */
 
                 break;
-              case 4: // close connection and connect to another server
+              case 4: /* close existing connection */
 
+                break;
+              case 10: /* set current absolute location of client on the map */
+
+                break;
+              case 11: /* set size of the tile */
+                console.log('Type:'+inPlayer.type+' Set tile size of server');
+                wsList[wsIndex].setTile(JSON.parse(inPlayer.tiles));
                 break;
               default:
                 console.log("Warning. Unsupported message type "
@@ -271,8 +319,8 @@
 
       function updateServer() {
         // only allow primary connection to update server
-        if (D)
-          console.log('Send update to server');
+        // if (D)
+          // console.log('Send update to server');
         wsList[primaryCon].send(JSON.stringify(player));
       }
 
