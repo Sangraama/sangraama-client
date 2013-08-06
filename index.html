@@ -107,7 +107,7 @@
         player.id = Math.floor(Math.random() * 101);
         //player.x = Math.floor(Math.random() * 900);
         player.x = Math.floor(Math.random() * 2 + 997);//create at edge
-        player.y = Math.floor(Math.random() * 501);
+        player.y = Math.floor(Math.random() * 301);
         drawRotatedImage(ship, player);
       };
 
@@ -265,9 +265,28 @@
 
                 //} 
                 break;
-              case 2: /* connecting to another server and make it primary server */
+              case 2: /* close connection and connect to another server (make it primary connection) */
                 var info = JSON.parse(inPlayer.info);
                 console.log('Type 2 msg. ' + info.url);
+                var i = 0;
+                do { // search from begining of list is there any available slot
+                  console.log('Times ' + i + wsList[i].host);
+                  if (wsList[i].host == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for 
+                    this address ignore connecting again*/ 
+                    break;
+                  } if (wsList[i] == undefined) { // if ws isn't initialized
+                    passConnect(info.url, i);
+                    break;
+                  } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
+                    passConnect(info.url, i);
+                    break;
+                  }
+                  i++;
+                } while (i < 10);
+                break;
+              case 3: /* connecting to another server and get updates */
+                var info = JSON.parse(inPlayer.info);
+                console.log('Type 3 msg. ' + info.url);
                 var i = 0;
                 do { // search from begining of list is there any available slot
                   console.log('Times ' + i + wsList[i].host);
@@ -283,9 +302,6 @@
                   }
                   i++;
                 } while (i < 10);
-                break;
-              case 3: /* close connection and connect to another server */
-
                 break;
               case 4: /* close existing connection */
 
@@ -319,13 +335,27 @@
         wsList[primaryCon].send(JSON.stringify(player));
       }
 
+      // Make connection to new server as primary, send event requests
+      function passConnect(host, num) {
+        console.log('Create new primary connection to ' + host + ' with ' + num);
+        wsList[num] = new WebSocketHandler(host, num);
+        wsList[num].connect();
+        if (wsList[num].isReadyState == 1) { // if connection was created
+          /* Closing privious primary connection mayn't a good idea, coz player
+             doesn't quite from that location immediately */
+          primaryCon = num; // make this primary connection
+        }
+      }
+      // Connecting to another server
       function reconnect(host, num) {
         console.log('Reconnect to ' + host + ' with ' + num);
         wsList[num] = new WebSocketHandler(host, num);
         wsList[num].connect();
       }
 
+      var prevKey = 0;
       function doKeyDown(evt) {
+
         switch (evt.keyCode) {
         case 38: /* Up arrow was pressed */
           player.v_y = -1;
@@ -342,14 +372,14 @@
         case 37: /* Left arrow was pressed */
           player.v_x = -1;
           player.v_a = 180;
-          if (D)
-            console.log('left pressed');
+          //if (D)
+            //console.log('left pressed');
           break;
         case 39: /* Right arrow was pressed */
           player.v_x = 1;
           player.v_a = 0;
-          if (D)
-            console.log('right pressed');
+          //if (D)
+            //console.log('right pressed');
           break;
         case 82: /* R was pressed */
           player.v_a += 1;
@@ -365,7 +395,10 @@
         default:
           console.log(evt.keyCode);
         }
-        updateServer();
+        if(prevKey != evt.keyCode){
+          prevKey = evt.keyCode;
+          updateServer();
+        }
       }
 
       function doKeyUp(evt) {
@@ -400,6 +433,7 @@
           console.log(evt.keyCode);
         }
         updateServer();
+        prevKey = 0;
       }
 
       function doMouseDown(evt) {
