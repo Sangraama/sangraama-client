@@ -54,6 +54,7 @@
       var bullet = new Image();
       var TO_RADIANS = Math.PI / 180;
       var FROM_RADIANS = 180 / Math.PI;
+      var statusUpdate = true;
       var player = {
         type : 1,
         userID : 1,
@@ -65,8 +66,16 @@
         v_a : 0,
         s : 0
       };
+      var passPlayer= {
+    	type : 2,
+    	userID : 0,
+    	info : null,
+    	signedInfo : null
+    	        
+       };
       // connection handling
       var primaryCon = 0;
+      var secondryCon = null;
 
       function rect(x, y, w, h) {
         ctx.beginPath();
@@ -168,7 +177,7 @@
         }
       };
 
-      var wsList = new Array();
+      var wsList = new Array(4);
       /* this structure was built using 1.1 method in tutorial
       http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
       var WebSocketHandler = function(hostAddress, wsIndex) {
@@ -237,12 +246,17 @@
 
           ws.onopen = function() {
             console.log('Connection opened ' + hostURL);
-            wsList[wsIndex].getWS().send(JSON.stringify(player));
+            wsList[primaryCon].getWS().send(JSON.stringify(player));
+            if(secondryCon != null){
+                wsList[secondryCon].getWS().send(JSON.stringify(passPlayer));
+                swapConnecations();
+            }
+            console.log("Connection opened");
           };
           ws.onmessage = function(event) {
             var data = JSON.parse(event.data);
 
-            clear();
+            //clear();
             // Can be replace by map
             for ( var index in data) {
               var inPlayer = data[index];
@@ -271,23 +285,33 @@
                 //} 
                 break;
               case 2: /* connecting to another server and make it primary server */
+            	statusUpdate=false;
                 var info = JSON.parse(inPlayer.info);
                 console.log('Type 2 msg. ' + info.url);
+                player.x=info.positionX;
+                player.y=info.positionY;
+                passPlayer.type=inPlayer.type;
+                passPlayer.userID=inPlayer.userID;
+                passPlayer.info=inPlayer.info;
+                passPlayer.signedInfo = inPlayer.signedInfo;
+                //alert(JSON.stringify(passPlayer));
                 var i = 0;
                 do { // search from begining of list is there any available slot
-                  console.log('Times ' + i + wsList[i].host);
-                  if (wsList[i].host == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for 
+                  //console.log('Times ' + i + wsList[i].host);
+                  if (wsList[i] != undefined && wsList[i].host == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for 
                     this address ignore connecting again*/ 
                     break;
                   } if (wsList[i] == undefined) { // if ws isn't initialized
                     reconnect(info.url, i);
+                    secondryCon = i;
                     break;
                   } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
-                    reconnect(info.url, i);
+                    //reconnect(info.url, i);
+                    
                     break;
                   }
                   i++;
-                } while (i < 10);
+                } while (i < 4);
                 break;
               case 3: /* close connection and connect to another server */
 
@@ -321,13 +345,22 @@
         // only allow primary connection to update server
         // if (D)
           // console.log('Send update to server');
-        wsList[primaryCon].send(JSON.stringify(player));
+           wsList[primaryCon].send(JSON.stringify(player));
+        
       }
 
       function reconnect(host, num) {
         console.log('Reconnect to ' + host + ' with ' + num);
         wsList[num] = new WebSocketHandler(host, num);
         wsList[num].connect();
+      }
+      
+      function swapConnecations(){
+    	  
+    	 var temp;
+    	 temp = primaryCon;
+    	 primaryCon = secondryCon;
+    	 secondryCon = temp;
       }
 
       function doKeyDown(evt) {
@@ -413,7 +446,8 @@
           if (D)
             console.log('Left mouse button pressed');
           break;
-        case 2:
+        case 2:          player.v_y = 1;
+
           if (D)
             console.log('Middle mouse button pressed');
           break;
