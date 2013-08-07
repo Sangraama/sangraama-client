@@ -74,7 +74,9 @@
     	        
        };
       // connection handling
-      var primaryCon = 0;
+      var primaryCon = 0; // player only send updates to the primary server
+      var prevPrimarycon = 0; // previous primary connection, for recovering purpose
+      var nextPrimaryCon = -1; // To store next primary connection, until it's stablish
       var secondryCon = null;
 
       function rect(x, y, w, h) {
@@ -253,12 +255,34 @@
 
           ws.onopen = function() {
             console.log('Connection opened ' + hostURL);
-            wsList[primaryCon].getWS().send(JSON.stringify(player));
-            if(secondryCon != null){
+            wsList[primaryCon].send(JSON.stringify(player));
+            /*if(secondryCon != null){
                 wsList[secondryCon].getWS().send(JSON.stringify(passPlayer));
                 swapConnecations();
-            }
+            }*/
             console.log("Connection opened");
+            // set the primaryconnection after ws setup
+            if(nextPrimaryCon >= 0){
+              if (wsList[nextPrimaryCon].isReadyState() == 1) {
+                // Reset player's events on current server
+                wsList[primaryCon].send(JSON.stringify(
+                  { type : 1,
+                    userID : player.userID,
+                    x : 0,
+                    y : 0,
+                    angle : 0,
+                    v_x : 0,
+                    v_y : 0,
+                    v_a : 0,
+                    s : 0
+                  }));
+                // swap connections
+                prevPrimarycon = primaryCon;
+                primaryCon = nextPrimaryCon;
+                nextPrimaryCon = -1;
+                console.log('Set primary connections as '+prevPrimarycon+'<<'+primaryCon+'<<'+nextPrimaryCon);
+              }
+            }
           };
           ws.onmessage = function(event) {
             var data = JSON.parse(event.data);
@@ -291,8 +315,8 @@
 
                 //} 
                 break;
-              case 2: /* close connection and connect to another server (make it primary connection) */
-            	statusUpdate=false;
+              case 2: /* close connection and connect to another server (make it as primary connection) */
+            	  statusUpdate=false; // Y?
                 var info = JSON.parse(inPlayer.info);
                 console.log('Type 2 msg. ' + info.url);
                 player.x=info.positionX;
@@ -326,8 +350,7 @@
                   if (wsList[i] == undefined) { // if ws isn't initialized
                     reconnect(info.url, i);
                     break;
-                  } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for 
-                    this address ignore connecting again*/ 
+                  } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for this address ignore connecting again*/ 
                     break;
                   } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
                     reconnect(info.url, i);
@@ -376,6 +399,9 @@
           /* Closing privious primary connection mayn't a good idea, coz player
              doesn't quite from that location immediately */
           primaryCon = num; // make this primary connection
+          console.log('Make ' + num + 'as  next primaryCon');
+        }else {
+          nextPrimaryCon = num;
         }
       }
       // Connecting to another server
@@ -385,8 +411,7 @@
         wsList[num].connect();
       }
       
-      function swapConnecations(){
-    	  
+      function swapConnecations(){  
     	 var temp;
     	 temp = primaryCon;
     	 primaryCon = secondryCon;
