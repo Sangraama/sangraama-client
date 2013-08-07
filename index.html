@@ -332,7 +332,22 @@
                   if (wsList[i] == undefined) { // if ws isn't initialized
                     passConnect(info.url, i);
                     break;
-                  } else if (wsList[i].hostAddress == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for this address ignore connecting again*/ 
+                  } else if (wsList[i].hostAddress == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for this address ignore connecting again and make it as primary connection */
+                    wsList[primaryCon].send(JSON.stringify(
+                      { type : 1,
+                        userID : player.userID,
+                        x : 0,
+                        y : 0,
+                        angle : 0,
+                        v_x : 0,
+                        v_y : 0,
+                        v_a : 0,
+                        s : 0
+                      }));
+                    // swap primary Connection
+                    prevPrimarycon = primaryCon;
+                    primaryCon = i;
+                    console.log('Set primary connections as '+prevPrimarycon+'<<'+primaryCon+'<<'+nextPrimaryCon);
                     break;
                   } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
                     passConnect(info.url, i);
