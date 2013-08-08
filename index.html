@@ -46,17 +46,18 @@
     <!--
       var D = true; // debug
       var playerObject;
-      var canvas;
-      var ctx;
+      //var canvas;
+      //var ctx;
       var dx = 5;
       var rA = 3;
       var dy = 5;
-      var WIDTH = 1250;
-      var HEIGHT = 500;
+      //var WIDTH = 1250;
+      //var HEIGHT = 500;
       var ship = new Image();
       var bullet = new Image();
       var TO_RADIANS = Math.PI / 180;
       var FROM_RADIANS = 180 / Math.PI;
+      var statusUpdate = true;
       var player = {
         type : 1,
         userID : 1,
@@ -68,8 +69,18 @@
         v_a : 0,
         s : 0
       };
+      var passPlayer= {
+    	type : 2,
+    	userID : 0,
+    	info : null,
+    	signedInfo : null
+    	        
+       };
       // connection handling
-      var primaryCon = 0;
+      var primaryCon = 0; // player only send updates to the primary server
+      var prevPrimarycon = 0; // previous primary connection, for recovering purpose
+      var nextPrimaryCon = -1; // To store next primary connection, until it's stablish
+      var secondryCon = null;
 
       function rect(x, y, w, h) {
         ctx.beginPath();
@@ -79,10 +90,24 @@
         ctx.stroke();
       }
 
+      // Settings and functionalities of client-side canvas
+      var sCanvas = new function(){
+        this.canvas;
+        var ctx;
+        this.WIDTH = 1250;
+        this.HEIGHT = 500;
+
+      }
+
       function clear() {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
       }
 
+      $(document).ready(function() {
+        
+      });
+
+      // Setup client side
       window.onload = function() {
         var container = document.getElementById('sangraama_container');
         canvas = document.createElement('canvas');
@@ -100,8 +125,9 @@
         bullet.src = 'img/bullet.png';
         player.id = Math.floor(Math.random() * 101);
         //player.x = Math.floor(Math.random() * 900);
-        player.x = Math.floor(Math.random() * 1001);//create at edge
-        player.y = Math.floor(Math.random() * 501);
+        //player.x = Math.floor(Math.random() * 2 + 997);//create at edge
+        player.x = 999;
+        player.y = Math.floor(Math.random() * 301);
         drawRotatedImage(ship, player);
       };
 
@@ -123,7 +149,7 @@
       $('#start').click(function() {
         player.userID = Math.floor(Math.random() * 1000) + 1;
         console.log('player id:' + player.id);
-        var hostLocation = 'localhost:8080'
+        var hostLocation = 'localhost:8080';
         var URL = hostLocation + '/sangraama-server/sangraama/player';
         // start wsList with 0 index
         wsList[0] = new WebSocketHandler(URL, 0);
@@ -134,24 +160,61 @@
         // Close all opened websockets
         for ( var i = 0; i < wsList.length; i++) {
           if (wsList[i] != null) {
-            wsLsit[i].close(i);// try closing connection
+            wsList[i].close(i);// try closing connection
             console.log('Stopped the Game');
           }
         }
       });
 
-      var wsList = new Array();
+      var Tile = function(){
+        // not supporting custome size tiles
+        this.tiles;
+        this.init = function(coordArr){
+          this.tiles = coordArr;
+        },
+        this.isInsideTile = function(x,y){
+          return false;
+        },
+        this.getSubTile = function(index){
+          return this.tiles[index];
+        },
+        this.printTiles = function(){
+          _.map(this.tiles, function(tile){ console.log(tile.x); });
+        }
+      };
+
+      var wsList = new Array(4);
       /* this structure was built using 1.1 method in tutorial
       http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
       var WebSocketHandler = function(hostAddress, wsIndex) {
         var ws = null;
         // The assigned index in the ws array
         this.wsIndex = wsIndex;
-        this.host = hostAddress;
+        this.hostAddress = hostAddress;
+        // Store size of tile which connected with this ws
+        this.tile = null;
+
+        // Set tile size
+        this.setTile = function(coordArr){
+          this.tile = new Tile();
+          this.tile.init(coordArr);
+          this.tile.printTiles();
+        }
+
         // Get the websocket
         this.getWS = function() {
           return ws;
         };
+        // Get host address
+        this.getHostAddress = function(){
+          console.log('Get host address '+this.hostAddress);
+          return this.hostAddress;
+        }
+        /* Get the state of websocket
+        CONNECTING  0 The connection is not yet open.
+        OPEN        1 The connection is open and ready to communicate.
+        CLOSING     2 The connection is in the process of closing.
+        CLOSED      3 The connection is closed or couldn't be opened.*/
         // Get the state of websocket
         this.isReadyState = function() {
           return ws.readyState;
@@ -182,8 +245,9 @@
           //} else {
           //	hostProtocol = 'wss://';
           //}
-          var hostURL = hostProtocol + this.host;
-          console.log(this.host);
+          var hostURL = hostProtocol + this.hostAddress;
+          console.log(this.hostAddress);
+          /*Open a websocket which will depend on browser*/
           if ('MozWebSocket' in window) {
             ws = new MozWebSocket(hostURL);
           } else if ('WebSocket' in window) {
@@ -191,58 +255,135 @@
           } else {
             alert('Your browser does not support WebSockets');
           }
+
           ws.onopen = function() {
             console.log('Connection opened ' + hostURL);
-            wsList[wsIndex].getWS().send(JSON.stringify(player));
+            wsList[primaryCon].send(JSON.stringify(player));
+            /*if(secondryCon != null){
+                wsList[secondryCon].getWS().send(JSON.stringify(passPlayer));
+                swapConnecations();
+            }*/
+            console.log("Connection opened");
+            // set the primaryconnection after ws setup
+            if(nextPrimaryCon >= 0){
+              if (wsList[nextPrimaryCon].isReadyState() == 1) {
+                // Reset player's events on current server
+                wsList[primaryCon].send(JSON.stringify(
+                  { type : 1,
+                    userID : player.userID,
+                    x : 0,
+                    y : 0,
+                    angle : 0,
+                    v_x : 0,
+                    v_y : 0,
+                    v_a : 0,
+                    s : 0
+                  }));
+                // swap connections
+                prevPrimarycon = primaryCon;
+                primaryCon = nextPrimaryCon;
+                nextPrimaryCon = -1;
+                console.log('Set primary connections as '+prevPrimarycon+'<<'+primaryCon+'<<'+nextPrimaryCon);
+              }
+            }
           };
           ws.onmessage = function(event) {
-            var players = JSON.parse(event.data);
+            var data = JSON.parse(event.data);
 
-            clear();
-            for ( var index in players) {
-              var inPlayer = players[index];
-              var bullets = inPlayer.bulletDeltaList;
+            //clear();
+            // Can be replace by map
+            for ( var index in data) {
+              var inPlayer = data[index];
+              //console.log(inPlayer.userID + ' type: ' + inPlayer.type);
+              
               switch (inPlayer.type) {
               case 1: // update client graphichs
+                // if(D) console.log('Case 1');
+                var bullets = inPlayer.bulletDeltaList;
                 drawRotatedImage(ship, inPlayer);
                 for ( var bulletIndex in bullets) {
                   drawShootImage(bullet, bullets[bulletIndex]);
                   console.log(bullets[bulletIndex]);
                 }
-                //if(inPlayer.userID == 1){
+
                 // only for demo 1002
-                if (inPlayer.dx == '1002') {
+                /*if (inPlayer.dx == '1002') {
                   console.log('out of map');
                   player.type = 2;
                   player.x = inPlayer.dx;
                   player.y = inPlayer.dy;
                   updateServer();
                   player.type = 1;
-                }
+                }*/
+
                 //} 
                 break;
-              case 2: // connecting to another server
-                var URL = inPlayer.url + ':' + inPlayer.port + '/'
-                    + inPlayer.dir + '/sangraama/player'
-                console.log('Type 2 msg. ' + URL);
+              case 2: /* close connection and connect to another server (make it as primary connection) */
+            	  statusUpdate=false; // Y?
+                var info = JSON.parse(inPlayer.info);
+                console.log('Type 2 msg. ' + info.url);
+                player.x=info.positionX;
+                player.y=info.positionY;
+                passPlayer.type=inPlayer.type;
+                passPlayer.userID=inPlayer.userID;
+                passPlayer.info=inPlayer.info;
+                passPlayer.signedInfo = inPlayer.signedInfo;
+                //alert(JSON.stringify(passPlayer));
                 var i = 0;
                 do { // search from begining of list is there any available slot
-                  console.log('Times ' + i + wsList[i]);
-                  if (wsList[i] == undefined) {
-                    reconnect(URL, i);
+                  console.log(i, wsList);
+                  if (wsList[i] == undefined) { // if ws isn't initialized
+                    passConnect(info.url, i);
                     break;
-                  } else if (wsList[i].readyState == 3) {
-                    reconnect(URL, i);
+                  } else if (wsList[i].hostAddress == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for this address ignore connecting again and make it as primary connection */
+                    wsList[primaryCon].send(JSON.stringify(
+                      { type : 1,
+                        userID : player.userID,
+                        x : 0,
+                        y : 0,
+                        angle : 0,
+                        v_x : 0,
+                        v_y : 0,
+                        v_a : 0,
+                        s : 0
+                      }));
+                    // swap primary Connection
+                    prevPrimarycon = primaryCon;
+                    primaryCon = i;
+                    console.log('Set primary connections as '+prevPrimarycon+'<<'+primaryCon+'<<'+nextPrimaryCon);
+                    break;
+                  } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
+                    passConnect(info.url, i);
                     break;
                   }
                   i++;
                 } while (i < 10);
                 break;
-              case 3: // close existing connection
-
+              case 3: /* connecting to another server and get updates */
+                var info = JSON.parse(inPlayer.info);
+                console.log('Type 3 msg. ' + info.url);
+                var i = 0;
+                do { // search from begining of list is there any available slot
+                  //console.log('Times ' + i + wsList[i].hostAddress);
+                  if (wsList[i] == undefined) { // if ws isn't initialized
+                    reconnect(info.url, i);
+                    break;
+                  } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReadyState() == 1) {/*if a websocket is opening for this address ignore connecting again*/ 
+                    break;
+                  } else if (wsList[i].isReadyState() == 3) { // if previous ws is closed
+                    reconnect(info.url, i);
+                    break;
+                  }
+                  i++;
+                } while (i < 10);
                 break;
-              case 4: // close connection and connect to another server
-
+              case 4: /* close existing connection */
+                break;
+              case 10: /* set current absolute location of client on the map */
+                break;
+              case 11: /* set size of the tile */
+                console.log('Type:'+inPlayer.type+' Set tile size of server');
+                wsList[wsIndex].setTile(JSON.parse(inPlayer.tiles));
                 break;
               default:
                 console.log("Warning. Unsupported message type "
@@ -261,18 +402,43 @@
 
       function updateServer() {
         // only allow primary connection to update server
-        if (D)
-          console.log('Send update to server');
-        wsList[primaryCon].send(JSON.stringify(player));
+        // if (D)
+          // console.log('Send update to server');
+           wsList[primaryCon].send(JSON.stringify(player));
+        
       }
 
+      // Make connection to new server as primary, send event requests
+      function passConnect(host, num) {
+        console.log('Create new primary connection to ' + host + ' with ' + num);
+        wsList[num] = new WebSocketHandler(host, num);
+        wsList[num].connect();
+        if (wsList[num].isReadyState == 1) { // if connection was created
+          /* Closing privious primary connection mayn't a good idea, coz player
+             doesn't quite from that location immediately */
+          primaryCon = num; // make this primary connection
+          console.log('Make ' + num + 'as  next primaryCon');
+        }else {
+          nextPrimaryCon = num;
+        }
+      }
+      // Connecting to another server
       function reconnect(host, num) {
         console.log('Reconnect to ' + host + ' with ' + num);
         wsList[num] = new WebSocketHandler(host, num);
         wsList[num].connect();
       }
+      
+      function swapConnecations(){  
+    	 var temp;
+    	 temp = primaryCon;
+    	 primaryCon = secondryCon;
+    	 secondryCon = temp;
+      }
 
+      var prevKey = 0;
       function doKeyDown(evt) {
+
         switch (evt.keyCode) {
         case 38: /* Up arrow was pressed */
           player.v_y = -1;
@@ -289,14 +455,14 @@
         case 37: /* Left arrow was pressed */
           player.v_x = -1;
           player.v_a = 180;
-          if (D)
-            console.log('left pressed');
+          //if (D)
+            //console.log('left pressed');
           break;
         case 39: /* Right arrow was pressed */
           player.v_x = 1;
           player.v_a = 0;
-          if (D)
-            console.log('right pressed');
+          //if (D)
+            //console.log('right pressed');
           break;
         case 82: /* R was pressed */
           player.v_a += 1;
@@ -312,7 +478,10 @@
         default:
           console.log(evt.keyCode);
         }
-        updateServer();
+        if(prevKey != evt.keyCode){
+          prevKey = evt.keyCode;
+          updateServer();
+        }
       }
 
       function doKeyUp(evt) {
@@ -347,6 +516,7 @@
           console.log(evt.keyCode);
         }
         updateServer();
+        prevKey = 0;
       }
 
       function doMouseDown(evt) {
@@ -355,7 +525,8 @@
           if (D)
             console.log('Left mouse button pressed');
           break;
-        case 2:
+        case 2:          player.v_y = 1;
+
           if (D)
             console.log('Middle mouse button pressed');
           break;
@@ -398,4 +569,3 @@
 
 </body>
 </html>
-

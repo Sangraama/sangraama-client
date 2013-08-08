@@ -1,4 +1,5 @@
 <!--
+// retrun the current screen size of the web browser
 function viewport(){
   var e = window, a = 'inner';
   if ( !( 'innerWidth' in window ) ){
