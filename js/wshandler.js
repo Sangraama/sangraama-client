@@ -29,7 +29,9 @@ var player = {
    v_x : 0,
    v_y : 0,
    v_a : 0,
-   s : 0
+   s : 0,
+   aoi_w : 0,
+   aoi_h : 0
  };
 var passPlayer= {
   type : 2,
@@ -318,6 +320,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
       console.log('Connection error ' + hostURL);
     };
   };
+}
+
+//set the area of interest of the player
+function setPlayerAOI(aoiWidth, aoiHeight){
+	player.aoi_w = aoiWidth;
+	player.aoi_h = aoiHeight;
 }
 
 function updateServer() {
