@@ -39,6 +39,12 @@ var passPlayer = {
   info: null,
   signedInfo: null
 };
+var playeraoi = {
+  type: 3,
+  userID: 0,
+  aoi_w: 300,
+  aoi_h: 300
+};
 
 // Settings and functionalities of client-side canvas
 var sCanvas = function() {
@@ -183,16 +189,17 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     ws.onopen = function() {
       console.log('Connection opened ' + hostURL);
-
+      
       // set the primaryconnection after ws setup
       if (nextPrimaryCon >= 0) {
         if (wsList[nextPrimaryCon].isReadyState() == 1) {
           // Reset player's events on current server
+          // Change previous player to Dummy player
           wsList[primaryCon].send(JSON.stringify({
-            type: 1,
+            type: 4,
             userID: player.userID,
-            x: 0,
-            y: 0,
+            x: player.x,
+            y: player.y,
             angle: 0,
             v_x: 0,
             v_y: 0,
@@ -205,14 +212,22 @@ function WebSocketHandler(hostAddress, wsIndex) {
           nextPrimaryCon = -1;
           console.log('Open & Set primary as ' + prevPrimarycon + ' << primary:' + primaryCon + ' << ' + nextPrimaryCon);
         }
+        wsList[primaryCon].send(JSON.stringify(player));
       }
-      wsList[primaryCon].send(JSON.stringify(player));
+      /* if this is not the primary connection then 
+      * this will create a dummy player for get update
+      */
+
+      wsList[wsIndex].send(JSON.stringify(player));
       /*
        * if(secondryCon != null){
        * wsList[secondryCon].getWS().send(JSON.stringify(passPlayer));
        * swapConnecations(); }
        */
       console.log("Connection opened");
+      // Set AOI in server
+      playeraoi.userID = player.userID;
+      wsList[wsIndex].send(JSON.stringify(playeraoi));
     };
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
@@ -272,10 +287,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
                  * if a websocket is opening for this address ignore connecting again
                  */
                 wsList[primaryCon].send(JSON.stringify({
-                  type: 1,
+                  type: 4,
                   userID: player.userID,
-                  x: 0,
-                  y: 0,
+                  x: player.x,
+                  y: player.y,
                   angle: 0,
                   v_x: 0,
                   v_y: 0,
@@ -286,7 +301,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 prevPrimarycon = primaryCon;
                 primaryCon = i;
                 console.log('Set primary connections as ' + prevPrimarycon + ' << primary:' + primaryCon + ' <<' + nextPrimaryCon);
-                updateServer();
+
+                wsList[primaryCon].send(JSON.stringify(player));
+                wsList[primaryCon].send(JSON.stringify(playeraoi));
                 break;
               } else if (wsList[i].isReadyState() == 3) { // if previous ws is
                 // closed
@@ -344,19 +361,11 @@ function WebSocketHandler(hostAddress, wsIndex) {
   };
 }
 
-//set the area of interest of the player
-
-function setPlayerAOI(aoiWidth, aoiHeight) {
-  player.aoi_w = aoiWidth;
-  player.aoi_h = aoiHeight;
-}
-
 function updateServer() {
   // only allow primary connection to update server
   // if (D)
   // console.log('Send update to server '+primaryCon);
   wsList[primaryCon].send(JSON.stringify(player));
-
 }
 
 // Make connection to new server as primary, send event requests
