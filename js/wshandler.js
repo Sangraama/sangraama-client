@@ -21,23 +21,23 @@ var nextPrimaryCon = -1; // To store next primary connection, until it's
 this.scale = 100; // 1 unit in server => 100 pixels in canvas
 
 var player = {
-   type : 1,
-   userID : 1,
-   x : 0,
-   y : 0,
-   angle : 0,
-   v_x : 0,
-   v_y : 0,
-   v_a : 0,
-   s : 0,
-   aoi_w : 0,
-   aoi_h : 0
- };
-var passPlayer= {
-  type : 2,
-  userID : 0,
-  info : null,
-  signedInfo : null
+  type: 1,
+  userID: 1,
+  x: 0,
+  y: 0,
+  angle: 0,
+  v_x: 0,
+  v_y: 0,
+  v_a: 0,
+  s: 0,
+  aoi_w: 0,
+  aoi_h: 0
+};
+var passPlayer = {
+  type: 2,
+  userID: 0,
+  info: null,
+  signedInfo: null
 };
 
 // Settings and functionalities of client-side canvas
@@ -85,7 +85,7 @@ window.onload = function() {
   gEngine.drawRotatedImage(ship, player);
 };
 
-var Tile = function() {
+function Tile() {
   // not supporting custome size tiles
   this.tiles;
   this.init = function(coordArr) {
@@ -104,11 +104,9 @@ var Tile = function() {
   }
 };
 
-var wsList = new Array(4);
-/*
- * this structure was built using 1.1 method in tutorial
- * http://www.phpied.com/3-ways-to-define-a-javascript-class/
- */
+var wsList = new Array(10);
+/* this structure was built using 1.1 method in tutorial
+http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
 
 function WebSocketHandler(hostAddress, wsIndex) {
   var ws = null;
@@ -146,8 +144,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
   };
   // close the websocket
   this.close = function(index) {
-    if (index == wsIndex && ws.readyState <= ws.OPEN) { // if ws is connecting
-      // or opened
+    if (index == wsIndex && ws.readyState <= ws.OPEN && primaryCon != index) { // if ws is connecting or opened
       ws.close();
       return true;
     } else {
@@ -156,8 +153,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
   };
   // send data to server [should only allow to primary connection]
   this.send = function(data) {
-      if (ws.readyState == ws.OPEN) {
-        ws.send(data);
+    if (ws.readyState == ws.OPEN) {
+      ws.send(data);
     } else {
       console.log("ws isn't ready or open");
     }
@@ -251,7 +248,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
           case 2:
             /*
-             * close connection and connect to another server (make it as
+             * connect to another server (make it as
              * primary connection)
              */
             statusUpdate = false; // Y?
@@ -310,17 +307,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 reconnect(info.url, i);
                 break;
               } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReadyState() == 1) {
-                /*
-                 * if a
-                 * websocket
-                 * is
-                 * opening
-                 * for
-                 * this
-                 * address
-                 * ignore
-                 * connecting
-                 * again
+                /* 
+                    if a websocket is opening for this address ignore connecting again
                  */
                 break;
               } else if (wsList[i].isReadyState() == 3) { // if previous ws is
@@ -357,9 +345,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
 }
 
 //set the area of interest of the player
-function setPlayerAOI(aoiWidth, aoiHeight){
-	player.aoi_w = aoiWidth;
-	player.aoi_h = aoiHeight;
+
+function setPlayerAOI(aoiWidth, aoiHeight) {
+  player.aoi_w = aoiWidth;
+  player.aoi_h = aoiHeight;
 }
 
 function updateServer() {
