@@ -94,7 +94,7 @@ function GraphicEngine() {
 
         var imgObj = b.m_userData.img;
         ctx.save();
-        console.log(b.GetAngle());
+        //console.log(b.GetAngle());
         ctx.translate(position.x, position.y);
         ctx.rotate(b.GetAngle() * TO_RADIANS);
         ctx.drawImage(imgObj, -(imgObj.width / 2), -(imgObj.height / 2));

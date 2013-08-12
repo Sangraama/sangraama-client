@@ -30,8 +30,8 @@ var player = {
   v_y: 0,
   v_a: 0,
   s: 0,
-  aoi_w: 0,
-  aoi_h: 0
+  aoi_w: 200,
+  aoi_h: 200
 };
 var passPlayer = {
   type: 2,
@@ -42,8 +42,8 @@ var passPlayer = {
 var playeraoi = {
   type: 3,
   userID: 0,
-  aoi_w: 300,
-  aoi_h: 300
+  aoi_w: 200,
+  aoi_h: 200
 };
 
 // Settings and functionalities of client-side canvas
@@ -85,9 +85,9 @@ window.onload = function() {
   bullet.src = 'img/bullet.png';
   player.id = Math.floor(Math.random() * 101);
   // player.x = Math.floor(Math.random() * 900);
-  // player.x = Math.floor(Math.random() * 2 + 997);//create at edge
-  player.x = 999;
-  player.y = Math.floor(Math.random() * 301);
+   player.x = Math.floor(Math.random() * 49 + 950);//create at edge
+  //player.x = 999;
+  player.y = Math.floor(Math.random() * 960);
   gEngine.drawRotatedImage(ship, player);
 };
 
@@ -237,7 +237,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
       for (var index in data) {
         var inPlayer = data[index];
 
-        // console.log(inPlayer.userID + ' type: ' + inPlayer.type);
+        //console.log(data);
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
@@ -442,7 +442,7 @@ function doKeyDown(evt) {
       player.s = 1;
       break;
     default:
-      console.log(evt.keyCode);
+      //console.log(evt.keyCode);
   }
   if (prevKey != evt.keyCode) {
     prevKey = evt.keyCode;
@@ -486,7 +486,7 @@ function doKeyUp(evt) {
       player.v_a = player.v_a;
       break;
     default:
-      console.log(evt.keyCode);
+      //console.log(evt.keyCode);
   }
   updateServer();
   prevKey = 0;

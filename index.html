@@ -57,12 +57,16 @@
 
   $('#stop').click(function() {
     // Close all opened websockets
-    for ( var i = 0; i < wsList.length; i++) {
-      if (wsList[i] != null) {
+    for ( var i = 0; i < 10; i++) {
+      if (wsList[i] != null || wsList[i] != undefined) {
+        if (primaryCon == i) {
+          primaryCon--;
+        }
+        console.log('Stopped the connection ' + wsList[i].getHostAddress());
         wsList[i].close(i);// try closing connection
-        console.log('Stopped the Game');
       }
     }
+    primaryCon = 0;
   });
   </script>
 
