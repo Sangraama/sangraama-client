@@ -1,5 +1,5 @@
-playerList = new Array();
-bulletList = new Array();
+var playerList = new Array();
+var bulletList = new Array();
 
 
 function GraphicObject() {

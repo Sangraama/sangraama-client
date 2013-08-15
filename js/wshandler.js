@@ -2,6 +2,7 @@ var D = true; // debug
 var playerObject;
 var scanvas;
 var gEngine;
+var aoihandler;
 // var ctx;
 var dx = 5;
 var rA = 3;
@@ -62,6 +63,8 @@ $(document)
 // Setup client side
 window.onload = function() {
   scanvas = new sCanvas();
+  aoihandler = new aoihandler();
+  aoihandler.init();
   // Gaphic engine
   gEngine = new GraphicEngine();
   gEngine.init();
@@ -345,7 +348,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 11:
             /* set size of the tile */
             console.log('Type:' + inPlayer.type + ' Set tile size of server');
-            wsList[wsIndex].setTile(JSON.parse(inPlayer.tiles));
+            //aoihandler.addTiles(JSON.parse(inPlayer.tiles));
             break;
           default:
             console.log("Warning. Unsupported message type " + inPlayer.type);
