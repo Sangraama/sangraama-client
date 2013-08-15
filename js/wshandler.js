@@ -63,8 +63,6 @@ $(document)
 // Setup client side
 window.onload = function() {
   scanvas = new sCanvas();
-  aoihandler = new aoihandler();
-  aoihandler.init();
   // Gaphic engine
   gEngine = new GraphicEngine();
   gEngine.init();
@@ -92,25 +90,10 @@ window.onload = function() {
   //player.x = 999;
   player.y = Math.floor(Math.random() * 960);
   gEngine.drawRotatedImage(ship, player);
-};
 
-function Tile() {
-  // not supporting custome size tiles
-  this.tiles;
-  this.init = function(coordArr) {
-    this.tiles = coordArr;
-  },
-  this.isInsideTile = function(x, y) {
-    return false;
-  },
-  this.getSubTile = function(index) {
-    return this.tiles[index];
-  },
-  this.printTiles = function() {
-    _.map(this.tiles, function(tile) {
-      console.log(tile.x);
-    });
-  }
+  // Initialize AIO handler
+  aoihandler = new aoihandler();
+  aoihandler.init();
 };
 
 var wsList = new Array(10);
@@ -120,26 +103,21 @@ http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
 function WebSocketHandler(hostAddress, wsIndex) {
   var ws = null;
   // The assigned index in the ws array
-  this.wsIndex = wsIndex;
-  this.hostAddress = hostAddress;
-  // Store size of tile which connected with this ws
-  this.tile = null;
-
-  // Set tile size
-  this.setTile = function(coordArr) {
-    this.tile = new Tile();
-    this.tile.init(coordArr);
-    this.tile.printTiles();
-  }
+  var wsIndex = wsIndex;
+  var hostAddress = hostAddress;
 
   // Get the websocket
   this.getWS = function() {
     return ws;
   };
-  // Get host address
+  // Get host address | Data Encapsulation
   this.getHostAddress = function() {
     console.log('Get host address ' + this.hostAddress);
-    return this.hostAddress;
+    return hostAddress;
+  }
+  // Get the ws Index | Data encapsulation
+  this.getWSIndex = function(){
+    return wsIndex;
   }
   /*
    * Get the state of websocket CONNECTING 0 The connection is not yet open.
@@ -148,7 +126,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
    * closed or couldn't be opened.
    */
   // Get the state of websocket
-  this.isReadyState = function() {
+  this.isReady = function() {
     return ws.readyState;
   };
   // close the websocket
@@ -170,8 +148,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
   }
   // Connecting to server and functions for handle server messages
   this.connect = function() {
-    var wsIndex = this.wsIndex;
-    console.log('call connect ... ' + this.wsIndex);
+    console.log('call connect ... ' + wsIndex +' '+hostAddress);
     var hostProtocol;
 
     // if (window.location.protocol == 'http:') {
@@ -179,8 +156,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
     // } else {
     // hostProtocol = 'wss://';
     // }
-    var hostURL = hostProtocol + this.hostAddress;
-    console.log(this.hostAddress);
+    var hostURL = hostProtocol + hostAddress;
+    console.log(hostAddress);
     /* Open a websocket which will depend on browser */
     if ('MozWebSocket' in window) {
       ws = new MozWebSocket(hostURL);
@@ -195,7 +172,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
       
       // set the primaryconnection after ws setup
       if (nextPrimaryCon >= 0) {
-        if (wsList[nextPrimaryCon].isReadyState() == 1) {
+        if (wsList[nextPrimaryCon].isReady() == 1) {
           // Reset player's events on current server
           // Change previous player to Dummy player
           wsList[primaryCon].send(JSON.stringify({
@@ -285,7 +262,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
               if (wsList[i] == undefined) { // if ws isn't initialized
                 passConnect(info.url, i);
                 break;
-              } else if (wsList[i].hostAddress == info.url && wsList[i].isReadyState() == 1) {
+              } else if (wsList[i].hostAddress == info.url && wsList[i].isReady() == 1) {
                 /*
                  * if a websocket is opening for this address ignore connecting again
                  */
@@ -308,7 +285,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 wsList[primaryCon].send(JSON.stringify(player));
                 wsList[primaryCon].send(JSON.stringify(playeraoi));
                 break;
-              } else if (wsList[i].isReadyState() == 3) { // if previous ws is
+              } else if (wsList[i].isReady() == 3) { // if previous ws is
                 // closed
                 passConnect(info.url, i);
                 break;
@@ -326,12 +303,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
               if (wsList[i] == undefined) { // if ws isn't initialized
                 reconnect(info.url, i);
                 break;
-              } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReadyState() == 1) {
+              } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
                 /* 
                     if a websocket is opening for this address ignore connecting again
                  */
                 break;
-              } else if (wsList[i].isReadyState() == 3) { // if previous ws is
+              } else if (wsList[i].isReady() == 3) { // if previous ws is
                 // closed
                 reconnect(info.url, i);
                 break;
@@ -348,7 +325,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 11:
             /* set size of the tile */
             console.log('Type:' + inPlayer.type + ' Set tile size of server');
-            //aoihandler.addTiles(JSON.parse(inPlayer.tiles));
+            aoihandler.addTiles(wsIndex, hostAddress ,  JSON.parse(inPlayer.tiles));
             break;
           default:
             console.log("Warning. Unsupported message type " + inPlayer.type);
@@ -377,7 +354,7 @@ function passConnect(host, num) {
   console.log('Create new primary connection to ' + host + ' with ' + num);
   wsList[num] = new WebSocketHandler(host, num);
   wsList[num].connect();
-  if (wsList[num].isReadyState == 1) { // if connection was created
+  if (wsList[num].isReady == 1) { // if connection was created
     /*
      * Closing privious primary connection mayn't a good idea, coz player
      * doesn't quite from that location immediately
