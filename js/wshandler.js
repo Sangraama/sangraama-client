@@ -57,8 +57,8 @@ window.onload = function () {
     scanvas = new sCanvas();
     // Gaphic engine
     gEngine = new GraphicEngine();
-    gEngine.init();
-    gEngine.simulate();
+   // gEngine.init();
+    // gEngine.simulate();
     canvas = document.getElementById('layer2');
     canvas2 = document.getElementById('layer1');
     ctx = canvas.getContext("2d");
@@ -75,13 +75,14 @@ window.onload = function () {
 
     ship.src = 'img/arrow.jpg';
     bullet.src = 'img/bullet.png';
-    mapImage.src = 'img/mapImage.png';
+    mapImage.src = 'assert/map/mapImage.jpg';
     player.id = Math.floor(Math.random() * 101);
     // player.x = Math.floor(Math.random() * 900);
     // player.x = Math.floor(Math.random() * 2 + 997);//create at edge
-    player.x = 999;
+    player.x = 900;
+    // player.y = 400;
     player.y = Math.floor(Math.random() * 301);
-    gEngine.drawRotatedImage(ship, player);
+    drawRotatedImage(ship, player);
 };
 var Tile = function() {
     // not supporting custome size tiles
@@ -226,8 +227,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 switch (inPlayer.type) {
                 case 1: // update client graphichs
                     // if(D) console.log('Case 1');
-
-                    gEngine.clear();
+                    if(player.userID == inPlayer.userID){
+                     player.x = inPlayer.dx;
+                     player.y = inPlayer.dy;
+                    }
                     addPlayerToGraphicEngine(inPlayer);
                     var bullets = inPlayer.bulletDeltaList;
                     // gEngine.drawRotatedImage(ship, inPlayer);
@@ -356,6 +359,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                     console.log("Warning. Unsupported message type " + inPlayer.type);
                 }
             }
+                    gEngine.clear();
+                    gEngine.processObjects();
         };
         ws.onclose = function() {
             console.log('Connection closed ' + hostURL);
@@ -370,6 +375,7 @@ function updateServer() {
     // only allow primary connection to update server
     // if (D)
     // console.log('Send update to server '+primaryCon);
+    drawMap(player.x,player.y);
     wsList[primaryCon].send(JSON.stringify(player));
 
 }
@@ -440,10 +446,10 @@ function doKeyDown(evt) {
     default:
         console.log(evt.keyCode);
     }
-    if (prevKey != evt.keyCode) {
+    // if (prevKey != evt.keyCode) {
         prevKey = evt.keyCode;
         updateServer();
-    }
+    // }
 }
 
 function doKeyUp(evt) {
@@ -537,8 +543,7 @@ function addPlayerToGraphicEngine(inPlayer) {
         graphicPlayer.y = inPlayer.dy;
         graphicPlayer.angle = inPlayer.da;
         playerList[inPlayer.userID] = graphicPlayer;
-        console.log('added player')
-
+        console.log('added player');
     }
 
     // gEngine.simulate();
