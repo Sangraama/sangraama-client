@@ -88,7 +88,7 @@ window.onload = function() {
   // player.x = Math.floor(Math.random() * 900);
    player.x = Math.floor(Math.random() * 49 + 950);//create at edge
   //player.x = 999;
-  player.y = Math.floor(Math.random() * 960);
+  player.y = Math.floor(Math.random() * 100) + 300;
   gEngine.drawRotatedImage(ship, player);
 
   // Initialize AIO handler
@@ -212,6 +212,21 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
 
+      var p = _.find(data, function(val){
+        console.log(player.userID + ' ' + val.userID);
+        return val.userID == player.userID;
+      });
+      //console.log('player ' + p.dx);
+      var want = aoihandler.isFulfillAOI(p.dx , p.dy);
+      _.map(want , function(val , k){
+        // Ask for AOI
+        wsList[wsIndex].send(JSON.stringify({
+            type: 2,
+            userID: player.userID,
+            x: val.x,
+            y: val.y
+          }));
+      });
       // clear();
       // Can be replace by map
       for (var index in data) {
@@ -221,8 +236,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
-            // if(D) console.log('Case 1');
-
+            //if(D) console.log('Case 1');
+            //console.log(inPlayer);
             gEngine.clear();
             addPlayerToGraphicEngine(inPlayer);
             var bullets = inPlayer.bulletDeltaList;
