@@ -48,10 +48,16 @@ function GraphicEngine() {
     this.processObjects = function() {
         var screenHeight = canvas.getAttribute('height');
         var screenWidth = canvas.getAttribute('width');
-        var pp = playerList[player.userId];
+        var width = screenWidth/2;
+        var height = screenHeight/2;
+        var pp = playerList[player.userID];
        if (typeof pp !== "undefined") {
-        pp.x = screenWidth/2;
-        pp.y = screenHeight/2;
+        var x = pp.x;
+        var y = pp.y;
+        // if(((x-width) > mapMinX) && ((x+width) < mapMaxX) && ((y-height) > mapMinY) && ((y+height) < mapMaxY)){
+        pp.x =  pp.x%screenWidth;
+        pp.y = pp.y%screenHeight;
+        // }
         playerList[player.userId] =pp;
         }
         processPlayers();

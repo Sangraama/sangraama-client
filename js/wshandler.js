@@ -79,9 +79,9 @@ window.onload = function () {
     player.id = Math.floor(Math.random() * 101);
     // player.x = Math.floor(Math.random() * 900);
     // player.x = Math.floor(Math.random() * 2 + 997);//create at edge
-    player.x = 900;
-    // player.y = 400;
-    player.y = Math.floor(Math.random() * 301);
+    player.x = 100;
+    player.y = 600;
+    // player.y = Math.floor(Math.random() * 301);
     drawRotatedImage(ship, player);
 };
 var Tile = function() {
@@ -105,7 +105,7 @@ var wsList = new Array(4);
  * this structure was built using 1.1 method in tutorial
  * http://www.phpied.com/3-ways-to-define-a-javascript-class/
  */
-function WebSocketHandler(hostAddress, wsIndex) {
+ function WebSocketHandler(hostAddress, wsIndex) {
     var ws = null;
     // The assigned index in the ws array
     this.wsIndex = wsIndex;
@@ -165,7 +165,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
         var hostProtocol;
 
         // if (window.location.protocol == 'http:') {
-        hostProtocol = 'ws://';
+            hostProtocol = 'ws://';
         // } else {
         // hostProtocol = 'wss://';
         // }
@@ -203,7 +203,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                     primaryCon = nextPrimaryCon;
                     nextPrimaryCon = -1;
                     console.log('Open & Set primary as ' + prevPrimarycon + ' << primary:'
-                            + primaryCon + ' << ' + nextPrimaryCon);
+                        + primaryCon + ' << ' + nextPrimaryCon);
                 }
             }
             wsList[primaryCon].send(JSON.stringify(player));
@@ -212,9 +212,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
              * wsList[secondryCon].getWS().send(JSON.stringify(passPlayer));
              * swapConnecations(); }
              */
-            console.log("Connection opened");
-        };
-        ws.onmessage = function(event) {
+             console.log("Connection opened");
+         };
+         ws.onmessage = function(event) {
             var data = JSON.parse(event.data);
 
             // clear();
@@ -228,11 +228,11 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 case 1: // update client graphichs
                     // if(D) console.log('Case 1');
                     if(player.userID == inPlayer.userID){
-                     player.x = inPlayer.dx;
-                     player.y = inPlayer.dy;
-                    }
-                    addPlayerToGraphicEngine(inPlayer);
-                    var bullets = inPlayer.bulletDeltaList;
+                       player.x = inPlayer.dx;
+                       player.y = inPlayer.dy;
+                   }
+                   addPlayerToGraphicEngine(inPlayer);
+                   var bullets = inPlayer.bulletDeltaList;
                     // gEngine.drawRotatedImage(ship, inPlayer);
                     for ( var bulletIndex in bullets) {
                         // gEngine.drawShootImage(bullet, bullets[bulletIndex]);
@@ -247,11 +247,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
                      */
 
                     // }
+                    gEngine.clear();
+                     gEngine.processObjects();
                     break;
                 case 2: /*
                          * close connection and connect to another server (make
                          * it as primary connection)
-                         */
+*/
                     statusUpdate = false; // Y?
                     var info = JSON.parse(inPlayer.info);
                     console.log('Type 2 msg. ' + info.url);
@@ -265,12 +267,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
                     var i = 0;
                     do { // search from begining of list is there any
                             // available slot
-                        console.log(i, wsList);
+                            console.log(i, wsList);
                         if (wsList[i] == undefined) { // if ws isn't
                                                         // initialized
-                            passConnect(info.url, i);
-                            break;
-                        } else if (wsList[i].hostAddress == info.url
+                                                    passConnect(info.url, i);
+                                                    break;
+                                                } else if (wsList[i].hostAddress == info.url
                                 && wsList[i].isReadyState() == 1) {/*
                                                                      * if a
                                                                      * websocket
@@ -282,22 +284,22 @@ function WebSocketHandler(hostAddress, wsIndex) {
                                                                      * connecting
                                                                      * again
                                                                      */
-                            wsList[primaryCon].send(JSON.stringify({
-                                type : 1,
-                                userID : player.userID,
-                                x : 0,
-                                y : 0,
-                                angle : 0,
-                                v_x : 0,
-                                v_y : 0,
-                                v_a : 0,
-                                s : 0
-                            }));
+                                                                     wsList[primaryCon].send(JSON.stringify({
+                                                                        type : 1,
+                                                                        userID : player.userID,
+                                                                        x : 0,
+                                                                        y : 0,
+                                                                        angle : 0,
+                                                                        v_x : 0,
+                                                                        v_y : 0,
+                                                                        v_a : 0,
+                                                                        s : 0
+                                                                    }));
                             // swap primary Connection
                             prevPrimarycon = primaryCon;
                             primaryCon = i;
                             console.log('Set primary connections as ' + prevPrimarycon
-                                    + ' << primary:' + primaryCon + ' <<' + nextPrimaryCon);
+                                + ' << primary:' + primaryCon + ' <<' + nextPrimaryCon);
                             updateServer();
                             break;
                         } else if (wsList[i].isReadyState() == 3) { // if
@@ -310,7 +312,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                         i++;
                     } while (i < 10);
                     break;
-                case 3: /* connecting to another server and get updates */
+                    case 3: /* connecting to another server and get updates */
                     var info = JSON.parse(inPlayer.info);
                     console.log('Type 3 msg. ' + info.url);
                     var i = 0;
@@ -319,9 +321,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
                         // console.log('Times ' + i + wsList[i].hostAddress);
                         if (wsList[i] == undefined) { // if ws isn't
                                                         // initialized
-                            reconnect(info.url, i);
-                            break;
-                        } else if (wsList[i].getHostAddress() == info.url
+                                                    reconnect(info.url, i);
+                                                    break;
+                                                } else if (wsList[i].getHostAddress() == info.url
                                 && wsList[i].isReadyState() == 1) {/*
                                                                      * if a
                                                                      * websocket
@@ -333,7 +335,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                                                                      * connecting
                                                                      * again
                                                                      */
-                            break;
+                                                                     break;
                         } else if (wsList[i].isReadyState() == 3) { // if
                                                                     // previous
                                                                     // ws is
@@ -344,37 +346,37 @@ function WebSocketHandler(hostAddress, wsIndex) {
                         i++;
                     } while (i < 10);
                     break;
-                case 4: /* close existing connection */
+                    case 4: /* close existing connection */
                     break;
                 case 10: /*
                              * set current absolute location of client on the
                              * map
                              */
-                    break;
-                case 11: /* set size of the tile */
-                    console.log('Type:' + inPlayer.type + ' Set tile size of server');
-                    wsList[wsIndex].setTile(JSON.parse(inPlayer.tiles));
-                    break;
-                default:
-                    console.log("Warning. Unsupported message type " + inPlayer.type);
-                }
-            }
-                    gEngine.clear();
-                    gEngine.processObjects();
-        };
-        ws.onclose = function() {
-            console.log('Connection closed ' + hostURL);
-        };
-        ws.onerror = function(event) {
-            console.log('Connection error ' + hostURL);
-        };
-    };
-}
+                             break;
+                             case 11: /* set size of the tile */
+                             console.log('Type:' + inPlayer.type + ' Set tile size of server');
+                             wsList[wsIndex].setTile(JSON.parse(inPlayer.tiles));
+                             break;
+                             default:
+                             console.log("Warning. Unsupported message type " + inPlayer.type);
+                         }
+                     }
 
-function updateServer() {
+                 };
+                 ws.onclose = function() {
+                    console.log('Connection closed ' + hostURL);
+                };
+                ws.onerror = function(event) {
+                    console.log('Connection error ' + hostURL);
+                };
+            };
+        }
+
+        function updateServer() {
     // only allow primary connection to update server
     // if (D)
     // console.log('Send update to server '+primaryCon);
+    
     drawMap(player.x,player.y);
     wsList[primaryCon].send(JSON.stringify(player));
 
@@ -408,42 +410,42 @@ var prevKey = 0;
 function doKeyDown(evt) {
 
     switch (evt.keyCode) {
-    case 38: /* Up arrow was pressed */
+        case 38: /* Up arrow was pressed */
         player.v_y = -1;
         player.v_a = 270;
         if (D)
             console.log('up pressed');
         break;
-    case 40: /* Down arrow was pressed */
+        case 40: /* Down arrow was pressed */
         player.v_y = 1;
         player.v_a = 90;
         if (D)
             console.log('down pressed');
         break;
-    case 37: /* Left arrow was pressed */
+        case 37: /* Left arrow was pressed */
         player.v_x = -1;
         player.v_a = 180;
         // if (D)
         // console.log('left pressed');
         break;
-    case 39: /* Right arrow was pressed */
+        case 39: /* Right arrow was pressed */
         player.v_x = 1;
         player.v_a = 0;
         // if (D)
         // console.log('right pressed');
         break;
-    case 82: /* R was pressed */
+        case 82: /* R was pressed */
         player.v_a += 1;
         break;
-    case 76: /* L was pressed */
+        case 76: /* L was pressed */
         player.v_a += (360 - 1);
         break;
-    case 32: /* Space was pressed */
+        case 32: /* Space was pressed */
         if (D)
             console.log('Player shoot');
         player.s = 1;
         break;
-    default:
+        default:
         console.log(evt.keyCode);
     }
     // if (prevKey != evt.keyCode) {
@@ -455,32 +457,32 @@ function doKeyDown(evt) {
 function doKeyUp(evt) {
 
     switch (evt.keyCode) {
-    case 38: /* Up arrow was released */
+        case 38: /* Up arrow was released */
         player.v_y = 0;
         // player.v_a = 0;
         break;
-    case 40: /* Down arrow was released */
+        case 40: /* Down arrow was released */
         player.v_y = 0;
         // player.v_a = 0;
         break;
-    case 37: /* Left arrow was released */
+        case 37: /* Left arrow was released */
         player.v_x = 0;
         // player.v_a = 0;
         break;
-    case 39: /* Right arrow was released */
+        case 39: /* Right arrow was released */
         player.v_x = 0;
         // player.v_a = 0;
         break;
-    case 82: /* R was released */
+        case 82: /* R was released */
         player.v_a = player.v_a;
         break;
-    case 32: /* Space was released */
+        case 32: /* Space was released */
         player.s = 0;
         break;
-    case 76: /* L was released */
+        case 76: /* L was released */
         player.v_a = player.v_a;
         break;
-    default:
+        default:
         console.log(evt.keyCode);
     }
     updateServer();
@@ -489,21 +491,21 @@ function doKeyUp(evt) {
 
 function doMouseDown(evt) {
     switch (evt.which) {
-    case 1:
+        case 1:
         if (D)
             console.log('Left mouse button pressed');
         break;
-    case 2:
+        case 2:
         player.v_y = 1;
 
         if (D)
             console.log('Middle mouse button pressed');
         break;
-    case 3:
+        case 3:
         if (D)
             console.log('Right mouse button pressed');
         break;
-    default:
+        default:
         if (D)
             console.log('You have a strange mouse');
     }
@@ -511,19 +513,19 @@ function doMouseDown(evt) {
 
 function doMouseUp(evt) {
     switch (evt.which) {
-    case 1:
+        case 1:
         if (D)
             console.log('Left mouse button released');
         break;
-    case 2:
+        case 2:
         if (D)
             console.log('Middle mouse button released');
         break;
-    case 3:
+        case 3:
         if (D)
             console.log('Right mouse button released');
         break;
-    default:
+        default:
         if (D)
             console.log('You have a strange mouse');
     }
@@ -531,7 +533,6 @@ function doMouseUp(evt) {
 function addPlayerToGraphicEngine(inPlayer) {
 
     var player = playerList[inPlayer.userID];
-
     if (typeof player !== "undefined") {
         player.x = inPlayer.dx;
         player.y = inPlayer.dy;
@@ -549,17 +550,19 @@ function addPlayerToGraphicEngine(inPlayer) {
     // gEngine.simulate();
 }
 function addBulletToGraphicEngine(inBullet) {
+    var screenHeight = canvas.getAttribute('height');
+    var screenWidth = canvas.getAttribute('width');
     var bullet = bulletList[inBullet.id];
 
     if (typeof bullet !== "undefined") {
-        bullet.x = inBullet.dx;
-        bullet.y = inBullet.dy;
+        bullet.x = inBullet.dx%screenWidth;
+        bullet.y = inBullet.dy%screenHeight;
         bullet.angle = inBullet.a;
         bulletList[inBullet.id] = bullet;
     } else {
         var graphicBullet = new GraphicObject();
-        graphicBullet.x = inBullet.dx;
-        graphicBullet.y = inBullet.dy;
+        graphicBullet.x = inBullet.dx%screenWidth;
+        graphicBullet.y = inBullet.dy%screenHeight;
         graphicBullet.angle = inBullet.a;
         bulletList[inBullet.id] = graphicBullet;
         console.log('added bullet')
