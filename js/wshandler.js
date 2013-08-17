@@ -1,3 +1,4 @@
+<!-- //
 var D = true; // debug
 var playerObject;
 var scanvas;
@@ -11,6 +12,7 @@ var dy = 5;
 // var HEIGHT = 500;
 var ship = new Image();
 var bullet = new Image();
+var mapImage = new Image();
 var TO_RADIANS = Math.PI / 180;
 var FROM_RADIANS = 180 / Math.PI;
 
@@ -65,31 +67,33 @@ window.onload = function() {
   scanvas = new sCanvas();
   // Gaphic engine
   gEngine = new GraphicEngine();
-  gEngine.init();
-  gEngine.simulate();
-  var container = document.getElementById('sangraama_container');
-  canvas = document.createElement('canvas');
-  canvas.id = 'sangraama_canvas';
+  // gEngine.init();
+  // gEngine.simulate();
+  canvas = document.getElementById('layer2');
+  canvas2 = document.getElementById('layer1');
   ctx = canvas.getContext("2d");
-  // Get current screen size
-  var screenSize = viewport();
+  ctx2 = canvas2.getContext("2d");
+  screenSize = viewport();
   canvas.setAttribute('width', screenSize.width);
+  canvas2.setAttribute('width', screenSize.width);
   scanvas.WIDTH = screenSize.width;
 
   canvas.setAttribute('height', screenSize.height - 40);
+  canvas2.setAttribute('height', screenSize.height - 40);
   scanvas.HEIGHT = screenSize.height;
   ctx.fillStyle = '#819FF7';
   ctx.fillRect(0, 0, screenSize.width, screenSize.height);
-  container.appendChild(canvas);
 
   ship.src = 'img/arrow.jpg';
   bullet.src = 'img/bullet.png';
+  mapImage.src = 'assert/map/mapImage.jpg';
   player.id = Math.floor(Math.random() * 101);
   // player.x = Math.floor(Math.random() * 900);
-   player.x = Math.floor(Math.random() * 49 + 950);//create at edge
-  //player.x = 999;
-  player.y = Math.floor(Math.random() * 100) + 300;
-  gEngine.drawRotatedImage(ship, player);
+  // player.x = Math.floor(Math.random() * 49 + 950); //create at edge
+  player.x = 9000;
+  player.y = 50;
+  // player.y = Math.floor(Math.random() * 100) + 300;
+  drawRotatedImage(ship, player);
 
   // Initialize AIO handler
   aoihandler = new aoihandler();
@@ -116,7 +120,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
     return hostAddress;
   }
   // Get the ws Index | Data encapsulation
-  this.getWSIndex = function(){
+  this.getWSIndex = function() {
     return wsIndex;
   }
   /*
@@ -148,7 +152,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
   }
   // Connecting to server and functions for handle server messages
   this.connect = function() {
-    console.log('call connect ... ' + wsIndex +' '+hostAddress);
+    console.log('call connect ... ' + wsIndex + ' ' + hostAddress);
     var hostProtocol;
 
     // if (window.location.protocol == 'http:') {
@@ -169,7 +173,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     ws.onopen = function() {
       console.log('Connection opened ' + hostURL);
-      
+
       // set the primaryconnection after ws setup
       if (nextPrimaryCon >= 0) {
         if (wsList[nextPrimaryCon].isReady() == 1) {
@@ -195,8 +199,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
         wsList[primaryCon].send(JSON.stringify(player));
       }
       /* if this is not the primary connection then 
-      * this will create a dummy player for get update
-      */
+       * this will create a dummy player for get update
+       */
 
       wsList[wsIndex].send(JSON.stringify(player));
       /*
@@ -212,21 +216,21 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
 
-      var p = _.find(data, function(val){
+      /*var p = _.find(data, function(val) {
         console.log(player.userID + ' ' + val.userID);
         return val.userID == player.userID;
       });
       //console.log('player ' + p.dx);
-      var want = aoihandler.isFulfillAOI(p.dx , p.dy);
-      _.map(want , function(val , k){
+      var want = aoihandler.isFulfillAOI(p.dx, p.dy);
+      _.map(want, function(val, k) {
         // Ask for AOI
         wsList[wsIndex].send(JSON.stringify({
-            type: 2,
-            userID: player.userID,
-            x: val.x,
-            y: val.y
-          }));
-      });
+          type: 2,
+          userID: player.userID,
+          x: val.x,
+          y: val.y
+        }));
+      });*/
       // clear();
       // Can be replace by map
       for (var index in data) {
@@ -238,7 +242,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
             //console.log(inPlayer);
-            gEngine.clear();
+            if (player.userID == inPlayer.userID) {
+              player.x = inPlayer.dx;
+              player.y = inPlayer.dy;
+            }
             addPlayerToGraphicEngine(inPlayer);
             var bullets = inPlayer.bulletDeltaList;
             //          gEngine.drawRotatedImage(ship, inPlayer);
@@ -255,6 +262,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
              */
 
             // }
+            gEngine.clear();
+            gEngine.processObjects();
             break;
           case 2:
             /*
@@ -340,7 +349,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 11:
             /* set size of the tile */
             console.log('Type:' + inPlayer.type + ' Set tile size of server');
-            aoihandler.addTiles(wsIndex, hostAddress ,  JSON.parse(inPlayer.tiles));
+            aoihandler.addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             break;
           default:
             console.log("Warning. Unsupported message type " + inPlayer.type);
@@ -360,6 +369,7 @@ function updateServer() {
   // only allow primary connection to update server
   // if (D)
   // console.log('Send update to server '+primaryCon);
+  drawMap(player.x, player.y);
   wsList[primaryCon].send(JSON.stringify(player));
 }
 
@@ -439,10 +449,10 @@ function doKeyDown(evt) {
     default:
       //console.log(evt.keyCode);
   }
-  if (prevKey != evt.keyCode) {
-    prevKey = evt.keyCode;
-    updateServer();
-  }
+  // if (prevKey != evt.keyCode) {
+  // prevKey = evt.keyCode;
+  updateServer();
+  // }
 }
 
 function doKeyUp(evt) {
@@ -532,7 +542,6 @@ function doMouseUp(evt) {
 function addPlayerToGraphicEngine(inPlayer) {
 
   var player = playerList[inPlayer.userID];
-
   if (typeof player !== "undefined") {
     player.x = inPlayer.dx;
     player.y = inPlayer.dy;
@@ -544,25 +553,26 @@ function addPlayerToGraphicEngine(inPlayer) {
     graphicPlayer.y = inPlayer.dy;
     graphicPlayer.angle = inPlayer.da;
     playerList[inPlayer.userID] = graphicPlayer;
-    console.log('added player')
-
+    console.log('added player');
   }
 
   // gEngine.simulate();
 }
 
 function addBulletToGraphicEngine(inBullet) {
+  var screenHeight = canvas.getAttribute('height');
+  var screenWidth = canvas.getAttribute('width');
   var bullet = bulletList[inBullet.id];
 
   if (typeof bullet !== "undefined") {
-    bullet.x = inBullet.dx;
-    bullet.y = inBullet.dy;
+    bullet.x = inBullet.dx % screenWidth;
+    bullet.y = inBullet.dy % screenHeight;
     bullet.angle = inBullet.a;
     bulletList[inBullet.id] = bullet;
   } else {
     var graphicBullet = new GraphicObject();
-    graphicBullet.x = inBullet.dx;
-    graphicBullet.y = inBullet.dy;
+    graphicBullet.x = inBullet.dx % screenWidth;
+    graphicBullet.y = inBullet.dy % screenHeight;
     graphicBullet.angle = inBullet.a;
     bulletList[inBullet.id] = graphicBullet;
     console.log('added bullet')
