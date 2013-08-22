@@ -9,19 +9,19 @@ mapHeight = 0;
 var xAbs = -1;
 var yAbs = -1;
 var xDir = -1;
-loadMap = function () {
-    $.get('assert/map/worldMap.tmx',{},function(xml){
-        $('layer', xml).each(function (h) {
+loadMap = function() {
+    $.get('assert/map/worldMap.tmx', {}, function(xml) {
+        $('layer', xml).each(function(h) {
             if ($(this).attr('name') == 'TileLayer') {
                 mapWidth = parseInt($(this).attr('width'), 10);
                 mapHeight = parseInt($(this).attr('height'), 10);
-                mapMaxX = mapWidth*pix32;
-                mapMaxY = mapHeight*pix32;
-                console.log('mytest'+mapMaxX);  
+                mapMaxX = mapWidth * pix32;
+                mapMaxY = mapHeight * pix32;
+                console.log('mytest' + mapMaxX);
             }
         });
 
-        var imageWidth =80;
+        var imageWidth = 80;
         var imageHeight = 50;
         var xCoordinate = 0;
         var yCoordinate = 0;
@@ -33,9 +33,9 @@ loadMap = function () {
         var canvasX = 0;
         var canvasY = 0;
 
-        console.log('start'+new Date().getTime());
-        $('data', xml).each(function (i) {
-            $('tile', this).each(function (j) {
+        console.log('start' + new Date().getTime());
+        $('data', xml).each(function(i) {
+            $('tile', this).each(function(j) {
                 var imgId = $(this).attr('gid');
                 mapArray[tileCount] = imgId;
                 tileCount++;
@@ -44,11 +44,11 @@ loadMap = function () {
     });
 
 }
-drawMap = function(x,y){
+drawMap = function(x, y) {
     var screenHeight = canvas.getAttribute('height');
     var screenWidth = canvas.getAttribute('width');
-    var width = screenWidth/2;
-    var height = screenHeight/2;
+    var width = screenWidth / 2;
+    var height = screenHeight / 2;
     var xOffset = 0;
     var yOffset = 0;
     var currentTile = 0;
@@ -56,141 +56,57 @@ drawMap = function(x,y){
     var yLastOffset = 0;
     var lastTile = 0;
     var xTilePosition = 0;
-    var noOfXTiles = parseInt(screenWidth/pix32,10)+1;
+    var noOfXTiles = parseInt(screenWidth / pix32, 10);
+    var noOfYTiles = parseInt(screenHeight / pix32, 10);
     var xCoordinate = 0;
     var yCoordinate = 0;
     var canvasX = 0;
     var canvasY = 0;
     var tileCount = 1;
-    if((parseInt(x/screenWidth,10) != xAbs) ||(parseInt(y/screenHeight,10) != yAbs)){
-    xAbs = parseInt(x/screenWidth,10);
-    yAbs = parseInt(y/screenHeight,10);
-    var widthOffset = x%screenWidth;
-    var heightOffset = y%screenHeight;
-    if(((x-width) <= mapMinX) && ((x+width) < mapMaxX) && ((y-width) <= mapMinY) && ((y+width) < mapMaxY)){
-        console.log('block1');
-        if(widthOffset>width){
-            xOffset = 0;
-        }else {
-            xOffset = parseInt(((x)/pix32),10);
-        }
-        yOffset = 0;
-        currentTile = yOffset*mapWidth + xOffset;
-        xLastOffset = xOffset + parseInt((screenWidth)/pix32,10);
-        yLastOffset = parseInt((screenHeight)/pix32,10);
-        lastTile = yLastOffset*mapWidth + xLastOffset;
+    if ((parseInt(x / screenWidth, 10) != xAbs) || (parseInt(y / screenHeight, 10) != yAbs)) {
+        xAbs = parseInt(x / screenWidth, 10);
+        yAbs = parseInt(y / screenHeight, 10);
+        var widthOffset = parseInt(x % screenWidth, 10);
+        var heightOffset = parseInt(y % screenHeight, 10);
+        xOffset = parseInt(((x - widthOffset) / pix32), 10);
+        yOffset = parseInt(((y - heightOffset) / pix32), 10);
+        currentTile = yOffset * mapWidth + xOffset;
+        xLastOffset = xOffset + noOfXTiles;
+        yLastOffset = yOffset + noOfYTiles;
+        lastTile = yLastOffset * mapWidth + xLastOffset;
+        console.log('xOffset' + xOffset + 'yOffset' + yOffset + 'currentTile' + currentTile + 'xLastOffset' + xLastOffset + 'yLastOffset' + yLastOffset + 'lastTile' + lastTile);
+        while (currentTile <= lastTile) {
+            canvasX = pix32 * xCoordinate;
+            canvasY = pix32 * yCoordinate;
+            if ((tileCount % (noOfXTiles + 1)) == 0) {
+                xCoordinate = 0;
+                yCoordinate++;
+            } else {
+                xCoordinate++;
+            }
 
-    }else if(((x-width) > mapMinX) && ((x+width) < mapMaxX) && ((y-height) <= mapMinY) && ((y+height) < mapMaxY)){
-        console.log('block2');
-        if(widthOffset>width){
-            xOffset = parseInt(((x-screenWidth)/pix32),10);
-        }else {
-            xOffset = parseInt(((x)/pix32),10);
+            tileCount++;
+            if (xTilePosition == (noOfXTiles + 1)) {
+                xTilePosition = 0;
+                yOffset++;
+                currentTile = yOffset * mapWidth + xOffset;
+            }
+            drawTile(currentTile, canvasX, canvasY);
+            xTilePosition++;
+            currentTile++;
         }
-        yOffset = 0;
-        currentTile = yOffset*mapWidth + xOffset;
-        xLastOffset = xOffset + parseInt((screenWidth)/pix32,10);
-        yLastOffset = yOffset + parseInt((screenHeight)/pix32,10);
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }else if(((x-width) > mapMinX) && ((x+width) >= mapMaxX) && ((y-height) <= mapMinY) && ((y+height) < mapMaxY)){
-        console.log('block3');
-        console.log('block3x'+x);
-        yOffset = 0;
-        if(widthOffset>width){
-            xLastOffset = mapWidth - parseInt(((screenWidth)/pix32),10);
-        }else {
-            xLastOffset = mapWidth;
-        }
-        xOffset = xLastOffset - parseInt(((screenWidth)/pix32),10);
-        yLastOffset = yOffset + parseInt((screenHeight)/pix32,10);
-        currentTile = yOffset*mapWidth + xOffset;
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }else if(((x-width) <= mapMinX) && ((x+width) < mapMaxX) && ((y-height) > mapMinY) && ((y+height) < mapMaxY)){
-         console.log('block4');
-        if(heightOffset>height){
-            yOffset = parseInt(((y-screenHeight)/pix32),10);
-        }else {
-            yOffset = parseInt(((y)/pix32),10);
-        }
-        xOffset = 0;
-        // yOffset = parseInt(((y-height)/pix32),10);
-        currentTile = yOffset*mapWidth + xOffset;
-        xLastOffset = xOffset + parseInt((screenWidth)/pix32,10);
-        yLastOffset = yOffset + parseInt((screenHeight)/pix32,10);
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }/*else if(((x-width) > mapMinX) && ((x+width) < mapMaxX) && ((y-height) > mapMinY) && ((y+height) < mapMaxY)){
-        xOffset = parseInt(((x-width)/pix32),10);
-        yOffset = parseInt(((y-height)/pix32),10);
-        currentTile = yOffset*mapWidth + xOffset;
-        xLastOffset = xOffset + parseInt((screenWidth)/pix32,10);
-        yLastOffset = yOffset + parseInt((screenHeight)/pix32,10);
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }else if(((x-width) > mapMinX) && ((x+width) >= mapMaxX) && ((y-height) > mapMinY) && ((y+height) < mapMaxY)){
-        yOffset = parseInt(((y-height)/pix32),10);
-        xLastOffset = mapWidth;
-        yLastOffset = yOffset + parseInt((screenHeight)/pix32,10);
-        xOffset = xLastOffset - parseInt(((screenWidth)/pix32),10);
-        currentTile = yOffset*mapWidth + xOffset;
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }else if(((x-width) <= mapMinX) && ((x+width) < mapMaxX) && ((y-height) > mapMinY) && ((y+height) >= mapMaxY)){
-        xOffset = 0;
-        yLastOffset = mapHeight;
-        yOffset = mapHeight - parseInt(((screenHeight)/pix32),10);
-        currentTile = yOffset*mapWidth + xOffset;
-        xLastOffset = xOffset + parseInt((screenWidth)/pix32,10);
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }else if(((x-width) > mapMinX) && ((x+width) < mapMaxX) && ((y-height) > mapMinY) && ((y+height) >= mapMaxY)){
-        xOffset = parseInt(((x-width)/pix32),10);
-        yLastOffset = mapHeight;
-        yOffset = mapHeight - parseInt(((screenHeight)/pix32),10);
-        currentTile = yOffset*mapWidth + xOffset;
-        xLastOffset = xOffset + parseInt((screenWidth)/pix32,10);
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }else if(((x-width) > mapMinX) && ((x+width) >= mapMaxX) && ((y-height) > mapMinY) && ((y+height) >= mapMaxY)){
-        xLastOffset = mapWidth;
-        yLastOffset = mapHeight;
-        xOffset = mapWidth - parseInt(((screenWidth)/pix32),10);
-        yOffset = mapHeight - parseInt(((screenHeight)/pix32),10);
-        currentTile = yOffset*mapWidth + xOffset;
-        lastTile = yLastOffset*mapWidth + xLastOffset;
-    }*/
-
-    while(currentTile<=lastTile){
-        canvasX = pix32 * xCoordinate;
-        canvasY = pix32 * yCoordinate;
-        if ((tileCount % noOfXTiles) == 0) {
-            xCoordinate = 0;
-            yCoordinate++;
-        } else {
-            xCoordinate++;
-        }
-
-        tileCount++;
-        if(xTilePosition == noOfXTiles){
-           xTilePosition = 0;
-           yOffset++;
-           currentTile = yOffset*mapWidth + xOffset;
-       }   
-       drawTile(currentTile,canvasX,canvasY);
-       xTilePosition++;
-       currentTile++;
-   } 
-}
+    }
 }
 
 
-drawTile = function(currentTile,canvasX,canvasY){
+drawTile = function(currentTile, canvasX, canvasY) {
 
-    var imageWidth =80;
+    var imageWidth = 80;
     var imgId = mapArray[currentTile];
     var imgRow = 0;
     var imgColumn = 0;
-    // var canvasX = 0;
-    // var canvasY = 0;
-    // canvasX = (currentTile%mapWidth)*pix32;
-    // canvasY = parseInt(currentTile/mapWidth,10)*pix32;
     imgRow = parseInt(imgId / imageWidth, 10);
-    
+
     if ((imgId % imageWidth) == 0) {
         imgColumn = imageWidth;
     } else {
@@ -198,6 +114,5 @@ drawTile = function(currentTile,canvasX,canvasY){
     }
     imgX = (imgColumn - 1) * pix32;
     imgY = imgRow * pix32;
-    // console.log(imgId+'ami'+canvasX+'t'+canvasY+'t'+imgX+'t'+imgY);
-    ctx2.drawImage(mapImage, imgX, imgY,pix32,pix32,canvasX,canvasY,pix32,pix32);
+    ctx2.drawImage(mapImage, imgX, imgY, pix32, pix32, canvasX, canvasY, pix32, pix32);
 }

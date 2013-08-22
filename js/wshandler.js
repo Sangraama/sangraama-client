@@ -89,10 +89,10 @@ window.onload = function() {
   mapImage.src = 'assert/map/mapImage.jpg';
   player.id = Math.floor(Math.random() * 101);
   // player.x = Math.floor(Math.random() * 900);
-  // player.x = Math.floor(Math.random() * 49 + 950); //create at edge
-  player.x = 9000;
-  player.y = 50;
-  // player.y = Math.floor(Math.random() * 100) + 300;
+  player.x = Math.floor(Math.random() * 49 + 950); //create at edge
+  // player.x = 10000;
+  // player.y = 10000;
+  player.y = Math.floor(Math.random() * 100) + 300;
   drawRotatedImage(ship, player);
 
   // Initialize AIO handler
