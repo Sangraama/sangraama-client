@@ -4,6 +4,8 @@ var playerObject;
 var scanvas;
 var gEngine;
 var aoihandler;
+var mapLoader;
+
 // var ctx;
 var dx = 5;
 var rA = 3;
@@ -57,8 +59,7 @@ var sCanvas = function() {
   this.HEIGHT = 500;
 };
 
-$(document)
-  .ready(function() {
+$(document).ready(function() {
 
   });
 
@@ -69,6 +70,8 @@ window.onload = function() {
   gEngine = new GraphicEngine();
   // gEngine.init();
   // gEngine.simulate();
+  mapLoader = new MapLoader();
+  mapLoader.loadMap();
   canvas = document.getElementById('layer2');
   canvas2 = document.getElementById('layer1');
   ctx = canvas.getContext("2d");
@@ -368,8 +371,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
 function updateServer() {
   // only allow primary connection to update server
   // if (D)
-  // console.log('Send update to server '+primaryCon);
-  drawMap(player.x, player.y);
+  console.log('current primary connection ' + primary);
+  //console.log('Send update to server ' + primaryCon + ' ' + wsList[primaryCon].getWS().getHostAddress();
+  mapLoader.drawMap(player.x, player.y);
   wsList[primaryCon].send(JSON.stringify(player));
 }
 
