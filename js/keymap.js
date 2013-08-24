@@ -1,4 +1,3 @@
-<!-- 
 var prevKey = 0;
 
 function doKeyDown(evt) {
@@ -94,7 +93,7 @@ function doKeyUp(evt) {
       //console.log(evt.keyCode);
   }
   updateServer();
-  prevKey = 0;
+//  prevKey = 0;
 }
 
 function doMouseDown(evt) {

@@ -1,4 +1,3 @@
-<!-- //
 var D = true; // debug
 
 var wsList = new Array(10);

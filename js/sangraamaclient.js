@@ -1,4 +1,3 @@
-<!-- 
 var D = true;
 var playerObject;
 var scanvas;
@@ -80,20 +79,16 @@ window.onload = function() {
   canvas.setAttribute('height', screenSize.height - 40);
   canvas2.setAttribute('height', screenSize.height - 40);
   scanvas.HEIGHT = screenSize.height;
-  ctx.fillStyle = '#819FF7';
-  ctx.fillRect(0, 0, screenSize.width, screenSize.height);
-
   ship.src = 'img/arrow.jpg';
   bullet.src = 'img/bullet.png';
   mapImage.src = 'assert/map/mapImage.jpg';
   player.id = Math.floor(Math.random() * 101);
   // player.x = Math.floor(Math.random() * 900);
   player.x = Math.floor(Math.random() * 49 + 950); //create at edge
-  // player.x = 10000;
-  // player.y = 10000;
+  // player.x = 50;
+  // player.y = 50;
   player.y = Math.floor(Math.random() * 100) + 300;
   drawRotatedImage(ship, player);
-
   // Initialize AIO handler
   aoihandler = new aoihandler();
   aoihandler.init();

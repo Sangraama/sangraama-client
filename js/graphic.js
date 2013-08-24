@@ -41,11 +41,6 @@ function GraphicEngine() {
     ctx.stroke();
   }
 
-  this.simulate = function() {
-    z = window.setInterval(this.processObjects, 20);
-
-  }
-
   this.processObjects = function() {
     var screenHeight = canvas.getAttribute('height');
     var screenWidth = canvas.getAttribute('width');

@@ -1,5 +1,3 @@
-<!--
-
 function aoihandler() {
   var tiles = new Array();
 

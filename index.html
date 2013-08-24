@@ -54,6 +54,7 @@
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();
+      mapLoader.drawMap(player.x, player.y);
   });
 
   $('#stop').click(function() {

@@ -1,8 +1,6 @@
-<!--
-
 function MapLoader() {
-
   var mapArray = new Array();
+
   mapMinX = 0;
   mapMinY = 0;
   var mapMaxX = 0;
@@ -30,18 +28,7 @@ function MapLoader() {
         }
       });
 
-      var imageWidth = 80;
-      var imageHeight = 50;
-      var xCoordinate = 0;
-      var yCoordinate = 0;
       var tileCount = 0;
-      var imgX = 0;
-      var imgRow = 0;
-      var imgColumn = 0;
-      var imgY = 0;
-      var canvasX = 0;
-      var canvasY = 0;
-
       console.log('start' + new Date().getTime());
       $('data', xml).each(function(i) {
         $('tile', this).each(function(j) {
@@ -93,8 +80,8 @@ function MapLoader() {
         } else {
           xCoordinate++;
         }
-
         tileCount++;
+
         if (xTilePosition == (noOfXTiles + 1)) {
           xTilePosition = 0;
           yOffset++;
@@ -108,8 +95,8 @@ function MapLoader() {
   }
 
   this.drawTile = function(currentTile, canvasX, canvasY) {
-
     var imageWidth = 80;
+
     var imgId = mapArray[currentTile];
     var imgRow = 0;
     var imgColumn = 0;
@@ -120,9 +107,9 @@ function MapLoader() {
     } else {
       imgColumn = imgId % imageWidth;
     }
-    imgX = (imgColumn - 1) * pix32;
-    imgY = imgRow * pix32;
+    var imgX = (imgColumn - 1) * pix32;
+    var imgY = imgRow * pix32;
     ctx2.drawImage(mapImage, imgX, imgY, pix32, pix32, canvasX, canvasY, pix32, pix32);
+    console.log('zzz' + pix32);
   }
 }
-//-->
