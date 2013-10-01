@@ -7,14 +7,14 @@ function doKeyDown(evt) {
       /* Up arrow was pressed */
       player.v_y = -1;
       player.v_a = 270;
-      if (D)
+      // if (D)
         console.log('up pressed');
       break;
     case 40:
       /* Down arrow was pressed */
       player.v_y = 1;
       player.v_a = 90;
-      if (D)
+      // if (D)
         console.log('down pressed');
       break;
     case 37:
