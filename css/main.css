@@ -1,0 +1,21 @@
+.score-panel {
+    float: right;
+    font-size: 16px;
+    margin-top: 12px;
+}
+
+.score-panel label {
+    display: inline;
+    float: left;
+}
+
+.score-panel label .progress {
+    width: 50px;
+    float: left;
+    margin-left: 5px;
+    margin-bottom: 0px;
+}
+
+#score {
+    margin-right: 20px;
+}
