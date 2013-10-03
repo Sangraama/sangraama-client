@@ -83,6 +83,15 @@ function aoihandler() {
   this.getTiles = function() {
     return tiles;
   }
+  // Get AOI details
+  this.getAOI = function(){
+    return this.aoi;
+  }
+  // Set AOI details
+  this.setAOI = function(w,h){
+    this.aoi.aoi_w = w;
+    this.aoi.aoi_h = h;
+  }
   // Remove set of tiles from the web socket
   this.removeTiles = function(wsIndex) {
     tiles = _.reject(tiles, function(val) {

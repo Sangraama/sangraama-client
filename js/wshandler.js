@@ -116,27 +116,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
 
-      /*var p = _.find(data, function(val) {
-        console.log(player.userID + ' ' + val.userID);
-        return val.userID == player.userID;
-      });
-      //console.log('player ' + p.dx);
-      var want = aoihandler.isFulfillAOI(p.dx, p.dy);
-      _.map(want, function(val, k) {
-        // Ask for AOI
-        wsList[wsIndex].send(JSON.stringify({
-          type: 2,
-          userID: player.userID,
-          x: val.x,
-          y: val.y
-        }));
-      });*/
-      // clear();
       // Can be replace by map
       for (var index in data) {
         var inPlayer = data[index];
-
-        //console.log(data);
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
@@ -145,6 +127,18 @@ function WebSocketHandler(hostAddress, wsIndex) {
             if (player.userID == inPlayer.userID) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
+              
+              // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in client-side
+              /* var want = aoihandler.isFulfillAOI(p.dx, p.dy);
+              _.map(want, function(val, k) {
+                // Ask for AOI
+                wsList[wsIndex].send(JSON.stringify({
+                  type: 2,
+                  userID: player.userID,
+                  x: val.x,
+                  y: val.y
+                }));
+              }); */
             }
             addPlayerToGraphicEngine(inPlayer);
             var bullets = inPlayer.bulletDeltaList;
