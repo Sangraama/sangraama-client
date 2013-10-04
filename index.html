@@ -1,105 +1,100 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Sangraama:සංග්‍රාම</title>
-<!-- Page metadata -->
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description" content="Game Client">
-<meta name="author" content="">
-
-<!-- Add style sheets and responsive design -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
-<!-- Add java script libraries -->
-<!-- <script type="text/javascript" src="js/lib/jquery-1.9.1.js"></script> -->
-<script type="text/javascript" src="js/lib/jquery-2.0.2.js"></script>
-<script type="text/javascript" src="js/lib/bootstrap.js"></script>
-<script type="text/javascript" src="js/lib/underscore.js"></script>
-<script type="text/javascript" src="js/lib/jquery.json-2.4.min.js"></script>
-<script type="text/javascript" src="js/lib/jquery.websocket-0.0.4.js"></script>
-<script type="text/javascript" src="js/lib/box2d.js"></script>
-<!-- Add Sangraama customize java scripts -->
-<script type="text/javascript" src="js/sangraamaclient.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/graphic.js"></script>
-<script type="text/javascript" src="js/aoihandler.js"></script>
-<script type="text/javascript" src="js/wshandler.js"></script>
-<script type="text/javascript" src="js/mapLoader.js"></script>
-<script type="text/javascript" src="js/keymap.js"></script>
-</head>
-
-<body id="body">
-<div class="navbar" style = "margin-bottom: 42px;">
-    <div class="navbar-inner">
-        <a class="brand" href="#">සංග්‍රාම</a>
-        <div class="control-group">
-            <button id="start" class="btn btn-warning" type="button">Start Game</button>
-            <button id="stop" class="btn btn-danger" type="button">Stop Game</button>
-
-            <div class="score-panel">
-                <label>Score : </label>
-                <label id="score">100</label>
-
-                <label>Life  </label>
-                <label id="life"><div class="progress progress-info">
-                    <div id="life_progress" class="bar" style="width: 20%"></div>
-                </div></label>
-
-            </div>
-        </div>
+<!-----Meta----->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Demo:: Beautiful HTML login Form</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="description" content="Tutorial on creating a beautiful Login Form using HTML, CSS3 and jQuery" />
+    <meta name="keywords" content="login form, psd, html, css3, jquery, tutorial" />
+    <meta name="author" content="Dzyngiri" />
+    
+<!--ANALYTICS CODE-->   
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-29231762-1']);
+    _gaq.push(['_setDomainName', 'dzyngiri.com']);
+    _gaq.push(['_trackPageview']);
+  
+    (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
 
 
-    </div>
-</div>
+<!--Stylesheets-->
+<link href="css/login.css" rel="stylesheet" type="text/css" />
+<link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
 
-<div style="position: relative;">
-    <canvas id="layer1" style="position: absolute; z-index: 0; margin-top:-40px;"></canvas>
-    <canvas id="layer2" style="position: absolute; z-index: 1; margin-top:-40px;"></canvas>
-</div>
-
-
+<!--Scripts-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<!--Sliding icons-->
 <script type="text/javascript">
-  $('#start').click(function() {
-      player.userID = Math.floor(Math.random() * 1000) + 1;
-      console.log('player id:' + player.id);
-      var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama-server/sangraama/player';
-      // start wsList with 0 index
-      wsList[0] = new WebSocketHandler(URL, 0);
-      wsList[0].connect();
-      mapLoader.drawMap(player.x, player.y);
+$(document).ready(function() {
+  $(".username").focus(function() {
+    $(".user-icon").css("left","-48px");
   });
-
-  $('#stop').click(function() {
-    // Close all opened websockets
-    for ( var i = 0; i < 10; i++) {
-      if (wsList[i] != null || wsList[i] != undefined) {
-        if (primaryCon == i) {
-          primaryCon--;
-        }
-        console.log('Stopped the connection ' + wsList[i].getHostAddress());
-        wsList[i].close(i);// try closing connection
-      }
-    }
-    primaryCon = 0;
+  $(".username").blur(function() {
+    $(".user-icon").css("left","0px");
   });
+  
+  $(".password").focus(function() {
+    $(".pass-icon").css("left","-48px");
+  });
+  $(".password").blur(function() {
+    $(".pass-icon").css("left","0px");
+  });
+});
 </script>
+
+</head>
+<body>
+
+  <div class="heading">
+      Sangraama : සංග්‍රාම
+    </div>
+    
+<div id="wrapper">
+  <!--Sliding icons-->
+    <div class="user-icon"></div>
+    <div class="pass-icon"></div>
+    <!--END Sliding icons-->
+
+<!--login form inputs-->
+<form name="login-form" class="login-form" action="" method="post">
+
+  <!--Header-->
+    <div class="header">
+    <h1>Login Form</h1>
+    <span>Please login by using this login form or if you dont have an account, you can Register!</span>
+    </div>
+    <!--END header-->
+  
+  <!--Input fields-->
+    <div class="content">
+  <!--USERNAME--><input name="username" type="text" class="input username" placeholder="Username" /><!--END USERNAME-->
+    <!--PASSWORD--><input name="password" type="password" class="input password" placeholder="Password" /><!--END PASSWORD-->
+    </div>
+    <!--END Input fields-->
+    
+    <!--Buttons-->
+    <div class="footer">
+    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="window.location.href='play.html'" /><!--END Login button-->
+    <!--Register button--><input type="submit" name="submit" value="Register" class="register" /><!--END Register button-->
+    </div>
+    <!--END Buttons-->
+
+</form>
+<!--end login form-->
+
+</div>
+
+<!--bg gradient--><div class="gradient"></div><!--END bg gradient-->
+
 
 
 </body>
 </html>
-
-
-<!--
-to update life progress
-   $("#life_progress").css({"width": "50%"})
-
-to remove progress current css class
-    $("#life_progress").parent(".progress").removeClass("progress-info")
-
-to add new css class to progress
-    $("#life_progress").parent(".progress").addClass("progress-success")
-
--->
