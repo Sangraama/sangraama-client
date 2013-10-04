@@ -90,8 +90,8 @@
     // player.x = 50;
     // player.y = 50;
     player.y = Math.floor(Math.random() * 100) + 300;
-    player.w=screenSize.width;
-    player.h=screenSize.height;
+    player.w=canvas.getAttribute('width');
+    player.h=canvas.getAttribute('height');
     drawRotatedImage(ship, player);
     // Initialize AIO handler
     aoihandler = new aoihandler();

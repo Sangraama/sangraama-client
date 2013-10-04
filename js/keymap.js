@@ -44,6 +44,7 @@ function doKeyDown(evt) {
       if (D)
         console.log('Player shoot');
       player.s = 1;
+      playShoot();
       break;
     default:
       //console.log(evt.keyCode);
@@ -137,7 +138,10 @@ function doMouseUp(evt) {
         console.log('You have a strange mouse');
   }
 }
-
+function playShoot(){
+  var clickSound = new Audio('audio/shoot.mp3');
+clickSound.play();
+}
 window.addEventListener('keydown', doKeyDown, true);
 window.addEventListener('keyup', doKeyUp, true);
 window.addEventListener('mousedown', doMouseDown, true);

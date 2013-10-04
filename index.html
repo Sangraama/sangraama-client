@@ -82,7 +82,7 @@ $(document).ready(function() {
     
     <!--Buttons-->
     <div class="footer">
-    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="window.location.href='play.html'" /><!--END Login button-->
+    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="connect()" /><!--END Login button-->
     <!--Register button--><input type="submit" name="submit" value="Register" class="register" /><!--END Register button-->
     </div>
     <!--END Buttons-->
@@ -93,7 +93,44 @@ $(document).ready(function() {
 </div>
 
 <!--bg gradient--><div class="gradient"></div><!--END bg gradient-->
+<script type="text/javascript">
 
+  var ws;
+  function connect() {
+    
+    if ('MozWebSocket' in window) {
+      ws = new MozWebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+    } else if ('WebSocket' in window) {
+      ws = new WebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+    } else {
+      alert('Your browser does not support WebSockets');
+    }
+    ws.onopen = function() {
+      console.log('Connection opened');
+    };
+    ws.onmessage = function(event) {
+      var players = JSON.parse(event.data);
+      console.log(event.data);
+      clear();
+      for ( var index in players) {
+        var inPlayer = players[index];
+        if (inPlayer.type == 1) {
+          drawRotatedImage(ship, inPlayer);
+        } else if (player.id == inPlayer.id) {
+          ws.close();
+          connect(inPlayer.url);
+        }
+      }
+    };
+    ws.onclose = function() {
+      console.log('Connection closed');
+    };
+    ws.onerror = function(event) {
+      console.log('Connection error');
+    };
+    window.location.href='play.html';
+  }
+  </script>
 
 
 </body>
