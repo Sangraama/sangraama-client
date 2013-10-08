@@ -129,8 +129,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
               player.y = inPlayer.dy;
               
               // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in client-side
-              /* var want = aoihandler.isFulfillAOI(p.dx, p.dy);
+              var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
+              // console.log('want data ' + want);
               _.map(want, function(val, k) {
+                console.log('want area ' + val.x + ' : ' + val.y);
                 // Ask for AOI
                 wsList[wsIndex].send(JSON.stringify({
                   type: 2,
@@ -138,7 +140,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   x: val.x,
                   y: val.y
                 }));
-              }); */
+              });
             }
             addPlayerToGraphicEngine(inPlayer);
             var bullets = inPlayer.bulletDeltaList;
@@ -203,7 +205,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 3:
             /* connecting to another server and get updates */
             var info = JSON.parse(inPlayer.info);
-            console.log('Type 3 msg. ' + info.url);
+            console.log('Type 3 msg. ' + info.url + ' details of the server which need to get updates to fulfill AOI');
             var i = 0;
             do { // search from begining of list is there any available slot
               // console.log('Times ' + i + wsList[i].hostAddress);

@@ -1,5 +1,7 @@
 function aoihandler() {
   var tiles = new Array();
+  var aoiCallTimeout = 30;
+  var cntDown = aoiCallTimeout;
 
   var tile = {
     //tileId: '',
@@ -31,6 +33,11 @@ function aoihandler() {
   // Check whether current AIO is fulfill by server, otherwise send details about missing locations
   this.isFulfillAOI = function(x, y) {
     var unFil = new Array();
+    // if already requested, send null output
+    if(isAlreadyReq.apply(this)) {
+      return unFil;
+    } // else continue ...
+
     // check left down corner
     if (this.isSubTile(x - aoi.aoi_w / 2, y - aoi.aoi_h / 2) < 0) {
       unFil = _.union(unFil, (function() {
@@ -67,7 +74,10 @@ function aoihandler() {
         y: y + aoi.aoi_h / 2
       }));
     }
-
+    // if array is empty, reset the timer
+    if (_.isEmpty(unFil)) {
+      cntDown = aoiCallTimeout
+    }
     return unFil;
   }
   // Add set of new tiles
@@ -84,11 +94,11 @@ function aoihandler() {
     return tiles;
   }
   // Get AOI details
-  this.getAOI = function(){
+  this.getAOI = function() {
     return this.aoi;
   }
   // Set AOI details
-  this.setAOI = function(w,h){
+  this.setAOI = function(w, h) {
     this.aoi.aoi_w = w;
     this.aoi.aoi_h = h;
   }
@@ -97,6 +107,19 @@ function aoihandler() {
     tiles = _.reject(tiles, function(val) {
       return val.wsIndex == wsIndex;
     });
+  }
+  // Set Timeout, if client already send request wait until process it
+
+  function isAlreadyReq() {
+    if (aoiCallTimeout == cntDown) {
+      cntDown--;
+      return false;
+    } else if (cntDown == 0) {
+      cntDown = aoiCallTimeout;
+    } else {
+      cntDown--;
+    }
+    return true;
   }
 };
 // -->

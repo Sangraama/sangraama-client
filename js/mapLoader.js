@@ -110,6 +110,6 @@ function MapLoader() {
     var imgX = (imgColumn - 1) * pix32;
     var imgY = imgRow * pix32;
     ctx2.drawImage(mapImage, imgX, imgY, pix32, pix32, canvasX, canvasY, pix32, pix32);
-    console.log('zzz' + pix32);
+    // console.log('zzz' + pix32);
   }
 }

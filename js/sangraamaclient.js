@@ -141,7 +141,7 @@
       player.y = inPlayer.dy;
       player.angle = inPlayer.da;
       playerList[inPlayer.userID] = player;
-       console.log('player angle'+inPlayer.da);
+      // console.log('player angle'+inPlayer.da);
     } else {
       var graphicPlayer = new GraphicObject();
       graphicPlayer.x = inPlayer.dx;
