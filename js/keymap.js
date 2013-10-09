@@ -6,38 +6,38 @@ function doKeyDown(evt) {
     case 38:
       /* Up arrow was pressed */
       player.v_y = -1;
-      player.v_a = 270;
+      player.a = 270;
       // if (D)
-        console.log('up pressed');
+      console.log('up pressed');
       break;
     case 40:
       /* Down arrow was pressed */
       player.v_y = 1;
-      player.v_a = 90;
+      player.a = 90;
       // if (D)
-        console.log('down pressed');
+      console.log('down pressed');
       break;
     case 37:
       /* Left arrow was pressed */
       player.v_x = -1;
-      player.v_a = 180;
+      player.a = 180;
       // if (D)
       // console.log('left pressed');
       break;
     case 39:
       /* Right arrow was pressed */
       player.v_x = 1;
-      player.v_a = 0;
+      player.a = 0;
       // if (D)
       // console.log('right pressed');
       break;
     case 82:
       /* R was pressed */
-      player.v_a += 1;
+      player.da = 1;
       break;
     case 76:
       /* L was pressed */
-      player.v_a += (360 - 1);
+      player.da = -1;
       break;
     case 32:
       /* Space was pressed */
@@ -49,10 +49,11 @@ function doKeyDown(evt) {
     default:
       //console.log(evt.keyCode);
   }
-  // if (prevKey != evt.keyCode) {
-  // prevKey = evt.keyCode;
-  updateServer();
-  // }
+  if (prevKey != evt.keyCode) {
+    prevKey = evt.keyCode;
+    console.log('testiiiii');
+    updateServer();
+  }
 }
 
 function doKeyUp(evt) {
@@ -61,26 +62,26 @@ function doKeyUp(evt) {
     case 38:
       /* Up arrow was released */
       player.v_y = 0;
-      // player.v_a = 0;
+      // player.a = 0;
       break;
     case 40:
       /* Down arrow was released */
       player.v_y = 0;
-      // player.v_a = 0;
+      // player.a = 0;
       break;
     case 37:
       /* Left arrow was released */
       player.v_x = 0;
-      // player.v_a = 0;
+      // player.a = 0;
       break;
     case 39:
       /* Right arrow was released */
       player.v_x = 0;
-      // player.v_a = 0;
+      // player.a = 0;
       break;
     case 82:
       /* R was released */
-      player.v_a = player.v_a;
+      player.da = 0;
       break;
     case 32:
       /* Space was released */
@@ -88,13 +89,13 @@ function doKeyUp(evt) {
       break;
     case 76:
       /* L was released */
-      player.v_a = player.v_a;
+      player.da = 0;
       break;
     default:
       //console.log(evt.keyCode);
   }
   updateServer();
-//  prevKey = 0;
+  prevKey = 0;
 }
 
 function doMouseDown(evt) {
@@ -138,9 +139,10 @@ function doMouseUp(evt) {
         console.log('You have a strange mouse');
   }
 }
-function playShoot(){
+
+function playShoot() {
   var clickSound = new Audio('audio/shoot.mp3');
-clickSound.play();
+  clickSound.play();
 }
 window.addEventListener('keydown', doKeyDown, true);
 window.addEventListener('keyup', doKeyUp, true);

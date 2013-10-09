@@ -127,7 +127,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             if (player.userID == inPlayer.userID) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
-              
+              player.a = inPlayer.da;
               // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in client-side
               var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
               // console.log('want data ' + want);

@@ -29,12 +29,13 @@
     userID: 1,
     x: 0,
     y: 0,
-    w:0,
-    h:0,
+    w: 0,
+    h: 0,
     angle: 0,
     v_x: 0,
     v_y: 0,
-    v_a: 0,
+    a: 0, //actual angle
+    da: 0, // delta angle
     s: 0,
     aoi_w: 200,
     aoi_h: 200
@@ -90,8 +91,8 @@
     // player.x = 50;
     // player.y = 50;
     player.y = Math.floor(Math.random() * 100) + 300;
-    player.w=canvas.getAttribute('width');
-    player.h=canvas.getAttribute('height');
+    player.w = canvas.getAttribute('width');
+    player.h = canvas.getAttribute('height');
     drawRotatedImage(ship, player);
     // Initialize AIO handler
     aoihandler = new aoihandler();
@@ -160,13 +161,13 @@
     var bullet = bulletList[inBullet.id];
 
     if (typeof bullet !== "undefined") {
-      if(inBullet.type==2){
-      bulletList.splice(inBullet.id);
-      }else{
-      bullet.x = inBullet.dx % screenWidth;
-      bullet.y = inBullet.dy % screenHeight;
-      bullet.angle = inBullet.a;
-      bulletList[inBullet.id] = bullet;
+      if (inBullet.type == 2) {
+        bulletList.splice(inBullet.id);
+      } else {
+        bullet.x = inBullet.dx % screenWidth;
+        bullet.y = inBullet.dy % screenHeight;
+        bullet.angle = inBullet.a;
+        bulletList[inBullet.id] = bullet;
       }
     } else {
       var graphicBullet = new GraphicObject();
