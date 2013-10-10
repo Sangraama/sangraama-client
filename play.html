@@ -62,6 +62,7 @@
 
 
 <script type="text/javascript">
+  $('#stop').prop('disabled',true).blur();
   $('#start').click(function() {
       player.userID = Math.floor(Math.random() * 1000) + 1;
       console.log('player id:' + player.id);
@@ -70,7 +71,12 @@
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();
+      // Clear the map before start game
+      
       mapLoader.drawMap(player.x, player.y);
+      // Disable start and enable stop game
+      $('#start').prop('disabled',true).blur();
+      $('#stop').prop('disabled',false);
   });
 
   $('#stop').click(function() {
@@ -85,6 +91,9 @@
       }
     }
     primaryCon = 0;
+    // Disable stop and enable start game
+    $('#stop').prop('disabled',true);
+    $('#start').prop('disabled',false);
   });
 </script>
 
