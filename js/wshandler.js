@@ -110,8 +110,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
        */
       console.log("Connection opened");
       // Set AOI in server
-      playeraoi.userID = player.userID;
-      wsList[wsIndex].send(JSON.stringify(playeraoi));
+      //playeraoi.userID = player.userID;
+      //wsList[wsIndex].send(JSON.stringify(playeraoi));
+      wsList[wsIndex].send(JSON.stringify(aoihandler.getAOIToJSON()));
     };
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
@@ -198,7 +199,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 console.log('Set primary connections as ' + prevPrimarycon + ' << primary:' + primaryCon + ' <<' + nextPrimaryCon);
 
                 wsList[primaryCon].send(JSON.stringify(player));
-                wsList[primaryCon].send(JSON.stringify(playeraoi));
+                wsList[primaryCon].send(JSON.stringify(aoihandler.getAOIToJSON()));
                 break;
               } else if (wsList[i].isReady() == 3) { // if previous ws is
                 // closed

@@ -34,7 +34,7 @@ function aoihandler() {
   this.isFulfillAOI = function(x, y) {
     var unFil = new Array();
     // if already requested, send null output
-    if(isAlreadyReq.apply(this)) {
+    if (isAlreadyReq.apply(this)) {
       return unFil;
     } // else continue ...
 
@@ -93,15 +93,26 @@ function aoihandler() {
   this.getTiles = function() {
     return tiles;
   }
+  
   // Get AOI details
   this.getAOI = function() {
     return this.aoi;
+  }
+  // Get the AOI which can send to server
+  this.getAOIToJSON = function(userID) {
+    return {
+      type: 3,
+      userID: userID,
+      w: this.aoi.aoi_w,
+      h: this.aoi.aoi_h
+    }
   }
   // Set AOI details
   this.setAOI = function(w, h) {
     this.aoi.aoi_w = w;
     this.aoi.aoi_h = h;
   }
+
   // Remove set of tiles from the web socket
   this.removeTiles = function(wsIndex) {
     tiles = _.reject(tiles, function(val) {

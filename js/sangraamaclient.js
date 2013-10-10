@@ -29,16 +29,11 @@
     userID: 1,
     x: 0,
     y: 0,
-    w: 0,
-    h: 0,
-    angle: 0,
     v_x: 0,
     v_y: 0,
     a: 0, //actual angle
     da: 0, // delta angle
-    s: 0,
-    aoi_w: 200,
-    aoi_h: 200
+    s: 0
   };
   var passPlayer = {
     type: 2,
@@ -46,12 +41,12 @@
     info: null,
     signedInfo: null
   };
-  var playeraoi = {
+/*  var playeraoi = {
     type: 3,
     userID: 0,
     aoi_w: 200,
     aoi_h: 200
-  };
+  }; to be removed */
 
   // Settings and functionalities of client-side canvas
   var sCanvas = function() {
