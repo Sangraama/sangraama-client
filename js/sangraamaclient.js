@@ -4,7 +4,7 @@
   var gEngine;
   var aoihandler;
   var mapLoader;
-
+  var clickSound;
   // var ctx;
   var dx = 5;
   var rA = 3;
@@ -63,6 +63,7 @@
 
   // Setup client side
   window.onload = function() {
+    clickSound = new Audio('audio/shoot.mp3');
     scanvas = new sCanvas();
     // Gaphic engine
     gEngine = new GraphicEngine();
@@ -104,7 +105,6 @@
     // if (D)
     console.log('current primary connection ' + primaryCon);
     //console.log('Send update to server ' + primaryCon + ' ' + wsList[primaryCon].getWS().getHostAddress();
-    mapLoader.drawMap(player.x, player.y);
     wsList[primaryCon].send(JSON.stringify(player));
   }
 

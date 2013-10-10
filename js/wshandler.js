@@ -115,7 +115,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
     };
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
-
       // Can be replace by map
       for (var index in data) {
         var inPlayer = data[index];
@@ -128,6 +127,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
               player.a = inPlayer.da;
+              var life = inPlayer.health + '%';
+              var score = inPlayer.score;
+              $("#life_progress").css({
+                "width": life
+              })
+              $("#score").text(score);
+              mapLoader.drawMap(player.x, player.y);
               // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in client-side
               var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
               // console.log('want data ' + want);

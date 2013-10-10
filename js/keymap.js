@@ -51,7 +51,6 @@ function doKeyDown(evt) {
   }
   if (prevKey != evt.keyCode) {
     prevKey = evt.keyCode;
-    console.log('testiiiii');
     updateServer();
   }
 }
@@ -141,7 +140,6 @@ function doMouseUp(evt) {
 }
 
 function playShoot() {
-  var clickSound = new Audio('audio/shoot.mp3');
   clickSound.play();
 }
 window.addEventListener('keydown', doKeyDown, true);
