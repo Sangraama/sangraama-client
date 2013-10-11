@@ -127,7 +127,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
         switch (inPlayer.type) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
-            //console.log(inPlayer);
+            //console.log(TAG + 'case1: '); console.log(inPlayer);
             if (player.userID == inPlayer.userID) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
@@ -138,9 +138,17 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 "width": life
               })
               $("#score").text(score);
-              mapLoader.drawMap(player.x, player.y);
+              mapLoader.drawMap(inPlayer.dx, inPlayer.dy);
+
+              // check whether play is inside the virual box. If not, set virtual point as user current location
+              if (!aoihandler.isInVBox(inPlayer.dx, inPlayer.dy)) {
+                console.log(TAG + 'player is outside of the virtual box');
+                //console.log(TAG + 'case1: '); console.log(inPlayer);
+                wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+              }
+
               // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in client-side
-              var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
+              /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
               // console.log('want data ' + want);
               _.map(want, function(val, k) {
                 console.log('want area ' + val.x + ' : ' + val.y);
@@ -151,8 +159,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   x: val.x,
                   y: val.y
                 }));
-              });
+              });*/
+
             }
+
             addPlayerToGraphicEngine(inPlayer);
             var bullets = inPlayer.bulletDeltaList;
             //          gEngine.drawRotatedImage(ship, inPlayer);
@@ -242,7 +252,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* close existing connection */
             break;
           case 10:
-            /* set current absolute location of client on the map */
+            /* set virtual point absolute location of client on the map (sync data) */
+            console.log(TAG + 'case 10: '); console.log(inPlayer);
+            aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
+            player.x = inPlayer.x;                                                                  
             break;
           case 11:
             /* set size of the tile */

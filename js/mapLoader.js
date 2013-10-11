@@ -70,7 +70,8 @@ function MapLoader() {
       xLastOffset = xOffset + noOfXTiles;
       yLastOffset = yOffset + noOfYTiles;
       lastTile = yLastOffset * mapWidth + xLastOffset;
-      console.log('xOffset' + xOffset + 'yOffset' + yOffset + 'currentTile' + currentTile + 'xLastOffset' + xLastOffset + 'yLastOffset' + yLastOffset + 'lastTile' + lastTile);
+      console.log('xOffset:' + xOffset + ' yOffset:' + yOffset + ' currentTile:' + currentTile + ' xLastOffset:' + xLastOffset +
+        ' yLastOffset:' + yLastOffset + ' lastTile:' + lastTile);
       while (currentTile <= lastTile) {
         canvasX = pix32 * xCoordinate;
         canvasY = pix32 * yCoordinate;

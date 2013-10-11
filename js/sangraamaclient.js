@@ -29,7 +29,7 @@
   var player = {
     type: 1,
     userID: 1,
-    x: 0, // have to move x,y like w & h in order to optimize. #gihan
+    x: 0, // have to move x,y like w & h in order to optimize. Otherwise we are sending them all the time. #gihan
     y: 0,
     v_x: 0,
     v_y: 0,
@@ -43,12 +43,6 @@
     info: null,
     signedInfo: null
   };
-  /*  var playeraoi = {
-    type: 3,
-    userID: 0,
-    aoi_w: 200,
-    aoi_h: 200
-  }; to be removed */
 
   // Settings and functionalities of client-side canvas
   var sCanvas = function() {
@@ -88,13 +82,12 @@
     player.x = Math.floor(Math.random() * 49 + 950); //create at edge
     // player.x = 50;
     // player.y = 50;
-    player.y = Math.floor(Math.random() * 100) + 300;
-    player.w = canvas.getAttribute('width');
-    player.h = canvas.getAttribute('height');
+    player.y = Math.floor(Math.random() * 100) + 300
     drawRotatedImage(ship, player);
     // Initialize AIO handler
     aoihandler = new aoihandler();
     aoihandler.init();
+    aoihandler.setAOI(canvas.getAttribute('width'), canvas.getAttribute('height'));
     console.log(TAG + ' initialized window onloads ... ');
   };
 

@@ -8,10 +8,6 @@ function aoihandler() {
     aoi_w: 1000,
     aoi_h: 600
   };
-  var v_point = {
-    x_v: 0, // x location of virtual point
-    y_v: 0 // y location of virtual point
-  };
   var tile = {
     //tileId: '',
     wsIndex: 0, // websocket index that holds this sub-tile
@@ -24,13 +20,14 @@ function aoihandler() {
 
   this.init = function() {
     this.aoi = {
-      aoi_w: 1000,
-      aoi_h: 600
+      aoi_w: 0,
+      aoi_h: 0
     };
     this.v_point = {
       x_v: 0,
       y_v: 0
     };
+    // this.setVBoxSize(this.aoi.aoi_w, this.aoi.aoi_h);
   }
   // Check whether it is inside a subtile
   this.isSubTile = function(x, y) {
@@ -124,6 +121,8 @@ function aoihandler() {
   this.setAOI = function(w, h) {
     this.aoi.aoi_w = w;
     this.aoi.aoi_h = h;
+    console.log(TAG + ' set AOI w:' + aoi.aoi_w + ' h:' + aoi.aoi_h + ' call setVBoxSize ...');
+    this.setVBoxSize(w, h);
   }
 
   // Remove set of tiles from the web socket
@@ -153,6 +152,10 @@ function aoihandler() {
     When player want to move out of that virtual box, whole background slides
     towards moving direction. This is method is using instead of center view. #gihan
    ***********************************************************************************/
+  var v_point = {
+    x_v: 0, // x location of virtual point
+    y_v: 0 // y location of virtual point
+  };
 
   /* The gap fraction between left side of screen edge
   and virtual box edge vise versa */
@@ -169,22 +172,34 @@ function aoihandler() {
   // parameters w : width of screen
   // h : height of screen
   this.setVBoxSize = function(w, h) {
-    this.vbox_hw = w / 2 - w * 0.2;
-    this.vbox_hh = h / 2 - h * 0.2;
-    console.log(TAG + ' vbox w:' + this.vbox_hw + ' h:' + this.vbox_hh);
+    vbox_hw = w / 2 - w * 0.2;
+    vbox_hh = h / 2 - h * 0.2;
+    console.log(TAG + ' vbox w:' + vbox_hw + ' h:' + vbox_hh);
+  }
+  // Get virtual box size
+  this.getVBoxSize = function() {
+    return {
+      vhw: vbox_hw,
+      vhh: vbox_hh
+    }
   }
   // check whether player is inside vbox
   // parameter x : player current x coordinate
   // y : player current y coordicate
-  this.isInVBox = function(x,y){
-    if (true) {};
+  this.isInVBox = function(x, y) {
+    if ((this.v_point.x_v - vbox_hw) <= x && x <= (this.v_point.x_v + vbox_hw) &&
+      (this.v_point.y_v - vbox_hh) <= y && y <= (this.v_point.y_v + vbox_hh)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-    // Set Virtual point location
+  // Set Virtual point location
   this.setVirtualPoint = function(x_v, y_v) {
     this.v_point.x_v = x_v;
     this.v_point.y_v = y_v;
-    console.log(TAG + ' x_v:' + x_v + ' y_v:' + y_v);
+    console.log(TAG + 'set virtual point x_v:' + x_v + ' y_v:' + y_v);
   }
   // Get Virtual point location
   this.getVirtualPoint = function() {
