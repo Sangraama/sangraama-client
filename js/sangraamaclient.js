@@ -145,7 +145,7 @@
       var graphicPlayer = new GraphicObject();
       graphicPlayer.x = inPlayer.dx;
       graphicPlayer.y = inPlayer.dy;
-      graphicPlayer.angle = inPlayer.da;
+      graphicPlayer.a = inPlayer.da;
       playerList[inPlayer.userID] = graphicPlayer;
       console.log('added player');
     }
@@ -164,14 +164,14 @@
       } else {
         bullet.x = inBullet.dx % screenWidth;
         bullet.y = inBullet.dy % screenHeight;
-        bullet.angle = inBullet.a;
+        bullet.a = inBullet.a;
         bulletList[inBullet.id] = bullet;
       }
     } else {
       var graphicBullet = new GraphicObject();
       graphicBullet.x = inBullet.dx % screenWidth;
       graphicBullet.y = inBullet.dy % screenHeight;
-      graphicBullet.angle = inBullet.a;
+      graphicBullet.a = inBullet.a;
       bulletList[inBullet.id] = graphicBullet;
       console.log('added bullet')
 

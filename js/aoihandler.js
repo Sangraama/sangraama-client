@@ -126,26 +126,6 @@ function aoihandler() {
     this.aoi.aoi_h = h;
   }
 
-  // Set Virtual point location
-  this.setVirtualPoint = function(x_v, y_v) {
-    this.v_point.x_v = x_v;
-    this.v_point.y_v = y_v;
-    console.log(TAG + ' x_v:' + x_v + ' y_v:' + y_v);
-  }
-  // Get Virtual point location
-  this.getVirtualPoint = function() {
-    return this.v_point;
-  }
-  // Get Virtual point which can send to server
-  this.getVirtualPointToJSON = function(userID) {
-    return {
-      type: 5,
-      userID: userID,
-      x_v: this.v_point.x_v,
-      y_v: this.v_point.y_v
-    }
-  }
-
   // Remove set of tiles from the web socket
   this.removeTiles = function(wsIndex) {
     tiles = _.reject(tiles, function(val) {
@@ -165,5 +145,60 @@ function aoihandler() {
     }
     return true;
   }
+
+  /***********************************************************************************
+    === Virtual point handling operation ===
+    The concept of set the player view in client side such that player can move
+    inside a virtual box of the screen without changing the background envirnment.
+    When player want to move out of that virtual box, whole background slides
+    towards moving direction. This is method is using instead of center view. #gihan
+   ***********************************************************************************/
+
+  /* The gap fraction between left side of screen edge
+  and virtual box edge vise versa */
+  var fraction_x = 0.2;
+  /* The gap fraction between left side of screen edge
+  and virtual box edge vise versa */
+  var fraction_y = 0.2;
+
+  /*width of vertual box*/
+  var vbox_hw = 0; // virtual box half width
+  var vbox_hh = 0; // virtual box half height
+
+  // set virtual box size
+  // parameters w : width of screen
+  // h : height of screen
+  this.setVBoxSize = function(w, h) {
+    this.vbox_hw = w / 2 - w * 0.2;
+    this.vbox_hh = h / 2 - h * 0.2;
+    console.log(TAG + ' vbox w:' + this.vbox_hw + ' h:' + this.vbox_hh);
+  }
+  // check whether player is inside vbox
+  // parameter x : player current x coordinate
+  // y : player current y coordicate
+  this.isInVBox = function(x,y){
+    if (true) {};
+  }
+
+    // Set Virtual point location
+  this.setVirtualPoint = function(x_v, y_v) {
+    this.v_point.x_v = x_v;
+    this.v_point.y_v = y_v;
+    console.log(TAG + ' x_v:' + x_v + ' y_v:' + y_v);
+  }
+  // Get Virtual point location
+  this.getVirtualPoint = function() {
+    return this.v_point;
+  }
+  // Get Virtual point which can send to server
+  this.getVirtualPointToJSON = function(userID) {
+    return {
+      type: 5,
+      userID: userID,
+      x_v: this.v_point.x_v,
+      y_v: this.v_point.y_v
+    }
+  }
+
 };
 // -->

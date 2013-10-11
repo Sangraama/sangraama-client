@@ -4,12 +4,12 @@ var bulletList = new Array();
 function GraphicObject() {
   this.x = 0;
   this.y = 0;
-  this.angle = 0;
+  this.a = 0;
 };
 drawRotatedImage = function(image, player) {
   ctx.save();
   ctx.translate(player.x, player.y);
-  ctx.rotate(player.angle * TO_RADIANS);
+  ctx.rotate(player.a * TO_RADIANS);
   ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
   ctx.restore();
 }
