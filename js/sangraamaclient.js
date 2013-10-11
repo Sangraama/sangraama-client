@@ -1,4 +1,6 @@
   var D = true;
+  var TAG = 'SangraamaClient : ';
+
   var playerObject;
   var scanvas;
   var gEngine;
@@ -27,7 +29,7 @@
   var player = {
     type: 1,
     userID: 1,
-    x: 0,
+    x: 0, // have to move x,y like w & h in order to optimize. #gihan
     y: 0,
     v_x: 0,
     v_y: 0,
@@ -41,7 +43,7 @@
     info: null,
     signedInfo: null
   };
-/*  var playeraoi = {
+  /*  var playeraoi = {
     type: 3,
     userID: 0,
     aoi_w: 200,
@@ -93,6 +95,7 @@
     // Initialize AIO handler
     aoihandler = new aoihandler();
     aoihandler.init();
+    console.log(TAG + ' initialized window onloads ... ');
   };
 
   function updateServer() {
@@ -135,7 +138,7 @@
     if (typeof player !== "undefined") {
       player.x = inPlayer.dx;
       player.y = inPlayer.dy;
-      player.angle = inPlayer.da;
+      player.a = inPlayer.da;
       playerList[inPlayer.userID] = player;
       // console.log('player angle'+inPlayer.da);
     } else {

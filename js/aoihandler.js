@@ -1,8 +1,17 @@
 function aoihandler() {
+  var TAG = 'AOIHandler : '
   var tiles = new Array();
   var aoiCallTimeout = 30;
   var cntDown = aoiCallTimeout;
 
+  var aoi = {
+    aoi_w: 1000,
+    aoi_h: 600
+  };
+  var v_point = {
+    x_v: 0, // x location of virtual point
+    y_v: 0 // y location of virtual point
+  };
   var tile = {
     //tileId: '',
     wsIndex: 0, // websocket index that holds this sub-tile
@@ -12,12 +21,16 @@ function aoihandler() {
     x: 0, // origin x coordination
     y: 0 // origin y coordination
   };
-  var aoi = {
-    aoi_w: 200,
-    aoi_h: 200
-  };
-  this.init = function() {
 
+  this.init = function() {
+    this.aoi = {
+      aoi_w: 1000,
+      aoi_h: 600
+    };
+    this.v_point = {
+      x_v: 0,
+      y_v: 0
+    };
   }
   // Check whether it is inside a subtile
   this.isSubTile = function(x, y) {
@@ -93,7 +106,7 @@ function aoihandler() {
   this.getTiles = function() {
     return tiles;
   }
-  
+
   // Get AOI details
   this.getAOI = function() {
     return this.aoi;
@@ -111,6 +124,26 @@ function aoihandler() {
   this.setAOI = function(w, h) {
     this.aoi.aoi_w = w;
     this.aoi.aoi_h = h;
+  }
+
+  // Set Virtual point location
+  this.setVirtualPoint = function(x_v, y_v) {
+    this.v_point.x_v = x_v;
+    this.v_point.y_v = y_v;
+    console.log(TAG + ' x_v:' + x_v + ' y_v:' + y_v);
+  }
+  // Get Virtual point location
+  this.getVirtualPoint = function() {
+    return this.v_point;
+  }
+  // Get Virtual point which can send to server
+  this.getVirtualPointToJSON = function(userID) {
+    return {
+      type: 5,
+      userID: userID,
+      x_v: this.v_point.x_v,
+      y_v: this.v_point.y_v
+    }
   }
 
   // Remove set of tiles from the web socket

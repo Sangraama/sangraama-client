@@ -1,4 +1,5 @@
 var D = true; // debug
+var TAG = 'WSHandler : '
 
 var wsList = new Array(10);
 /* this structure was built using 1.1 method in tutorial
@@ -72,7 +73,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
     }
 
     ws.onopen = function() {
-      console.log('Connection opened ' + hostURL);
+      console.log(TAG + 'Connection opened ' + hostURL);
 
       // set the primaryconnection after ws setup
       if (nextPrimaryCon >= 0) {
@@ -84,7 +85,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
             userID: player.userID,
             x: player.x,
             y: player.y,
-            angle: 0,
+            x_v: aoihandler.getVirtualPoint().x_v,
+            x_y: aoihandler.getVirtualPoint().y_v,
+            a: 0,
             v_x: 0,
             v_y: 0,
             v_a: 0,
@@ -113,6 +116,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
       //playeraoi.userID = player.userID;
       //wsList[wsIndex].send(JSON.stringify(playeraoi));
       wsList[wsIndex].send(JSON.stringify(aoihandler.getAOIToJSON()));
+      wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
     };
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
@@ -187,7 +191,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   userID: player.userID,
                   x: player.x,
                   y: player.y,
-                  angle: 0,
+                  x_v: aoihandler.getVirtualPoint().x_v,
+                  y_v: aoihandler.getVirtualPoint().y_v,
+                  a: 0,
                   v_x: 0,
                   v_y: 0,
                   v_a: 0,
