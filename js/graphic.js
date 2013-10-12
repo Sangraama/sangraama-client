@@ -7,9 +7,13 @@ function GraphicObject() {
   this.a = 0;
 };
 drawRotatedImage = function(image, player) {
+  var screenHeight = canvas.getAttribute('height');
+  var screenWidth = canvas.getAttribute('width');
+  var x = player.dx % screenWidth;
+  var y = player.dy % screenHeight;
   ctx.save();
-  ctx.translate(player.x, player.y);
-  ctx.rotate(player.a * TO_RADIANS);
+  ctx.translate(x, y);
+  ctx.rotate(player.da * TO_RADIANS);
   ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
   ctx.restore();
 }

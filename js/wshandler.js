@@ -121,13 +121,15 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
       // Can be replace by map
+      gEngine.clear();
       for (var index in data) {
         var inPlayer = data[index];
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
-            //console.log(TAG + 'case1: '); console.log(inPlayer);
+            //console.log(TAG + 'case1: '); 
+             console.log(inPlayer);
             if (player.userID == inPlayer.userID) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
@@ -146,32 +148,15 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 //console.log(TAG + 'case1: '); console.log(inPlayer);
                 wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
               }
-
-              // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in client-side
-              /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
-              // console.log('want data ' + want);
-              _.map(want, function(val, k) {
-                console.log('want area ' + val.x + ' : ' + val.y);
-                // Ask for AOI
-                wsList[wsIndex].send(JSON.stringify({
-                  type: 2,
-                  userID: player.userID,
-                  x: val.x,
-                  y: val.y
-                }));
-              });*/
-
             }
+            drawRotatedImage(ship, inPlayer);
+            // addPlayerToGraphicEngine(inPlayer);
 
-            addPlayerToGraphicEngine(inPlayer);
-            var bullets = inPlayer.bulletDeltaList;
-            //          gEngine.drawRotatedImage(ship, inPlayer);
-            for (var bulletIndex in bullets) {
-              //            gEngine.drawShootImage(bullet, bullets[bulletIndex]);
-              addBulletToGraphicEngine(bullets[bulletIndex]);
-            }
-            gEngine.clear();
-            gEngine.processObjects();
+            // gEngine.clear();
+            // gEngine.processObjects();
+            break;
+          case 5:
+            drawRotatedImage(bullet, inPlayer);
             break;
           case 2:
             /* connect to another server (make it as primary connection)
@@ -253,9 +238,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
-            console.log(TAG + 'case 10: '); console.log(inPlayer);
+            console.log(TAG + 'case 10: ');
+            console.log(inPlayer);
             aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
-            player.x = inPlayer.x;                                                                  
+            player.x = inPlayer.x;
             break;
           case 11:
             /* set size of the tile */

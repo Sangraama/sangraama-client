@@ -94,7 +94,7 @@
   function updateServer() {
     // only allow primary connection to update server
     // if (D)
-    console.log('current primary connection ' + primaryCon);
+    // console.log('current primary connection ' + primaryCon);
     //console.log('Send update to server ' + primaryCon + ' ' + wsList[primaryCon].getWS().getHostAddress();
     wsList[primaryCon].send(JSON.stringify(player));
   }
