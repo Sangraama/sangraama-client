@@ -242,6 +242,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             mapLoader.drawMap(inPlayer.x, inPlayer.y);
 
             player.x = inPlayer.x;
+            player.y = inPlayer.y;
             break;
           case 11:
             /* set size of the tile */

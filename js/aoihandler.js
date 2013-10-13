@@ -203,6 +203,13 @@ function aoihandler() {
     }
   }
 
+  this.canPlayerBeCentered = function(x, y) {
+    if ((x - (this.aoi.aoi_w / 2)) > 0 && (y - (this.aoi.aoi_h / 2)) > 0) {
+      return true;
+    }
+    return false;
+  }
+
   // Set Virtual point location
   this.setVirtualPoint = function(x_v, y_v) {
     this.v_point.x_v = x_v;
@@ -210,6 +217,7 @@ function aoihandler() {
     console.log(TAG + 'set virtual point x_v:' + x_v + ' y_v:' + y_v);
     this.origin.x = x_v - (this.aoi.aoi_w / 2);
     this.origin.y = y_v - (this.aoi.aoi_h / 2);
+
     console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
 
   }

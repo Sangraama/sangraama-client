@@ -57,7 +57,7 @@
     clickSound = new Audio('audio/shoot.mp3');
     scanvas = new sCanvas();
     // Gaphic engine
-   
+
     // gEngine.init();
     // gEngine.simulate();
     mapLoader = new MapLoader();
@@ -89,7 +89,7 @@
     aoihandler.init();
     aoihandler.setAOI(canvas.getAttribute('width'), canvas.getAttribute('height'));
     console.log(TAG + ' initialized window onloads ... ');
-     gEngine = new GraphicEngine();
+    gEngine = new GraphicEngine();
   };
 
   function updateServer() {
