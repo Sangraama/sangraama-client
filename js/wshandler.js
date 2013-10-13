@@ -144,7 +144,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
               if (!aoihandler.isInVBox(inPlayer.dx, inPlayer.dy)) {
                 console.log(TAG + 'player is outside of the virtual box');
                 //console.log(TAG + 'case1: '); console.log(inPlayer);
+                aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
                 wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                mapLoader.drawMap(inPlayer.x, inPlayer.y);
               }
             }
             drawRotatedImage(ship, inPlayer);
@@ -238,8 +240,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + 'case 10: ');
             console.log(inPlayer);
-            aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
-            mapLoader.drawMap(inPlayer.x, inPlayer.y);
+            // aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
+            // mapLoader.drawMap(inPlayer.x, inPlayer.y);
 
             player.x = inPlayer.x;
             player.y = inPlayer.y;
