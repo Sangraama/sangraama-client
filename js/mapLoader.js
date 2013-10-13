@@ -59,13 +59,13 @@ function MapLoader() {
     var canvasX = 0;
     var canvasY = 0;
     var tileCount = 1;
-    if ((parseInt(x / screenWidth, 10) != xAbs) || (parseInt(y / screenHeight, 10) != yAbs)) {
+    // if ((parseInt(x / screenWidth, 10) != xAbs) || (parseInt(y / screenHeight, 10) != yAbs)) {
       xAbs = parseInt(x / screenWidth, 10);
       yAbs = parseInt(y / screenHeight, 10);
       var widthOffset = parseInt(x % screenWidth, 10);
       var heightOffset = parseInt(y % screenHeight, 10);
-      xOffset = parseInt(((x - widthOffset) / pix32), 10);
-      yOffset = parseInt(((y - heightOffset) / pix32), 10);
+      xOffset = parseInt(((aoihandler.origin.x) / pix32), 10);
+      yOffset = parseInt(((aoihandler.origin.y) / pix32), 10);
       currentTile = yOffset * mapWidth + xOffset;
       xLastOffset = xOffset + noOfXTiles;
       yLastOffset = yOffset + noOfYTiles;
@@ -92,7 +92,7 @@ function MapLoader() {
         xTilePosition++;
         currentTile++;
       }
-    }
+    // }
   }
 
   this.drawTile = function(currentTile, canvasX, canvasY) {

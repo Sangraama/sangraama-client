@@ -8,6 +8,10 @@ function aoihandler() {
     aoi_w: 1000,
     aoi_h: 600
   };
+  var origin = {
+    x: 0,
+    y: 0
+  };
   var tile = {
     //tileId: '',
     wsIndex: 0, // websocket index that holds this sub-tile
@@ -26,6 +30,10 @@ function aoihandler() {
     this.v_point = {
       x_v: 0,
       y_v: 0
+    };
+    this.origin = {
+      x: 0,
+      y: 0
     };
     // this.setVBoxSize(this.aoi.aoi_w, this.aoi.aoi_h);
   }
@@ -200,6 +208,10 @@ function aoihandler() {
     this.v_point.x_v = x_v;
     this.v_point.y_v = y_v;
     console.log(TAG + 'set virtual point x_v:' + x_v + ' y_v:' + y_v);
+    this.origin.x = x_v - (this.aoi.aoi_w / 2);
+    this.origin.y = y_v - (this.aoi.aoi_h / 2);
+    console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
+
   }
   // Get Virtual point location
   this.getVirtualPoint = function() {

@@ -57,7 +57,7 @@
     clickSound = new Audio('audio/shoot.mp3');
     scanvas = new sCanvas();
     // Gaphic engine
-    gEngine = new GraphicEngine();
+   
     // gEngine.init();
     // gEngine.simulate();
     mapLoader = new MapLoader();
@@ -83,12 +83,13 @@
     // player.x = 50;
     // player.y = 50;
     player.y = Math.floor(Math.random() * 100) + 300
-    drawRotatedImage(ship, player);
+    // drawRotatedImage(ship, player);
     // Initialize AIO handler
     aoihandler = new aoihandler();
     aoihandler.init();
     aoihandler.setAOI(canvas.getAttribute('width'), canvas.getAttribute('height'));
     console.log(TAG + ' initialized window onloads ... ');
+     gEngine = new GraphicEngine();
   };
 
   function updateServer() {

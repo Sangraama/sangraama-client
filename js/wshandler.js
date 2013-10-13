@@ -129,7 +129,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
             //console.log(TAG + 'case1: '); 
-             console.log(inPlayer);
             if (player.userID == inPlayer.userID) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
@@ -140,7 +139,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 "width": life
               })
               $("#score").text(score);
-              mapLoader.drawMap(inPlayer.dx, inPlayer.dy);
 
               // check whether play is inside the virual box. If not, set virtual point as user current location
               if (!aoihandler.isInVBox(inPlayer.dx, inPlayer.dy)) {
@@ -241,6 +239,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log(TAG + 'case 10: ');
             console.log(inPlayer);
             aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
+            mapLoader.drawMap(inPlayer.x, inPlayer.y);
+
             player.x = inPlayer.x;
             break;
           case 11:
