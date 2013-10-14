@@ -1,4 +1,3 @@
-<!--
   var D = true;
   var TAG = 'SangraamaClient : ';
 

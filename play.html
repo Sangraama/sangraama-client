@@ -20,7 +20,7 @@
 <script type="text/javascript" src="js/lib/underscore.js"></script>
 <script type="text/javascript" src="js/lib/jquery.json-2.4.min.js"></script>
 <script type="text/javascript" src="js/lib/jquery.websocket-0.0.4.js"></script>
-<script type="text/javascript" src="js/lib/box2d.js"></script>
+<!-- script type="text/javascript" src="js/lib/box2d.js"></script -->
 <!-- Add Sangraama customize java scripts -->
 <script type="text/javascript" src="js/sangraamaclient.js"></script>
 <script type="text/javascript" src="js/mapLoader.js"></script>
@@ -36,8 +36,14 @@
     <div class="navbar-inner">
         <a class="brand" href="#">සංග්‍රාම</a>
         <div class="control-group">
-            <button id="start" class="btn btn-warning" type="button">Start Game</button>
-            <button id="stop" class="btn btn-danger" type="button">Stop Game</button>
+            <div class="btn-group">
+            <a id="start" class="btn btn-warning"><i class="icon-play"></i>Start Game</a>
+            <a id="stop" class="btn btn-danger"><i class="icon-stop"></i>Stop Game</a>
+            </div>
+            <div class="btn-group">
+              <a id="botstart" class="btn btn-info" href="#"><i class="icon-play icon-white"></i>Bot Start</a>
+              <a id="botstop" class="btn btn-inverse" href="#"><i class="icon-stop icon-white"></i>Bot Stop</a>
+            </div>
 
            <div class="score-panel">
                <label>Score : </label>
@@ -62,7 +68,9 @@
 
 
 <script type="text/javascript">
-  $('#stop').prop('disabled',true).blur();
+  $('#stop').addClass('disabled');
+  $('#stop').removeAttr('data-toggle');
+
   $('#start').click(function() {
       player.userID = Math.floor(Math.random() * 1000) + 1;
       console.log('player id:' + player.id);
@@ -78,8 +86,10 @@
       
       mapLoader.drawMap(player.x, player.y);
       // Disable start and enable stop game
-      $('#start').prop('disabled',true).blur();
-      $('#stop').prop('disabled',false);
+      $('#stop').removeClass('disabled');
+      $('#stop').attr("data-toggle", "modal");
+      $('#start').addClass('disabled');
+      $('#start').removeAttr('data-toggle');
   });
 
   $('#stop').click(function() {
@@ -95,11 +105,34 @@
     }
     primaryCon = 0;
     // Disable stop and enable start game
-    $('#stop').prop('disabled',true);
-    $('#start').prop('disabled',false);
+    $('#start').removeClass('disabled');
+    $('#start').attr("data-toggle", "modal");
+    $('#stop').addClass('disabled');
+    $('#stop').removeAttr('data-toggle');
+  });
+
+  var b;
+  $('#botstart').click(function(){
+    b = new bot();
+    b.start();
+    $("#botstart i").removeClass("icon-play").addClass("icon-stop");
+
+    $('#botstart').addClass('disabled');
+    $('#botstart').removeAttr('data-toggle');
+  });
+
+  $('#botstop').click(function(){
+    b.stop();
+    $("#botstart i").removeClass("icon-stop").addClass("icon-play");
+
+    $('#botstart').removeClass('disabled');
+    $('#botstart').attr("data-toggle", "modal");
   });
 </script>
-
+<script type="text/javascript" src="js/bot/ship_bot.js"></script>
+<script type="text/javascript" src="js/bot/navigate.js"></script>
+<script type="text/javascript" src="js/bot/ai.js"></script>
+<script type="text/javascript" src="js/bot/config.js"></script>
 
 </body>
 </html>

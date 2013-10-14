@@ -11,9 +11,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
   var wsIndex = wsIndex;
   var hostAddress = hostAddress;
 
-  this.init = function() {
-
-  }
   // Get the websocket
   this.getWS = function() {
     return ws;
@@ -132,7 +129,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
             //console.log(TAG + 'case1: '); 
-            if (player.userID == inPlayer.userID) { // If player's data
+            if (player.userID == inPlayer.userID) {
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
               player.a = inPlayer.da;
@@ -151,24 +148,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
                 mapLoader.drawMap(inPlayer.x, inPlayer.y);
               }
-
-              // Idea : control the AOI in client side. By uncommenting this, enable the handling AOI in clientside
-              /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
-              // console.log('want data ' + want);
-              _.map(want, function(val, k) {
-                console.log('want area ' + val.x + ' : ' + val.y);
-                // Ask for AOI
-                wsList[wsIndex].send(JSON.stringify({
-                  type: 2,
-                  userID: player.userID,
-                  x: val.x,
-                  y: val.y
-                }));
-              });*/
-
-
-            } // -- end player's data
-
+            }
             drawRotatedImage(ship, inPlayer);
             // addPlayerToGraphicEngine(inPlayer);
 
