@@ -114,7 +114,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
       console.log("Connection opened");
       // Set AOI in server
       //playeraoi.userID = player.userID;
-      //wsList[wsIndex].send(JSON.stringify(playeraoi));
       wsList[wsIndex].send(JSON.stringify(aoihandler.getAOIToJSON()));
       wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
     };
@@ -148,6 +147,21 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
                 mapLoader.drawMap(inPlayer.x, inPlayer.y);
               }
+
+              // Idea : control the AOI in client side. By uncommenting this, enable the "filfill the AOI" in client-side
+              /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
+              // console.log('want data ' + want);
+              _.map(want, function(val, k) {
+                console.log('want area ' + val.x + ' : ' + val.y);
+                // Ask for AOI
+                wsList[wsIndex].send(JSON.stringify({
+                  type: 2,
+                  userID: player.userID,
+                  x: val.x,
+                  y: val.y
+                }));
+              });*/
+
             }
             drawRotatedImage(ship, inPlayer);
             // addPlayerToGraphicEngine(inPlayer);
@@ -155,9 +169,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             // gEngine.clear();
             // gEngine.processObjects();
             break;
-          case 5:
-            drawRotatedImage(bullet, inPlayer);
-            break;
+
           case 2:
             /* connect to another server (make it as primary connection)
              */
@@ -210,8 +222,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
               i++;
             } while (i < 10);
             break;
+
           case 3:
-            /* connecting to another server and get updates */
+            /* connecting to another server and get updates in order to fulfill AOI */
             var info = JSON.parse(inPlayer.info);
             console.log('Type 3 msg. ' + info.url + ' details of the server which need to get updates to fulfill AOI');
             var i = 0;
@@ -233,9 +246,15 @@ function WebSocketHandler(hostAddress, wsIndex) {
               i++;
             } while (i < 10);
             break;
+
           case 4:
             /* close existing connection */
             break;
+
+          case 5:
+            drawRotatedImage(bullet, inPlayer);
+            break;
+
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + 'case 10: ');
@@ -246,11 +265,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
             player.x = inPlayer.x;
             player.y = inPlayer.y;
             break;
+
           case 11:
-            /* set size of the tile */
+            /* set size of the tiles */
             console.log('Type:' + inPlayer.type + ' Set tile size of server');
             aoihandler.addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             break;
+
           default:
             console.log("Warning. Unsupported message type " + inPlayer.type);
         }
@@ -263,6 +284,32 @@ function WebSocketHandler(hostAddress, wsIndex) {
       console.log('Connection error ' + hostURL);
     };
   };
+}
+
+// Make connection to new server as primary, send event requests
+
+function passConnect(host, num) {
+  console.log('Create new primary connection to ' + host + ' with ' + num);
+  wsList[num] = new WebSocketHandler(host, num);
+  wsList[num].connect();
+  if (wsList[num].isReady == 1) { // if connection was created
+    /*
+     * Closing privious primary connection mayn't a good idea, coz player
+     * doesn't quite from that location immediately
+     */
+    primaryCon = num; // make this primary connection
+    console.log(num + ' is already & make primaryCon');
+  } else {
+    nextPrimaryCon = num;
+    console.log('Make ' + num + 'as  next primaryCon');
+  }
+}
+// Connecting to another server
+
+function reconnect(host, num) {
+  console.log('Reconnect to ' + host + ' with ' + num);
+  wsList[num] = new WebSocketHandler(host, num);
+  wsList[num].connect();
 }
 
 // -->

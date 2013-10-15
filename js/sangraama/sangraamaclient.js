@@ -1,7 +1,7 @@
   var D = true;
   var TAG = 'SangraamaClient : ';
 
-  var playerObject;
+  var p; // Player Object
   var scanvas;
   var gEngine;
   var aoihandler;
@@ -77,13 +77,18 @@
     ship.src = 'img/arrow.jpg';
     bullet.src = 'img/bullet.png';
     mapImage.src = 'assert/map/mapImage.jpg';
-    player.id = Math.floor(Math.random() * 101);
+
+    // Create player location (this will be given by the login server)
+    player.userID = Math.floor(Math.random() * 101);
     // player.x = Math.floor(Math.random() * 900);
     player.x = Math.floor(Math.random() * 49 + 950); //create at edge
     // player.x = 50;
     // player.y = 50;
     player.y = Math.floor(Math.random() * 100) + 300
     // drawRotatedImage(ship, player);
+    p = new playerhandler();
+    p.init(player.userID);
+    
     // Initialize AIO handler
     aoihandler = new aoihandler();
     aoihandler.init();
@@ -98,32 +103,6 @@
     // console.log('current primary connection ' + primaryCon);
     //console.log('Send update to server ' + primaryCon + ' ' + wsList[primaryCon].getWS().getHostAddress();
     wsList[primaryCon].send(JSON.stringify(player));
-  }
-
-  // Make connection to new server as primary, send event requests
-
-  function passConnect(host, num) {
-    console.log('Create new primary connection to ' + host + ' with ' + num);
-    wsList[num] = new WebSocketHandler(host, num);
-    wsList[num].connect();
-    if (wsList[num].isReady == 1) { // if connection was created
-      /*
-       * Closing privious primary connection mayn't a good idea, coz player
-       * doesn't quite from that location immediately
-       */
-      primaryCon = num; // make this primary connection
-      console.log(num + ' is already & make primaryCon');
-    } else {
-      nextPrimaryCon = num;
-      console.log('Make ' + num + 'as  next primaryCon');
-    }
-  }
-  // Connecting to another server
-
-  function reconnect(host, num) {
-    console.log('Reconnect to ' + host + ' with ' + num);
-    wsList[num] = new WebSocketHandler(host, num);
-    wsList[num].connect();
   }
 
   function addPlayerToGraphicEngine(inPlayer) {

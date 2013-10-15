@@ -23,11 +23,11 @@ function aoihandler() {
   };
 
   this.init = function() {
-    this.aoi = {
+    aoi = {
       aoi_w: 0,
       aoi_h: 0
     };
-    this.v_point = {
+    v_point = {
       x_v: 0,
       y_v: 0
     };
@@ -114,21 +114,21 @@ function aoihandler() {
 
   // Get AOI details
   this.getAOI = function() {
-    return this.aoi;
+    return aoi;
   }
   // Get the AOI which can send to server
   this.getAOIToJSON = function(userID) {
     return {
       type: 3,
       userID: userID,
-      w: this.aoi.aoi_w,
-      h: this.aoi.aoi_h
+      w: aoi.aoi_w,
+      h: aoi.aoi_h
     }
   }
   // Set AOI details
   this.setAOI = function(w, h) {
-    this.aoi.aoi_w = w;
-    this.aoi.aoi_h = h;
+    aoi.aoi_w = w;
+    aoi.aoi_h = h;
     console.log(TAG + ' set AOI w:' + aoi.aoi_w + ' h:' + aoi.aoi_h + ' call setVBoxSize ...');
     this.setVBoxSize(w, h);
   }
@@ -195,8 +195,8 @@ function aoihandler() {
   // parameter x : player current x coordinate
   // y : player current y coordicate
   this.isInVBox = function(x, y) {
-    if ((this.v_point.x_v - vbox_hw) <= x && x <= (this.v_point.x_v + vbox_hw) &&
-      (this.v_point.y_v - vbox_hh) <= y && y <= (this.v_point.y_v + vbox_hh)) {
+    if ((v_point.x_v - vbox_hw) <= x && x <= (v_point.x_v + vbox_hw) &&
+      (v_point.y_v - vbox_hh) <= y && y <= (v_point.y_v + vbox_hh)) {
       return true;
     } else {
       return false;
@@ -204,7 +204,7 @@ function aoihandler() {
   }
 
   this.canPlayerBeCentered = function(x, y) {
-    if ((x - (this.aoi.aoi_w / 2)) > 0 && (y - (this.aoi.aoi_h / 2)) > 0) {
+    if ((x - (aoi.aoi_w / 2)) > 0 && (y - (aoi.aoi_h / 2)) > 0) {
       return true;
     }
     return false;
@@ -212,26 +212,26 @@ function aoihandler() {
 
   // Set Virtual point location
   this.setVirtualPoint = function(x_v, y_v) {
-    this.v_point.x_v = x_v;
-    this.v_point.y_v = y_v;
+    v_point.x_v = x_v;
+    v_point.y_v = y_v;
     console.log(TAG + 'set virtual point x_v:' + x_v + ' y_v:' + y_v);
-    this.origin.x = x_v - (this.aoi.aoi_w / 2);
-    this.origin.y = y_v - (this.aoi.aoi_h / 2);
+    this.origin.x = x_v - (aoi.aoi_w / 2);
+    this.origin.y = y_v - (aoi.aoi_h / 2);
 
     console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
 
   }
   // Get Virtual point location
   this.getVirtualPoint = function() {
-    return this.v_point;
+    return v_point;
   }
   // Get Virtual point which can send to server
   this.getVirtualPointToJSON = function(userID) {
     return {
       type: 5,
       userID: userID,
-      x_v: this.v_point.x_v,
-      y_v: this.v_point.y_v
+      x_v: v_point.x_v,
+      y_v: v_point.y_v
     }
   }
 
