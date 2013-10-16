@@ -17,7 +17,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
   };
   // Get host address | Data Encapsulation
   this.getHostAddress = function() {
-    console.log('Get host address ' + this.hostAddress);
+    console.log('Get host address ' + hostAddress);
     return hostAddress;
   }
   // Get the ws Index | Data encapsulation
@@ -74,6 +74,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     ws.onopen = function() {
       console.log(TAG + 'Connection opened ' + hostURL);
+      aoihandler.setConnectedHost(hostURL); // added to already connected queue
 
       // set the primaryconnection after ws setup
       if (nextPrimaryCon >= 0) {
@@ -149,10 +150,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
               }
 
               // Idea : control the AOI in client side. By uncommenting this, enable the "filfill the AOI" in client-side
-              /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
+              var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
               // console.log('want data ' + want);
               _.map(want, function(val, k) {
-                console.log('want area ' + val.x + ' : ' + val.y);
+                console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
                 // Ask for AOI
                 wsList[wsIndex].send(JSON.stringify({
                   type: 2,
@@ -160,7 +161,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   x: val.x,
                   y: val.y
                 }));
-              });*/
+              });
 
             }
             drawRotatedImage(ship, inPlayer);
@@ -227,6 +228,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* connecting to another server and get updates in order to fulfill AOI */
             var info = JSON.parse(inPlayer.info);
             console.log('Type 3 msg. ' + info.url + ' details of the server which need to get updates to fulfill AOI');
+
+            if(!aoihandler.isAlreadyConnect(info.url)){ // If there is not connected
             var i = 0;
             do { // search from begining of list is there any available slot
               // console.log('Times ' + i + wsList[i].hostAddress);
@@ -246,9 +249,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
               i++;
             } while (i < 10);
             break;
+          }
 
           case 4:
-            /* close existing connection */
+            /* close a existing connection */
             break;
 
           case 5:
@@ -268,7 +272,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 11:
             /* set size of the tiles */
-            console.log('Type:' + inPlayer.type + ' Set tile size of server');
+            console.log(TAG + 'Type:' + inPlayer.type + ' Set tile size of server');
             aoihandler.addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             break;
 

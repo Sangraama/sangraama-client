@@ -22,13 +22,14 @@
 <script type="text/javascript" src="js/lib/jquery.websocket-0.0.4.js"></script>
 <!-- script type="text/javascript" src="js/lib/box2d.js"></script -->
 <!-- Add Sangraama customize java scripts -->
-<script type="text/javascript" src="js/sangraamaclient.js"></script>
-<script type="text/javascript" src="js/mapLoader.js"></script>
-<script type="text/javascript" src="js/utils.js"></script>
-<script type="text/javascript" src="js/aoihandler.js"></script>
-<script type="text/javascript" src="js/graphic.js"></script>
-<script type="text/javascript" src="js/wshandler.js"></script>
-<script type="text/javascript" src="js/keymap.js"></script>
+<script type="text/javascript" src="js/sangraama/sangraamaclient.js"></script>
+<script type="text/javascript" src="js/sangraama/mapLoader.js"></script>
+<script type="text/javascript" src="js/sangraama/utils.js"></script>
+<script type="text/javascript" src="js/sangraama/aoihandler.js"></script>
+<script type="text/javascript" src="js/sangraama/graphic.js"></script>
+<script type="text/javascript" src="js/sangraama/wshandler.js"></script>
+<script type="text/javascript" src="js/sangraama/keymap.js"></script>
+<script type="text/javascript" src="js/sangraama/player.js"></script>
 </head>
 
 <body id="body">
@@ -73,7 +74,7 @@
 
   $('#start').click(function() {
       player.userID = Math.floor(Math.random() * 1000) + 1;
-      console.log('player id:' + player.id);
+      console.log('player id:' + player.userID);
       var hostLocation = 'localhost:8080';
       var URL = hostLocation + '/sangraama-server/sangraama/player';
       // start wsList with 0 index

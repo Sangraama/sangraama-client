@@ -1,6 +1,7 @@
 function aoihandler() {
   var TAG = 'AOIHandler : '
   var tiles = new Array();
+  var connectedHosts = new Array();
   var aoiCallTimeout = 30;
   var cntDown = aoiCallTimeout;
 
@@ -37,6 +38,21 @@ function aoihandler() {
     };
     // this.setVBoxSize(this.aoi.aoi_w, this.aoi.aoi_h);
   }
+
+  // Set Host address
+  this.setConnectedHost = function(host) {
+    connectedHosts = _.union(connectedHosts,[host]);
+    return connectedHosts;
+  }
+  // Check whether client already connected to given server
+  this.isAlreadyConnect = function(host) {
+    return _.contains(connectedHosts, host);
+  }
+  // Remove Host address
+  this.removeConnectedHost = function(host){
+    connectedHosts = _.reject(connectedHosts, function(h){ return h == host; });
+  }
+
   // Check whether it is inside a subtile
   this.isSubTile = function(x, y) {
     var tile = _.find(tiles, function(val) {
@@ -112,6 +128,26 @@ function aoihandler() {
     return tiles;
   }
 
+  // Remove set of tiles from the web socket
+  this.removeTiles = function(wsIndex) {
+    tiles = _.reject(tiles, function(val) {
+      return val.wsIndex == wsIndex;
+    });
+  }
+  // Set Timeout, if client already send request wait until process it
+
+  function isAlreadyReq() {
+    if (aoiCallTimeout == cntDown) {
+      cntDown--;
+      return false;
+    } else if (cntDown == 0) {
+      cntDown = aoiCallTimeout;
+    } else {
+      cntDown--;
+    }
+    return true;
+  }
+
   // Get AOI details
   this.getAOI = function() {
     return aoi;
@@ -131,26 +167,6 @@ function aoihandler() {
     aoi.aoi_h = h;
     console.log(TAG + ' set AOI w:' + aoi.aoi_w + ' h:' + aoi.aoi_h + ' call setVBoxSize ...');
     this.setVBoxSize(w, h);
-  }
-
-  // Remove set of tiles from the web socket
-  this.removeTiles = function(wsIndex) {
-    tiles = _.reject(tiles, function(val) {
-      return val.wsIndex == wsIndex;
-    });
-  }
-  // Set Timeout, if client already send request wait until process it
-
-  function isAlreadyReq() {
-    if (aoiCallTimeout == cntDown) {
-      cntDown--;
-      return false;
-    } else if (cntDown == 0) {
-      cntDown = aoiCallTimeout;
-    } else {
-      cntDown--;
-    }
-    return true;
   }
 
   /***********************************************************************************
