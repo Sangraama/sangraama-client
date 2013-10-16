@@ -140,28 +140,32 @@ function WebSocketHandler(hostAddress, wsIndex) {
               })
               $("#score").text(score);
 
-              // check whether play is inside the virual box. If not, set virtual point as user current location
-              if (!aoihandler.isInVBox(inPlayer.dx, inPlayer.dy)) {
-                console.log(TAG + 'player is outside of the virtual box');
-                //console.log(TAG + 'case1: '); console.log(inPlayer);
-                aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
-                mapLoader.drawMap(inPlayer.x, inPlayer.y);
-              }
+              if (wsIndex == primaryCon) { // if it's the primary connection
+                // check whether play is inside the virual box. If not, set virtual point as user current location
+                if (!aoihandler.isInVBox(inPlayer.dx, inPlayer.dy)) {
+                  console.log(TAG + 'player is outside of the virtual box');
+                  //console.log(TAG + 'case1: '); console.log(inPlayer);
+                  aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
+                  wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                  mapLoader.drawMap(inPlayer.x, inPlayer.y);
+                }
 
-              // Idea : control the AOI in client side. By uncommenting this, enable the "filfill the AOI" in client-side
-              var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
-              // console.log('want data ' + want);
-              _.map(want, function(val, k) {
-                console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
-                // Ask for AOI
-                wsList[wsIndex].send(JSON.stringify({
-                  type: 2,
-                  userID: player.userID,
-                  x: val.x,
-                  y: val.y
-                }));
-              });
+                // Idea : control the AOI in client side. By uncommenting this, enable the "filfill the AOI" in client-side
+                var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
+                // console.log('want data ' + want);
+                _.map(want, function(val, k) {
+                  console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
+                  // Ask for AOI
+                  wsList[wsIndex].send(JSON.stringify({
+                    type: 2,
+                    userID: player.userID,
+                    x: val.x,
+                    y: val.y
+                  }));
+                });
+              } else {
+                /* Other web sockets, set their virtual point as primary connection */
+              }
 
             }
             drawRotatedImage(ship, inPlayer);
@@ -229,27 +233,27 @@ function WebSocketHandler(hostAddress, wsIndex) {
             var info = JSON.parse(inPlayer.info);
             console.log('Type 3 msg. ' + info.url + ' details of the server which need to get updates to fulfill AOI');
 
-            if(!aoihandler.isAlreadyConnect(info.url)){ // If there is not connected
-            var i = 0;
-            do { // search from begining of list is there any available slot
-              // console.log('Times ' + i + wsList[i].hostAddress);
-              if (wsList[i] == undefined) { // if ws isn't initialized
-                reconnect(info.url, i);
-                break;
-              } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
-                /* 
+            if (!aoihandler.isAlreadyConnect(info.url)) { // If there is not connected
+              var i = 0;
+              do { // search from begining of list is there any available slot
+                // console.log('Times ' + i + wsList[i].hostAddress);
+                if (wsList[i] == undefined) { // if ws isn't initialized
+                  reconnect(info.url, i);
+                  break;
+                } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
+                  /* 
                     if a websocket is opening for this address ignore connecting again
                  */
-                break;
-              } else if (wsList[i].isReady() == 3) { // if previous ws is
-                // closed
-                reconnect(info.url, i);
-                break;
-              }
-              i++;
-            } while (i < 10);
-            break;
-          }
+                  break;
+                } else if (wsList[i].isReady() == 3) { // if previous ws is
+                  // closed
+                  reconnect(info.url, i);
+                  break;
+                }
+                i++;
+              } while (i < 10);
+              break;
+            }
 
           case 4:
             /* close a existing connection */

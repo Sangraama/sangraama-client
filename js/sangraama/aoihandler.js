@@ -82,7 +82,7 @@ function aoihandler() {
       }));
     }
     // check left upper corner
-    if (this.isSubTile(x - aoi.aoi_w / 2, y + aoi.aoi_h / 2) < 0) {
+    else if (this.isSubTile(x - aoi.aoi_w / 2, y + aoi.aoi_h / 2) < 0) {
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
@@ -91,7 +91,7 @@ function aoihandler() {
       }));
     }
     // check right lower corner
-    if (this.isSubTile(x + aoi.aoi_w / 2, y - aoi.aoi_h / 2) < 0) {
+    else if (this.isSubTile(x + aoi.aoi_w / 2, y - aoi.aoi_h / 2) < 0) {
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
@@ -100,7 +100,7 @@ function aoihandler() {
       }));
     }
     // check right upper corner
-    if (this.isSubTile(x + aoi.aoi_w / 2, y + aoi.aoi_h / 2) < 0) {
+    else if (this.isSubTile(x + aoi.aoi_w / 2, y + aoi.aoi_h / 2) < 0) {
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
