@@ -246,8 +246,8 @@ function aoihandler() {
     return {
       type: 5,
       userID: userID,
-      x_v: v_point.x_v,
-      y_v: v_point.y_v
+      x_vp: v_point.x_v,
+      y_vp: v_point.y_v
     }
   }
 

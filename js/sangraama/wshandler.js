@@ -260,6 +260,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 5:
+            console.log("Bullet event");
             drawRotatedImage(bullet, inPlayer);
             break;
 
@@ -267,7 +268,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + 'case 10: ');
             console.log(inPlayer);
-            aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
+            // aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
             // mapLoader.drawMap(inPlayer.x, inPlayer.y);
 
             player.x = inPlayer.x;
