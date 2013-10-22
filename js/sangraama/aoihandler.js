@@ -39,6 +39,9 @@ function aoihandler() {
     // this.setVBoxSize(this.aoi.aoi_w, this.aoi.aoi_h);
   }
 
+  /***********************************************
+   * Store already connected servers
+   ***********************************************/
   // Set Host address
   this.setConnectedHost = function(host, wsIndex) {
     /*console.log(_.find(connectedHosts, function(num) {
@@ -81,6 +84,9 @@ function aoihandler() {
     });
   }
 
+  /**********************************************
+   * Handling of AOI fulfill by Servers
+   **********************************************/
   // Check whether it is inside a subtile
   this.isSubTile = function(x, y) {
     var tile = _.find(tiles, function(val) {
@@ -142,6 +148,57 @@ function aoihandler() {
     }
     return unFil;
   }
+
+  // check whether player is interesting in particular area anymore
+  this.isInterestAOI = function(x, y) {
+    var toRem = new Array(); // Server which are not interest anymore and need to remove
+    // if already requested, send null output
+    /*if (isAlreadyReq.apply(this)) {
+      return toRem;
+    }*/ // else continue ...
+
+    // check left down corner
+    if (this.isSubTile(x - aoi.aoi_w / 2, y - aoi.aoi_h / 2) < 0) {
+      toRem = _.union(toRem, (function() {
+        return _.toArray(arguments);
+      })({
+        x: x - aoi.aoi_w / 2,
+        y: y - aoi.aoi_h / 2
+      }));
+    }
+    // check left upper corner
+    else if (this.isSubTile(x - aoi.aoi_w / 2, y + aoi.aoi_h / 2) < 0) {
+      toRem = _.union(toRem, (function() {
+        return _.toArray(arguments);
+      })({
+        x: x - aoi.aoi_w / 2,
+        y: y + aoi.aoi_h / 2
+      }));
+    }
+    // check right lower corner
+    else if (this.isSubTile(x + aoi.aoi_w / 2, y - aoi.aoi_h / 2) < 0) {
+      toRem = _.union(toRem, (function() {
+        return _.toArray(arguments);
+      })({
+        x: x + aoi.aoi_w / 2,
+        y: y - aoi.aoi_h / 2
+      }));
+    }
+    // check right upper corner
+    else if (this.isSubTile(x + aoi.aoi_w / 2, y + aoi.aoi_h / 2) < 0) {
+      toRem = _.union(toRem, (function() {
+        return _.toArray(arguments);
+      })({
+        x: x + aoi.aoi_w / 2,
+        y: y + aoi.aoi_h / 2
+      }));
+    }
+    // if array is empty, reset the timer
+    if (_.isEmpty(toRem)) {
+      cntDown = aoiCallTimeout
+    }
+    return toRem;
+  }
   // Add set of new tiles
   this.addTiles = function(wsIndex, host, ts) {
     var newTiles = _.map(ts, function(num, key) {
@@ -176,6 +233,9 @@ function aoihandler() {
     return true;
   }
 
+  /**********************************************
+   * Handling Area of Interesting
+   **********************************************/
   // Get AOI details
   this.getAOI = function() {
     return aoi;

@@ -162,9 +162,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   mapLoader.drawMap(inPlayer.x, inPlayer.y);
                 }
 
-                // Idea : control the AOI in client side. By uncommenting this, enable the "filfill the AOI" in client-side
-                var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
-                // console.log('want data ' + want);
+                // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side
+                /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
                 _.map(want, function(val, k) {
                   console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
                   // Ask for AOI
@@ -174,9 +173,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                     x: val.x,
                     y: val.y
                   }));
-                });
-              } else {
-                /* Other web sockets, set their virtual point as primary connection */
+                });*/
               }
 
             }
@@ -206,9 +203,21 @@ function WebSocketHandler(hostAddress, wsIndex) {
               aoihandler.setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
               player.x = inPlayer.x;
               player.y = inPlayer.y;
+
+              // Idea : control the AOI in client side with "Virtual Box View". Uncommenting this, enable the "filfill the AOI" in client-side
+              var want = aoihandler.isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
+              _.map(want, function(val, k) {
+                console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
+                // Ask for AOI
+                wsList[wsIndex].send(JSON.stringify({
+                  type: 2,
+                  userID: player.userID,
+                  x: val.x,
+                  y: val.y
+                }));
+              });
             } else {
               // check whether dummy virtual point coinside with player virtual point
-
             }
             break;
 
