@@ -22,7 +22,7 @@
   // connection handling
   var primaryCon = 0; // player only send updates to the primary server
   var prevPrimarycon = 0; // previous primary connection, for recovering purpose
-  var nextPrimaryCon = -1; // To store next primary connection, until it's
+  var nextPrimaryCon = 0; // To store next primary connection, until it's
   // stablish
   this.scale = 100; // 1 unit in server => 100 pixels in canvas
 
@@ -81,13 +81,13 @@
     // Create player location (this will be given by the login server)
     player.userID = Math.floor(Math.random() * 101);
     // player.x = Math.floor(Math.random() * 900);
-    player.x = Math.floor(Math.random() * 49 + 2950); //create at edge
+    player.x = Math.floor(Math.random() * 49 + 2250); //create at edge
     // player.x = 50;
     // player.y = 50;
     player.y = Math.floor(Math.random() * 100) + 300
     // drawRotatedImage(ship, player);
-    p = new playerhandler();
-    p.init(player.userID);
+    pHandler = new playerhandler();
+    pHandler.init(player.userID);
     
     // Initialize AIO handler
     aoihandler = new aoihandler();

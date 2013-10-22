@@ -15,7 +15,8 @@ function playerhandler() {
   };
 
   this.init = function(userID) {
-    p = {
+    // use 'this' to access this variable globally
+    this.p = {
       userID: userID,
       v_x: 0,
       v_y: 0,
@@ -26,38 +27,59 @@ function playerhandler() {
   }
 
   // Test purpose
-  this.printPlayer = function(){
+  this.printPlayer = function() {
     return p;
   }
   // Get Events to send server in JSON
-  this.getEventToJSON = function(){
+  this.getEventToJSON = function() {
     return {
       type: 1,
-      userID: userID,
-      v_x: 0,
-      v_y: 0,
-      a: 0,
-      da: 0,
-      s: 0
+      userID: this.p.userID,
+      v_x: this.p.v_x,
+      v_y: this.p.v_y,
+      a: this.p.a,
+      da: this.p.da,
+      s: this.p.s
     };
   }
 
-  // Get create a player (JSON)
-  this.getCreatePlayerToJSON = function(){
+  // Get create a player (JSON) : only for testing
+  this.getCreatePlayerToJSON = function() {
     return {
-      type: 100,
-      
+      type: 30,
+      userID: this.p.userID,
+      v_x: this.p.v_x,
+      v_y: this.p.v_y,
+      a: this.p.a,
+      da: this.p.da,
+      s: this.p.s
     };
   }
 
-  // Get create a dummy player (JSON)
-  this.getDummyPlayerToJSON = function(){
-
+  // Get create a dummy player (JSON) : only for testing
+  this.getDummyPlayerToJSON = function() {
+    return {
+      type: 31,
+      userID: this.p.userID,
+      v_x: this.p.v_x,
+      v_y: this.p.v_y,
+      a: this.p.a,
+      da: this.p.da,
+      s: this.p.s
+    };
   }
 
-  // Get passplayer (JSON)
-  this.getPassPlayer = function(){
-
+  // Get passplayer (JSON) : only for testing
+  this.getPassPlayerToJSON = function() {
+    return {
+      type: 30,
+      userID: this.p.userID,
+      v_x: this.p.v_x,
+      v_y: this.p.v_y,
+      a: this.p.a,
+      da: this.p.da,
+      s: this.p.s
+    };
   }
 }
 //-->
