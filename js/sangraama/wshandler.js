@@ -1,7 +1,8 @@
 var D = true; // debug
 var TAG = 'WSHandler : '
 
-var wsList = new Array(10);
+var wsSize = 10;
+var wsList = new Array(wsSize);
 /* this structure was built using 1.1 method in tutorial
 http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
 
@@ -17,7 +18,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
   };
   // Get host address | Data Encapsulation
   this.getHostAddress = function() {
-    console.log('Get host address ' + hostAddress);
+    console.log(TAG + 'web socket:' + wsIndex + ' get host address ' + hostAddress);
     return hostAddress;
   }
   // Get the ws Index | Data encapsulation
@@ -48,12 +49,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
     if (ws.readyState == ws.OPEN) {
       ws.send(data);
     } else {
-      console.log("ws isn't ready or open");
+      console.log(TAG + "ws:" + wsIndex + " isn't ready or open " + hostAddress);
     }
   }
   // Connecting to server and functions for handle server messages
   this.connect = function() {
-    console.log('call connect ... ' + wsIndex + ' ' + hostAddress);
+    console.log(TAG + 'call connect ... ' + wsIndex + ' ' + hostAddress);
     var hostProtocol;
 
     // if (window.location.protocol == 'http:') {
@@ -73,51 +74,56 @@ function WebSocketHandler(hostAddress, wsIndex) {
     }
 
     ws.onopen = function() {
-      console.log(TAG + 'Connection opened ' + hostURL);
-      aoihandler.setConnectedHost(hostURL); // added to already connected queue
+      console.log(TAG + 'Connection opened ws:' + wsIndex + ' url:' + hostURL);
+      aoihandler.setConnectedHost(hostURL, wsIndex); // added to already connected queue
 
-      // set the primaryconnection after ws setup
-      if (nextPrimaryCon >= 0) {
-        if (wsList[nextPrimaryCon].isReady() == 1) {
-          // Reset player's events on current server
-          // Change previous player to Dummy player
-          wsList[primaryCon].send(JSON.stringify({
-            type: 4,
+      // set if the next primaryconnection/player is this web socket
+      if (nextPrimaryCon == wsIndex) {
+        console.log(TAG + ' ws:' + wsIndex + ' is the primary connection. Make a player.');
+        if (wsList[nextPrimaryCon].isReady() == 1) { // if next this web socket connection is ready
+          wsList[nextPrimaryCon].send(JSON.stringify({ // request for create a player
+            type: 30,
             userID: player.userID,
             x: player.x,
             y: player.y,
-            x_v: aoihandler.getVirtualPoint().x_v,
-            x_y: aoihandler.getVirtualPoint().y_v,
-            a: 0,
-            v_x: 0,
-            v_y: 0,
-            v_a: 0,
+            w: aoihandler.getAOI().aoi_w,
+            h: aoihandler.getAOI().aoi_h,
+            x_vp: aoihandler.getVirtualPoint().x_vp,
+            y_vp: aoihandler.getVirtualPoint().y_vp,
+            v_x: player.v_x,
+            v_y: player.v_y,
+            a: player.a,
             s: 0
           }));
           // swap connections
           prevPrimarycon = primaryCon;
           primaryCon = nextPrimaryCon;
           nextPrimaryCon = -1;
-          console.log('Open & Set primary as ' + prevPrimarycon + ' << primary:' + primaryCon + ' << ' + nextPrimaryCon);
-        }
-        wsList[primaryCon].send(JSON.stringify(player));
-      }
-      /* if this is not the primary connection then 
-       * this will create a dummy player for get update
-       */
+          console.log(TAG + 'Open & Set primary as ' + prevPrimarycon + ' << primary:' + primaryCon + ' << ' + nextPrimaryCon);
+        } // -- end if(isready)
 
-      wsList[wsIndex].send(JSON.stringify(player));
-      /*
-       * if(secondryCon != null){
-       * wsList[secondryCon].getWS().send(JSON.stringify(passPlayer));
-       * swapConnecations(); }
-       */
+      } else { // if this is not a primary connection
+        console.log(TAG + ' ws:' + wsIndex + ' is the update connection. Make a dummy player.');
+        if (wsList[wsIndex].isReady() == 1) {
+          wsList[wsIndex].send(JSON.stringify({ // request for create a player
+            type: 31,
+            userID: player.userID,
+            x: 0, // dummy player doesn't have a coordinate location
+            y: 0,
+            w: aoihandler.getAOI().aoi_w,
+            h: aoihandler.getAOI().aoi_h,
+            x_vp: aoihandler.getVirtualPoint().x_vp,
+            x_y: aoihandler.getVirtualPoint().y_vp,
+          }));
+        }
+      }
+
       console.log("Connection opened");
-      // Set AOI in server
-      //playeraoi.userID = player.userID;
-      wsList[wsIndex].send(JSON.stringify(aoihandler.getAOIToJSON()));
-      wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
+      // Set AOI and Virtual point in the server
+      //wsList[wsIndex].send(JSON.stringify(aoihandler.getAOIToJSON()));
+      //wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
     };
+
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
       // Can be replace by map
@@ -129,7 +135,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
             //console.log(TAG + 'case1: '); 
-            if (player.userID == inPlayer.userID) {
+            if (player.userID == inPlayer.userID) { // If this is the current player details, then proceed following
               player.x = inPlayer.dx;
               player.y = inPlayer.dy;
               player.a = inPlayer.da;
@@ -146,7 +152,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   console.log(TAG + 'player is outside of the virtual box');
                   //console.log(TAG + 'case1: '); console.log(inPlayer);
                   aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                  wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                  // wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                  for (var i = 0; i < wsList.length; i++) {
+                    if (wsList[i] != undefined && wsList[i].isReady() == 1) {
+                      wsList[i].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                    }
+                  };
+
                   mapLoader.drawMap(inPlayer.x, inPlayer.y);
                 }
 
@@ -175,12 +187,51 @@ function WebSocketHandler(hostAddress, wsIndex) {
             // gEngine.processObjects();
             break;
 
-          case 2:
+          case 4:
+            /* close a existing connection */
+            break;
+
+          case 5:
+            drawRotatedImage(bullet, inPlayer);
+            break;
+
+          case 10:
+            /* set virtual point absolute location of client on the map (sync data) */
+            console.log(TAG + ' Type(10):' + inPlayer.type);
+            console.log(inPlayer);
+
+            // mapLoader.drawMap(inPlayer.x, inPlayer.y);
+
+            if (inPlayer.userID == player.userID) {
+              aoihandler.setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
+              player.x = inPlayer.x;
+              player.y = inPlayer.y;
+            } else {
+              // check whether dummy virtual point coinside with player virtual point
+
+            }
+            break;
+
+          case 11:
+            /* set size of the tiles */
+            console.log(TAG + 'Type(11):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
+            if (inPlayer.tiles != undefined) {
+              aoihandler.addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
+            } else {
+              console.log(TAG + ' tile details are not send by the server');
+              // NOTE: have to identify why is it sending empty tiles
+            }
+            break;
+
+          case 30:
             /* connect to another server (make it as primary connection)
              */
-            statusUpdate = false; // Y?
+            console.log(TAG + ' case 30 ');
+            console.log(inPlayer);
+            console.log(TAG + ' Type(30):' + inPlayer.type);
             var info = JSON.parse(inPlayer.info);
-            console.log('Type 2 msg. ' + info.url);
+            console.log(TAG + ' make new player connection to url:' + info.url);
+
             player.x = info.positionX;
             player.y = info.positionY;
             passPlayer.type = inPlayer.type;
@@ -188,57 +239,84 @@ function WebSocketHandler(hostAddress, wsIndex) {
             passPlayer.info = inPlayer.info;
             passPlayer.signedInfo = inPlayer.signedInfo;
             // alert(JSON.stringify(passPlayer));
-            var i = 0;
-            do { // search from begining of list is there any available slot
-              console.log(i, wsList);
-              if (wsList[i] == undefined) { // if ws isn't initialized
-                passConnect(info.url, i);
-                break;
-              } else if (wsList[i].hostAddress == info.url && wsList[i].isReady() == 1) {
+
+            if (aoihandler.isAlreadyConnect(info.url)) { // If already connected as a dummy player
+              var dIndex = aoihandler.getAlreadyConnectWS(info.url).wsIndex; // get dummy connection ws index
+              if (wsList[dIndex].hostAddress == info.url && wsList[dIndex].isReady() == 1) {
                 /*
                  * if a websocket is opening for this address ignore connecting again
                  */
-                wsList[primaryCon].send(JSON.stringify({
+                console.log(TAG + ' if ws already created and connected ' + wsList[i].getHostAddress());
+                wsList[primaryCon].send(JSON.stringify({ // reset dummy settings
                   type: 4,
                   userID: player.userID,
                   x: player.x,
                   y: player.y,
-                  x_v: aoihandler.getVirtualPoint().x_v,
-                  y_v: aoihandler.getVirtualPoint().y_v,
+                  //x_vp: aoihandler.getVirtualPoint().x_vp,
+                  //y_vp: aoihandler.getVirtualPoint().y_vp,
                   a: 0,
                   v_x: 0,
                   v_y: 0,
-                  v_a: 0,
                   s: 0
                 }));
                 // swap primary Connection
                 prevPrimarycon = primaryCon;
-                primaryCon = i;
+                primaryCon = dIndex;
+                nextPrimaryCon = -1;
                 console.log('Set primary connections as ' + prevPrimarycon + ' << primary:' + primaryCon + ' <<' + nextPrimaryCon);
 
-                wsList[primaryCon].send(JSON.stringify(player));
+                wsList[primaryCon].send(JSON.stringify({ // request for create a player
+                  type: 30,
+                  userID: player.userID,
+                  x: player.x,
+                  y: player.y,
+                  w: aoihandler.getAOI().aoi_w,
+                  h: aoihandler.getAOI().aoi_h,
+                  x_vp: aoihandler.getVirtualPoint().x_vp,
+                  y_vp: aoihandler.getVirtualPoint().y_vp,
+                  v_x: player.v_x,
+                  v_y: player.v_y,
+                  a: player.a,
+                  s: 0
+                }));
                 wsList[primaryCon].send(JSON.stringify(aoihandler.getAOIToJSON()));
+                wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
                 break;
-              } else if (wsList[i].isReady() == 3) { // if previous ws is
-                // closed
-                passConnect(info.url, i);
+              } else if (wsList[dIndex].isReady() == 3) { // if previous ws is closed
+                console.log(dIndex + ' previous ws closed');
+                passConnect(info.url, dIndex);
                 break;
+              } else { // otherwise create a new ws and connect as player
+                var i = 0;
+                do { // search from begining of list is there any available slot
+                  console.log(i, wsList);
+                  if (wsList[i] == undefined) { // if ws isn't initialized
+                    console.log(i + 'if undefined');
+                    passConnect(info.url, i);
+                    break;
+                  } else if (wsList[i].isReady() == 3) { // if previous ws is closed
+                    console.log(i + ' previous ws closed');
+                    passConnect(info.url, i);
+                    break;
+                  }
+                  i++;
+                } while (i < wsSize);
               }
-              i++;
-            } while (i < 10);
+            }
             break;
 
-          case 3:
+          case 31:
             /* connecting to another server and get updates in order to fulfill AOI */
             var info = JSON.parse(inPlayer.info);
-            console.log('Type 3 msg. ' + info.url + ' details of the server which need to get updates to fulfill AOI');
+            console.log('Type(31):' + inPlayer.type + ' url:' + info.url + ' details of the server which need to get updates to fulfill AOI');
+            console.log(inPlayer);
 
             if (!aoihandler.isAlreadyConnect(info.url)) { // If there is not connected
               var i = 0;
               do { // search from begining of list is there any available slot
                 // console.log('Times ' + i + wsList[i].hostAddress);
                 if (wsList[i] == undefined) { // if ws isn't initialized
-                  reconnect(info.url, i);
+                  updateConnect(info.url, i);
                   break;
                 } else if (wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
                   /* 
@@ -247,38 +325,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   break;
                 } else if (wsList[i].isReady() == 3) { // if previous ws is
                   // closed
-                  reconnect(info.url, i);
+                  updateConnect(info.url, i);
                   break;
                 }
                 i++;
-              } while (i < 10);
-              break;
+              } while (i < wsSize);
             }
-
-          case 4:
-            /* close a existing connection */
-            break;
-
-          case 5:
-            console.log("Bullet event");
-            drawRotatedImage(bullet, inPlayer);
-            break;
-
-          case 10:
-            /* set virtual point absolute location of client on the map (sync data) */
-            console.log(TAG + 'case 10: ');
-            console.log(inPlayer);
-            // aoihandler.setVirtualPoint(inPlayer.x, inPlayer.y); // Set new virtual point
-            // mapLoader.drawMap(inPlayer.x, inPlayer.y);
-
-            player.x = inPlayer.x;
-            player.y = inPlayer.y;
-            break;
-
-          case 11:
-            /* set size of the tiles */
-            console.log(TAG + 'Type:' + inPlayer.type + ' Set tile size of server');
-            aoihandler.addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             break;
 
           default:
@@ -295,27 +347,23 @@ function WebSocketHandler(hostAddress, wsIndex) {
   };
 }
 
-// Make connection to new server as primary, send event requests
+/* Make connection to new server as primary, send event requests */
 
 function passConnect(host, num) {
   console.log('Create new primary connection to ' + host + ' with ' + num);
   wsList[num] = new WebSocketHandler(host, num);
   wsList[num].connect();
-  if (wsList[num].isReady == 1) { // if connection was created
-    /*
-     * Closing privious primary connection mayn't a good idea, coz player
-     * doesn't quite from that location immediately
-     */
-    primaryCon = num; // make this primary connection
-    console.log(num + ' is already & make primaryCon');
-  } else {
-    nextPrimaryCon = num;
-    console.log('Make ' + num + 'as  next primaryCon');
-  }
+  nextPrimaryCon = num;
+  console.log('Make ' + num + 'as  next primaryCon');
+  /*
+   * Closing privious primary connection mayn't a good idea, coz player
+   * doesn't quite from that location immediately
+   */
 }
-// Connecting to another server
 
-function reconnect(host, num) {
+/* Connecting to another server in order to get updates */
+
+function updateConnect(host, num) {
   console.log('Reconnect to ' + host + ' with ' + num);
   wsList[num] = new WebSocketHandler(host, num);
   wsList[num].connect();

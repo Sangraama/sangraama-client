@@ -29,8 +29,8 @@ function aoihandler() {
       aoi_h: 0
     };
     v_point = {
-      x_v: 0,
-      y_v: 0
+      x_vp: 0,
+      y_vp: 0
     };
     this.origin = {
       x: 0,
@@ -40,17 +40,45 @@ function aoihandler() {
   }
 
   // Set Host address
-  this.setConnectedHost = function(host) {
-    connectedHosts = _.union(connectedHosts,[host]);
+  this.setConnectedHost = function(host, wsIndex) {
+    /*console.log(_.find(connectedHosts, function(num) {
+      return num.host == host;
+    }));*/
+    if (_.find(connectedHosts, function(num) {
+      return num.host == host;
+    }) == undefined) {
+      connectedHosts = _.union(connectedHosts, {
+        host: host,
+        wsIndex: wsIndex
+      });
+    }
     return connectedHosts;
   }
   // Check whether client already connected to given server
   this.isAlreadyConnect = function(host) {
-    return _.contains(connectedHosts, host);
+    if (_.find(connectedHosts, function(num) {
+      return num.host == host;
+    }) != undefined) {
+      return true;
+    } else {
+      false;
+    }
+  }
+  // Get the already connected host corresponding ws Index
+  this.getAlreadyConnectWS = function(findHost) {
+    return _.find(connectedHosts, function(value) {
+      return value.host == findHost;
+    });
+  }
+  // test purpose
+  this.getConnectedHosts = function() {
+    return connectedHosts;
   }
   // Remove Host address
-  this.removeConnectedHost = function(host){
-    connectedHosts = _.reject(connectedHosts, function(h){ return h == host; });
+  this.removeConnectedHost = function(host) {
+    connectedHosts = _.reject(connectedHosts, function(h) {
+      return h == host;
+    });
   }
 
   // Check whether it is inside a subtile
@@ -177,8 +205,8 @@ function aoihandler() {
     towards moving direction. This is method is using instead of center view. #gihan
    ***********************************************************************************/
   var v_point = {
-    x_v: 0, // x location of virtual point
-    y_v: 0 // y location of virtual point
+    x_vp: 0, // x location of virtual point
+    y_vp: 0 // y location of virtual point
   };
 
   /* The gap fraction between left side of screen edge
@@ -211,8 +239,8 @@ function aoihandler() {
   // parameter x : player current x coordinate
   // y : player current y coordicate
   this.isInVBox = function(x, y) {
-    if ((v_point.x_v - vbox_hw) <= x && x <= (v_point.x_v + vbox_hw) &&
-      (v_point.y_v - vbox_hh) <= y && y <= (v_point.y_v + vbox_hh)) {
+    if ((v_point.x_vp - vbox_hw) <= x && x <= (v_point.x_vp + vbox_hw) &&
+      (v_point.y_vp - vbox_hh) <= y && y <= (v_point.y_vp + vbox_hh)) {
       return true;
     } else {
       return false;
@@ -227,14 +255,13 @@ function aoihandler() {
   }
 
   // Set Virtual point location
-  this.setVirtualPoint = function(x_v, y_v) {
-    v_point.x_v = x_v;
-    v_point.y_v = y_v;
-    console.log(TAG + 'set virtual point x_v:' + x_v + ' y_v:' + y_v);
-    this.origin.x = x_v - (aoi.aoi_w / 2);
-    this.origin.y = y_v - (aoi.aoi_h / 2);
-
-    console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
+  this.setVirtualPoint = function(x_vp, y_vp) {
+    v_point.x_vp = x_vp;
+    v_point.y_vp = y_vp;
+    console.log(TAG + 'set virtual point x_vp:' + x_vp + ' y_vp:' + y_vp);
+    this.origin.x = x_vp - (aoi.aoi_w / 2);
+    this.origin.y = y_vp - (aoi.aoi_h / 2);
+    // console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
 
   }
   // Get Virtual point location
@@ -246,8 +273,8 @@ function aoihandler() {
     return {
       type: 5,
       userID: userID,
-      x_vp: v_point.x_v,
-      y_vp: v_point.y_v
+      x_vp: v_point.x_vp,
+      y_vp: v_point.y_vp
     }
   }
 
