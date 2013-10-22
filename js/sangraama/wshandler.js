@@ -75,7 +75,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     ws.onopen = function() {
       console.log(TAG + 'Connection opened ws:' + wsIndex + ' url:' + hostURL);
-      aoihandler.setConnectedHost(hostURL, wsIndex); // added to already connected queue
+      aoihandler.setConnectedHost(hostAddress, wsIndex); // added to already connected queue
 
       // set if the next primaryconnection/player is this web socket
       if (nextPrimaryCon == wsIndex) {
@@ -230,7 +230,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log(inPlayer);
             console.log(TAG + ' Type(30):' + inPlayer.type);
             var info = JSON.parse(inPlayer.info);
-            console.log(TAG + ' make new player connection to url:' + info.url);
+            console.log(TAG + ' make new player connection to url:' + info.url + ' already connected:' + aoihandler.isAlreadyConnect(info.url));
 
             player.x = info.positionX;
             player.y = info.positionY;
@@ -242,11 +242,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
             if (aoihandler.isAlreadyConnect(info.url)) { // If already connected as a dummy player
               var dIndex = aoihandler.getAlreadyConnectWS(info.url).wsIndex; // get dummy connection ws index
-              if (wsList[dIndex].hostAddress == info.url && wsList[dIndex].isReady() == 1) {
+              console.log(TAG + ' already connected dummy connection :' + dIndex);
+              console.log(TAG + wsList[dIndex].getHostAddress() + ' eq url:' + (wsList[dIndex].hostAddress == info.url) + ' is ready:' + wsList[dIndex].isReady());
+              if (wsList[dIndex].getHostAddress() == info.url && wsList[dIndex].isReady() == 1) {
                 /*
                  * if a websocket is opening for this address ignore connecting again
                  */
-                console.log(TAG + ' if ws already created and connected ' + wsList[i].getHostAddress());
+                console.log(TAG + ' if ws already created and connected ' + wsList[dIndex].getHostAddress());
                 wsList[primaryCon].send(JSON.stringify({ // reset dummy settings
                   type: 4,
                   userID: player.userID,
@@ -280,28 +282,31 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   s: 0
                 }));
                 wsList[primaryCon].send(JSON.stringify(aoihandler.getAOIToJSON()));
-                wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
+                wsList[primaryCon].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
                 break;
               } else if (wsList[dIndex].isReady() == 3) { // if previous ws is closed
-                console.log(dIndex + ' previous ws closed');
+                console.log(dIndex + ' previous ws closed...');
                 passConnect(info.url, dIndex);
                 break;
-              } else { // otherwise create a new ws and connect as player
-                var i = 0;
-                do { // search from begining of list is there any available slot
-                  console.log(i, wsList);
-                  if (wsList[i] == undefined) { // if ws isn't initialized
-                    console.log(i + 'if undefined');
-                    passConnect(info.url, i);
-                    break;
-                  } else if (wsList[i].isReady() == 3) { // if previous ws is closed
-                    console.log(i + ' previous ws closed');
-                    passConnect(info.url, i);
-                    break;
-                  }
-                  i++;
-                } while (i < wsSize);
+              } else {
+                console.log(TAG + ' error on passing connection to other server');
               }
+            } else { // otherwise create a new ws and connect as player
+              console.log(TAG + ' create a new player connection #$%');
+              var i = 0;
+              do { // search from begining of list is there any available slot
+                console.log(i, wsList);
+                if (wsList[i] == undefined) { // if ws isn't initialized
+                  console.log(i + 'if undefined');
+                  passConnect(info.url, i);
+                  break;
+                } else if (wsList[i].isReady() == 3) { // if previous ws is closed
+                  console.log(i + ' previous ws closed');
+                  passConnect(info.url, i);
+                  break;
+                }
+                i++;
+              } while (i < wsSize);
             }
             break;
 

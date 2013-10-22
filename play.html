@@ -115,6 +115,7 @@
   var b;
   $('#botstart').click(function(){
     b = new bot();
+    b.init();
     b.start();
     $("#botstart i").removeClass("icon-play").addClass("icon-stop");
 

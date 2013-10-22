@@ -84,7 +84,7 @@
     player.x = Math.floor(Math.random() * 49 + 2250); //create at edge
     // player.x = 50;
     // player.y = 50;
-    player.y = Math.floor(Math.random() * 100) + 300
+    player.y = Math.floor(Math.random() * 100) + 100
     // drawRotatedImage(ship, player);
     pHandler = new playerhandler();
     pHandler.init(player.userID);
