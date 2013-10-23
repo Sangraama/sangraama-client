@@ -194,12 +194,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
-            console.log(TAG + ' Type(10):' + inPlayer.type);
+            console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
             console.log(inPlayer);
 
             // mapLoader.drawMap(inPlayer.x, inPlayer.y);
-
+            console.log(TAG + ' check id equal player:' + player.userID + ' inplayer:' + inPlayer.userID);
             if (inPlayer.userID == player.userID) {
+              console.log(TAG + ' set Virtual point if this is the primary connection');
               aoihandler.setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
               player.x = inPlayer.x;
               player.y = inPlayer.y;

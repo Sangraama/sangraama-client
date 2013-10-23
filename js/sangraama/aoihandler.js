@@ -2,7 +2,7 @@ function aoihandler() {
   var TAG = 'AOIHandler : '
   var tiles = new Array();
   var connectedHosts = new Array();
-  var aoiCallTimeout = 30;
+  var aoiCallTimeout = 20;
   var cntDown = aoiCallTimeout;
 
   var aoi = {
@@ -88,6 +88,7 @@ function aoihandler() {
    * Handling of AOI fulfill by Servers
    **********************************************/
   // Check whether it is inside a subtile
+  // NOTE : Server is passing to the other server if player is not in it's tiles
   this.isSubTile = function(x, y) {
     var tile = _.find(tiles, function(val) {
       return (val.x <= x && x <= val.x + val.w && val.y <= y && y <= val.y + val.h) ? true : false;
@@ -98,15 +99,20 @@ function aoihandler() {
       return -1;
     }
   }
-  // Check whether current AIO is fulfill by server, otherwise send details about missing locations
+  // Check whether for a given coordinate, current AIO is fulfill by the servers, otherwise send details about missing locations
   this.isFulfillAOI = function(x, y) {
     var unFil = new Array();
     // if already requested, send null output
-    if (isAlreadyReq.apply(this)) {
+    /**
+     * uncomment following when player is sending request to server more than it can response.
+     * Use when "Center View" is using in client side
+     */
+    /*if (isAlreadyReq.apply(this)) {
       return unFil;
-    } // else continue ...
+    }*/ // else continue ...
 
     // check left down corner
+    console.log('&&& ' + this.isSubTile(x - aoi.aoi_w / 2, y - aoi.aoi_h / 2));
     if (this.isSubTile(x - aoi.aoi_w / 2, y - aoi.aoi_h / 2) < 0) {
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
