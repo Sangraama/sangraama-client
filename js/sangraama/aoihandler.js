@@ -20,7 +20,9 @@ function aoihandler() {
     h: 0, // height of the sub-tile
     w: 0, // width of the sub-tiles
     x: 0, // origin x coordination
-    y: 0 // origin y coordination
+    y: 0, // origin y coordination
+    edgeX: 0, // value of origin x + width
+    edgeY: 0 // value of origin y + width
   };
 
   this.init = function() {
@@ -78,9 +80,9 @@ function aoihandler() {
     return connectedHosts;
   }
   // Remove Host address
-  this.removeConnectedHost = function(host) {
+  this.removeConnectedHost = function(ws) {
     connectedHosts = _.reject(connectedHosts, function(h) {
-      return h == host;
+      return h.wsIndex == ws;
     });
   }
 
@@ -91,7 +93,7 @@ function aoihandler() {
   // NOTE : Server is passing to the other server if player is not in it's tiles
   this.isSubTile = function(x, y) {
     var tile = _.find(tiles, function(val) {
-      return (val.x <= x && x <= val.x + val.w && val.y <= y && y <= val.y + val.h) ? true : false;
+      return (val.x <= x && x <= val.edgeX && val.y <= y && y <= val.edgeY) ? true : false;
     });
     if (tile != undefined) {
       return tile.wsIndex;
@@ -210,6 +212,8 @@ function aoihandler() {
     var newTiles = _.map(ts, function(num, key) {
       num.host = host;
       num.wsIndex = wsIndex;
+      num.edgeX = num.x + num.w;
+      num.edgeY = num.y + num.h;
       return num;
     });
     tiles = _.union(tiles, newTiles);

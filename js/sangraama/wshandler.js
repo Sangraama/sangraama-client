@@ -39,6 +39,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
   this.close = function(index) {
     if (index == wsIndex && ws.readyState <= ws.OPEN && primaryCon != index) { // if ws is connecting or opened
       ws.close();
+      wsList[wsIndex] = undefined;
       return true;
     } else {
       return false;
@@ -186,6 +187,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 4:
             /* close a existing connection */
+            console.log(TAG + ' Type(04):' + inPlayer.type + ' close connection in ws:' + wsIndex);
+            aoihandler.removeConnectedHost(wsIndex);
+            aoihandler.removeTiles(wsIndex);
+            wsList[wsIndex].close(wsIndex);
             break;
 
           case 5:
