@@ -41,7 +41,7 @@ function bot() {
   }
   // Logic
   run = function() {
-    console.log('Iteration : ' + t++);
+    console.log(t++ + ' player x:' + player.x + ' y:' + player.y);
     nav.goRight();
   }
 }
