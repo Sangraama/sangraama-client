@@ -101,11 +101,9 @@ function doMouseDown(evt) {
   switch (evt.which) {
     case 1:
       if (D)
-        console.log('Left mouse button pressed');
+        console.log('Player x:' + player.x + ' y:'+ player.y + ' Left mouse button pressed');
       break;
     case 2:
-      player.v_y = 1;
-
       if (D)
         console.log('Middle mouse button pressed');
       break;
@@ -120,7 +118,7 @@ function doMouseDown(evt) {
 }
 
 function doMouseUp(evt) {
-  switch (evt.which) {
+  /*switch (evt.which) {
     case 1:
       if (D)
         console.log('Left mouse button released');
@@ -136,7 +134,7 @@ function doMouseUp(evt) {
     default:
       if (D)
         console.log('You have a strange mouse');
-  }
+  }*/
 }
 
 function playShoot() {
