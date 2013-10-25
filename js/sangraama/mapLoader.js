@@ -12,8 +12,17 @@ function MapLoader() {
   var yAbs = -1;
   var xDir = -1;
 
-  this.init = function() {
-
+  this.getMinX = function() {
+    return mapMinX;
+  }
+  this.getMinY = function() {
+    return mapMinY;
+  }
+  this.getMaxX = function() {
+    return mapMaxX;
+  }
+  this.getMaxY = function() {
+    return mapMaxY;
   }
 
   this.loadMap = function() {
@@ -60,38 +69,38 @@ function MapLoader() {
     var canvasY = 0;
     var tileCount = 1;
     // if ((parseInt(x / screenWidth, 10) != xAbs) || (parseInt(y / screenHeight, 10) != yAbs)) {
-      xAbs = parseInt(x / screenWidth, 10);
-      yAbs = parseInt(y / screenHeight, 10);
-      var widthOffset = parseInt(x % screenWidth, 10);
-      var heightOffset = parseInt(y % screenHeight, 10);
-      xOffset = parseInt(((aoihandler.origin.x) / pix32), 10);
-      yOffset = parseInt(((aoihandler.origin.y) / pix32), 10);
-      currentTile = yOffset * mapWidth + xOffset;
-      xLastOffset = xOffset + noOfXTiles;
-      yLastOffset = yOffset + noOfYTiles;
-      lastTile = yLastOffset * mapWidth + xLastOffset;
-      console.log('xOffset:' + xOffset + ' yOffset:' + yOffset + ' currentTile:' + currentTile + ' xLastOffset:' + xLastOffset +
-        ' yLastOffset:' + yLastOffset + ' lastTile:' + lastTile);
-      while (currentTile <= lastTile) {
-        canvasX = pix32 * xCoordinate;
-        canvasY = pix32 * yCoordinate;
-        if ((tileCount % (noOfXTiles + 1)) == 0) {
-          xCoordinate = 0;
-          yCoordinate++;
-        } else {
-          xCoordinate++;
-        }
-        tileCount++;
-
-        if (xTilePosition == (noOfXTiles + 1)) {
-          xTilePosition = 0;
-          yOffset++;
-          currentTile = yOffset * mapWidth + xOffset;
-        }
-        this.drawTile(currentTile, canvasX, canvasY);
-        xTilePosition++;
-        currentTile++;
+    xAbs = parseInt(x / screenWidth, 10);
+    yAbs = parseInt(y / screenHeight, 10);
+    var widthOffset = parseInt(x % screenWidth, 10);
+    var heightOffset = parseInt(y % screenHeight, 10);
+    xOffset = parseInt(((aoihandler.origin.x) / pix32), 10);
+    yOffset = parseInt(((aoihandler.origin.y) / pix32), 10);
+    currentTile = yOffset * mapWidth + xOffset;
+    xLastOffset = xOffset + noOfXTiles;
+    yLastOffset = yOffset + noOfYTiles;
+    lastTile = yLastOffset * mapWidth + xLastOffset;
+    console.log('xOffset:' + xOffset + ' yOffset:' + yOffset + ' currentTile:' + currentTile + ' xLastOffset:' + xLastOffset +
+      ' yLastOffset:' + yLastOffset + ' lastTile:' + lastTile);
+    while (currentTile <= lastTile) {
+      canvasX = pix32 * xCoordinate;
+      canvasY = pix32 * yCoordinate;
+      if ((tileCount % (noOfXTiles + 1)) == 0) {
+        xCoordinate = 0;
+        yCoordinate++;
+      } else {
+        xCoordinate++;
       }
+      tileCount++;
+
+      if (xTilePosition == (noOfXTiles + 1)) {
+        xTilePosition = 0;
+        yOffset++;
+        currentTile = yOffset * mapWidth + xOffset;
+      }
+      this.drawTile(currentTile, canvasX, canvasY);
+      xTilePosition++;
+      currentTile++;
+    }
     // }
   }
 

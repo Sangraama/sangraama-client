@@ -309,6 +309,7 @@ function aoihandler() {
   // parameter x : player current x coordinate
   // y : player current y coordicate
   this.isInVBox = function(x, y) {
+
     if ((v_point.x_vp - vbox_hw) <= x && x <= (v_point.x_vp + vbox_hw) &&
       (v_point.y_vp - vbox_hh) <= y && y <= (v_point.y_vp + vbox_hh)) {
       return true;
@@ -329,8 +330,8 @@ function aoihandler() {
     v_point.x_vp = x_vp;
     v_point.y_vp = y_vp;
     console.log(TAG + 'set virtual point x_vp:' + x_vp + ' y_vp:' + y_vp);
-    this.origin.x = x_vp - (aoi.aoi_w / 2);
-    this.origin.y = y_vp - (aoi.aoi_h / 2);
+    this.origin.x = v_point.x_vp - (aoi.aoi_w / 2);
+    this.origin.y = v_point.y_vp - (aoi.aoi_h / 2);
     // console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
 
   }
