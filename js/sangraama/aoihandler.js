@@ -9,10 +9,6 @@ function aoihandler() {
     aoi_w: 1000,
     aoi_h: 600
   };
-  var origin = { // Validation need to be done via server
-    x: 0,
-    y: 0
-  };
   var tile = {
     //tileId: '',
     wsIndex: 0, // websocket index that holds this sub-tile
@@ -33,10 +29,6 @@ function aoihandler() {
     v_point = {
       x_vp: 0,
       y_vp: 0
-    };
-    this.origin = {
-      x: 0,
-      y: 0
     };
     // this.setVBoxSize(this.aoi.aoi_w, this.aoi.aoi_h);
   }
@@ -329,10 +321,7 @@ function aoihandler() {
     v_point.x_vp = x_vp;
     v_point.y_vp = y_vp;
     console.log(TAG + 'set virtual point x_vp:' + x_vp + ' y_vp:' + y_vp);
-    this.origin.x = x_vp - (aoi.aoi_w / 2);
-    this.origin.y = y_vp - (aoi.aoi_h / 2);
-    // console.log(TAG + 'set origin point x:' + this.origin.x + ' y:' + this.origin.y);
-
+    gEngine.setOriginOfCanvas(x_vp - (aoi.aoi_w / 2) , y_vp - (aoi.aoi_h / 2));
   }
   // Get Virtual point location
   this.getVirtualPoint = function() {

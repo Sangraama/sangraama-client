@@ -153,14 +153,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   console.log(TAG + 'player is outside of the virtual box');
                   //console.log(TAG + 'case1: '); console.log(inPlayer);
                   aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                  // wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
-                  for (var i = 0; i < wsList.length; i++) {
-                    if (wsList[i] != undefined && wsList[i].isReady() == 1) {
-                      wsList[i].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
-                    }
-                  };
-
-                  mapLoader.drawMap(inPlayer.x, inPlayer.y);
+                  wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
                 }
 
                 // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side
@@ -178,9 +171,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
               }
 
             }
-            drawRotatedImage(ship, inPlayer);
+            gEngine.drawRotatedImage(ship, inPlayer);
             // addPlayerToGraphicEngine(inPlayer);
-
             // gEngine.clear();
             // gEngine.processObjects();
             break;
@@ -194,21 +186,27 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 5:
-            drawRotatedImage(bullet, inPlayer);
+            gEngine.drawRotatedImage(bullet, inPlayer);
             break;
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
             console.log(inPlayer);
+            mapLoader.drawMap(inPlayer.x, inPlayer.y);
 
-            // mapLoader.drawMap(inPlayer.x, inPlayer.y);
             console.log(TAG + ' check id equal player:' + player.userID + ' inplayer:' + inPlayer.userID);
             if (inPlayer.userID == player.userID) {
               console.log(TAG + ' set Virtual point if this is the primary connection');
               aoihandler.setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
               player.x = inPlayer.x;
               player.y = inPlayer.y;
+              // Set virtual points of dummy players same as player
+              for (var i = 0; i < wsList.length; i++) {
+                if (wsList[i] != undefined && i != wsIndex && wsList[i].isReady() == 1) {
+                  wsList[i].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                }
+              }
 
               // Idea : control the AOI in client side with "Virtual Box View". Uncommenting this, enable the "filfill the AOI" in client-side
               var want = aoihandler.isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
@@ -249,11 +247,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
             player.x = info.positionX;
             player.y = info.positionY;
-            passPlayer.type = inPlayer.type;
-            passPlayer.userID = inPlayer.userID;
-            passPlayer.info = inPlayer.info;
-            passPlayer.signedInfo = inPlayer.signedInfo;
-            // alert(JSON.stringify(passPlayer));
 
             if (aoihandler.isAlreadyConnect(info.url)) { // If already connected as a dummy player
               var dIndex = aoihandler.getAlreadyConnectWS(info.url).wsIndex; // get dummy connection ws index
