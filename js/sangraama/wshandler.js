@@ -154,6 +154,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   //console.log(TAG + 'case1: '); console.log(inPlayer);
                   aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
                   wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                  mapLoader.drawMap(inPlayer.dx, inPlayer.dy);
                 }
 
                 // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side

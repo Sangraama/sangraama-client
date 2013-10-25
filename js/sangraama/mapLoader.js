@@ -15,7 +15,7 @@ function MapLoader() {
   var xDir = -1;
 
   this.init = function(width, height) {
-    canvas2 = document.getElementById('layer2');
+    canvas2 = document.getElementById('layer1');
     ctx2 = canvas2.getContext("2d");
     canvas2.setAttribute('width', width);
     canvas2.setAttribute('height', height - 50);
