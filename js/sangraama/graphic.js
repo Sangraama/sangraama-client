@@ -3,7 +3,7 @@ function GraphicEngine() {
   var canvas;
   var ctx;
   var origin;
-
+  var scalingFactor; // 1 unit in server => 32 pixels in canvas
   this.init = function(width, height) {
     canvasSize = {
       WIDTH: width,
@@ -19,6 +19,7 @@ function GraphicEngine() {
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height - 50);
     console.log('Init graphic engine with WIDTH:' + width + ' HEIGHT:' + height);
+    scalingFactor = 32;
   }
 
   this.clear = function() {
@@ -40,7 +41,15 @@ function GraphicEngine() {
     origin.y = y;
     console.log(TAG + 'set origin point x:' + x + ' y:' + y);
   }
-  this.getOriginOfCanvas = function(){
+  this.getOriginOfCanvas = function() {
     return origin;
+  }
+
+  this.multiplyScale = function(value) {
+    return value * scalingFactor;
+  }
+
+  this.divideScale = function(value) {
+    return value / scalingFactor;
   }
 }

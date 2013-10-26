@@ -321,7 +321,7 @@ function aoihandler() {
     v_point.x_vp = x_vp;
     v_point.y_vp = y_vp;
     console.log(TAG + 'set virtual point x_vp:' + x_vp + ' y_vp:' + y_vp);
-    gEngine.setOriginOfCanvas(x_vp - (aoi.aoi_w / 2) , y_vp - (aoi.aoi_h / 2));
+    gEngine.setOriginOfCanvas(x_vp - (aoi.aoi_w / 2), y_vp - (aoi.aoi_h / 2));
   }
   // Get Virtual point location
   this.getVirtualPoint = function() {
@@ -332,8 +332,8 @@ function aoihandler() {
     return {
       type: 5,
       userID: userID,
-      x_vp: v_point.x_vp,
-      y_vp: v_point.y_vp
+      x_vp: gEngine.divideScale(v_point.x_vp),
+      y_vp: gEngine.divideScale(v_point.y_vp)
     }
   }
 

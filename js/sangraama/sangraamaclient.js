@@ -20,8 +20,6 @@
   var prevPrimarycon = 0; // previous primary connection, for recovering purpose
   var nextPrimaryCon = 0; // To store next primary connection, until it's
   // stablish
-  var scale = 100; // 1 unit in server => 100 pixels in canvas
-
   var player = {
     type: 1,
     userID: 1,
@@ -51,10 +49,10 @@
     // Create player location (this will be given by the login server)
     player.userID = Math.floor(Math.random() * 101);
     // player.x = Math.floor(Math.random() * 900);
-    player.x = Math.floor(Math.random() * 49 + 2250); //create at edge
-    // player.x = 50;
-    // player.y = 50;
-    player.y = Math.floor(Math.random() * 100) + 100
+    // player.x = Math.floor(Math.random() * 49 + 5); //create at edge
+    player.x = 50;
+    player.y = 50;
+    // player.y = Math.floor(Math.random() * 100) + 5
     // drawRotatedImage(ship, player);
     pHandler = new playerhandler();
     pHandler.init(player.userID);
