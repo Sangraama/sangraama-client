@@ -1,80 +1,55 @@
-var playerList = new Array();
-var bulletList = new Array();
-
-function GraphicObject() {
-  this.x = 0;
-  this.y = 0;
-  this.a = 0;
-};
-drawRotatedImage = function(image, player) {
-
-  var screenHeight = canvas.getAttribute('height');
-  var screenWidth = canvas.getAttribute('width');
-  var x = (player.dx - aoihandler.origin.x) % screenWidth;
-  var y = (player.dy - aoihandler.origin.y) % screenHeight;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(player.da * TO_RADIANS);
-  ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
-  ctx.restore();
-}
-
 function GraphicEngine() {
-  /*var world;
-    this.init = function() {
-        var gravity = new b2Vec2(0, -10);
-        var doSleep = false;
-        world = new b2World(gravity, doSleep);
-    }*/
-  this.clear = function() {
-    ctx.clearRect(0, 0, scanvas.WIDTH, scanvas.HEIGHT);
+  var canvasSize;
+  var canvas;
+  var ctx;
+  var origin;
+  var scalingFactor; // 1 unit in server => 32 pixels in canvas
+  this.init = function(width, height) {
+    canvasSize = {
+      WIDTH: width,
+      HEIGHT: height
+    };
+    origin = {
+      x: 0,
+      y: 0
+    };
+
+    canvas = document.getElementById('layer2');
+    ctx = canvas.getContext("2d");
+    canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height - 50);
+    console.log('Init graphic engine with WIDTH:' + width + ' HEIGHT:' + height);
+    scalingFactor = 32;
   }
 
+  this.clear = function() {
+    ctx.clearRect(0, 0, canvasSize.WIDTH, canvasSize.HEIGHT);
+  }
 
-  this.drawShootImage = function(image, bullet) {
+  this.drawRotatedImage = function(image, player) {
+    var x = (player.dx - origin.x) % canvasSize.WIDTH;
+    var y = (player.dy - origin.y) % canvasSize.HEIGHT;
     ctx.save();
-    ctx.translate(bullet.dx, bullet.dy);
-    ctx.rotate(bullet.a * TO_RADIANS);
+    ctx.translate(x, y);
+    ctx.rotate(player.da * TO_RADIANS);
     ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
     ctx.restore();
   }
-  this.rect = function(x, y, w, h) {
-    ctx.beginPath();
-    ctx.rect(x, y, w, h);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+
+  this.setOriginOfCanvas = function(x, y) {
+    origin.x = x;
+    origin.y = y;
+    console.log(TAG + 'set origin point x:' + x + ' y:' + y);
+  }
+  this.getOriginOfCanvas = function() {
+    return origin;
   }
 
-  this.processObjects = function() {
-    var screenHeight = canvas.getAttribute('height');
-    var screenWidth = canvas.getAttribute('width');
-    var width = screenWidth / 2;
-    var height = screenHeight / 2;
-    var pp = playerList[player.userID];
-    if (typeof pp !== "undefined") {
-      var x = pp.x;
-      var y = pp.y;
-      // if(((x-width) > mapMinX) && ((x+width) < mapMaxX) && ((y-height) > mapMinY) && ((y+height) < mapMaxY)){
-      pp.x = pp.x % screenWidth;
-      pp.y = pp.y % screenHeight;
-      // }
-      playerList[player.userId] = pp;
-    }
-    processPlayers();
-    processBullets();
+  this.multiplyScale = function(value) {
+    return value * scalingFactor;
   }
-  processPlayers = function() {
-    for (var index in playerList) {
-      var gPlayer = playerList[index];
-      this.drawRotatedImage(ship, gPlayer);
-    }
-  };
-  processBullets = function() {
-    for (var index in bulletList) {
-      var gBullet = bulletList[index];
-      this.drawRotatedImage(bullet, gBullet);
-    }
-  };
 
-};
+  this.divideScale = function(value) {
+    return value / scalingFactor;
+  }
+}

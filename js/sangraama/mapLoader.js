@@ -1,16 +1,19 @@
 function MapLoader() {
   var mapArray = new Array();
+  var canvas2;
+  var ctx2;
 
-  mapMinX = 0;
-  mapMinY = 0;
+  var mapMinX = 0;
+  var mapMinY = 0;
   var mapMaxX = 0;
   var mapMaxY = 0;
   var pix32 = 32;
-  mapWidth = 0;
-  mapHeight = 0;
+  var mapWidth = 0;
+  var mapHeight = 0;
   var xAbs = -1;
   var yAbs = -1;
   var xDir = -1;
+
 
   this.getMinX = function() {
     return mapMinX;
@@ -23,6 +26,13 @@ function MapLoader() {
   }
   this.getMaxY = function() {
     return mapMaxY;
+  }
+  this.init = function(width, height) {
+    canvas2 = document.getElementById('layer1');
+    ctx2 = canvas2.getContext("2d");
+    canvas2.setAttribute('width', width);
+    canvas2.setAttribute('height', height - 50);
+
   }
 
   this.loadMap = function() {
@@ -50,8 +60,8 @@ function MapLoader() {
   }
 
   this.drawMap = function(x, y) {
-    var screenHeight = canvas.getAttribute('height');
-    var screenWidth = canvas.getAttribute('width');
+    var screenHeight = canvas2.getAttribute('height');
+    var screenWidth = canvas2.getAttribute('width');
     var width = screenWidth / 2;
     var height = screenHeight / 2;
     var xOffset = 0;
@@ -73,8 +83,9 @@ function MapLoader() {
     yAbs = parseInt(y / screenHeight, 10);
     var widthOffset = parseInt(x % screenWidth, 10);
     var heightOffset = parseInt(y % screenHeight, 10);
-    xOffset = parseInt(((aoihandler.origin.x) / pix32), 10);
-    yOffset = parseInt(((aoihandler.origin.y) / pix32), 10);
+    var origin = gEngine.getOriginOfCanvas();
+    xOffset = parseInt(((origin.x) / pix32), 10);
+    yOffset = parseInt(((origin.y) / pix32), 10);
     currentTile = yOffset * mapWidth + xOffset;
     xLastOffset = xOffset + noOfXTiles;
     yLastOffset = yOffset + noOfYTiles;
