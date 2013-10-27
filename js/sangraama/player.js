@@ -1,6 +1,6 @@
 <!--//
 
-function playerhandler() {
+function Player() {
   var p = {
     userID: 1,
     v_x: 0,

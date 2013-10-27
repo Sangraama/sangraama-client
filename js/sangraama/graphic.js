@@ -1,4 +1,5 @@
 function GraphicEngine() {
+  var TAG = 'GraphicEngine : ';
   var canvasSize;
   var canvas;
   var ctx;
@@ -27,8 +28,8 @@ function GraphicEngine() {
   }
 
   this.drawRotatedImage = function(image, player) {
-    var x = (player.dx - origin.x) % canvasSize.WIDTH;
-    var y = (player.dy - origin.y) % canvasSize.HEIGHT;
+    var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+    var y = (player.dy *scalingFactor - origin.y) % canvasSize.HEIGHT;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(player.da * TO_RADIANS);

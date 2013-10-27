@@ -1,12 +1,11 @@
-var D = true; // debug
-var TAG = 'WSHandler : '
-
 var wsSize = 10;
 var wsList = new Array(wsSize);
 /* this structure was built using 1.1 method in tutorial
 http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
 
 function WebSocketHandler(hostAddress, wsIndex) {
+  var D = true; // debug
+  var TAG = 'WSHandler : ';
   var ws = null;
   // The assigned index in the ws array
   var wsIndex = wsIndex;
@@ -85,12 +84,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
           wsList[nextPrimaryCon].send(JSON.stringify({ // request for create a player
             type: 30,
             userID: player.userID,
-            x: player.x,
-            y: player.y,
-            w: gEngine.divideScale(aoihandler.getAOI().aoi_w),
-            h: gEngine.divideScale(aoihandler.getAOI().aoi_h),
-            x_vp: gEngine.divideScale(aoihandler.getVirtualPoint().x_vp),
-            y_vp: gEngine.divideScale(aoihandler.getVirtualPoint().y_vp),
+            x: sangraama.scaleDown(player.x),
+            y: sangraama.scaleDown(player.y),
+            w: aoihandler._getAOI().aoi_w,
+            h: aoihandler._getAOI().aoi_h,
+            x_vp: aoihandler._getVirtualPoint().x_vp,
+            y_vp: aoihandler._getVirtualPoint().y_vp,
             v_x: player.v_x,
             v_y: player.v_y,
             a: player.a,
@@ -111,18 +110,18 @@ function WebSocketHandler(hostAddress, wsIndex) {
             userID: player.userID,
             x: 0, // dummy player doesn't have a coordinate location
             y: 0,
-            w: gEngine.divideScale(aoihandler.getAOI().aoi_w),
-            h: gEngine.divideScale(aoihandler.getAOI().aoi_h),
-            x_vp: gEngine.divideScale(aoihandler.getVirtualPoint().x_vp),
-            x_y: gEngine.divideScale(aoihandler.getVirtualPoint().y_vp),
+            w: aoihandler._getAOI().aoi_w,
+            h: aoihandler._getAOI().aoi_h,
+            x_vp: aoihandler._getVirtualPoint().x_vp,
+            y_vp: aoihandler._getVirtualPoint().y_vp
           }));
         }
       }
 
       console.log("Connection opened");
       // Set AOI and Virtual point in the server
-      //wsList[wsIndex].send(JSON.stringify(aoihandler.getAOIToJSON()));
-      //wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
+      wsList[wsIndex].send(JSON.stringify(aoihandler._getAOIToJSON()));
+      wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON()));
     };
 
     ws.onmessage = function(event) {
@@ -131,17 +130,14 @@ function WebSocketHandler(hostAddress, wsIndex) {
       gEngine.clear();
       for (var index in data) {
         var inPlayer = data[index];
-        inPlayer.dx = gEngine.multiplyScale(inPlayer.dx);
-        inPlayer.dy = gEngine.multiplyScale(inPlayer.dy);
-        inPlayer.x_vp = gEngine.multiplyScale(inPlayer.x_vp);
-        inPlayer.y_vp = gEngine.multiplyScale(inPlayer.y_vp);
+
         switch (inPlayer.type) {
           case 1: // update client graphichs
             //if(D) console.log('Case 1');
             //console.log(TAG + 'case1: '); 
             if (player.userID == inPlayer.userID) { // If this is the current player details, then proceed following
-              player.x = inPlayer.dx;
-              player.y = inPlayer.dy;
+              player.x = sangraama.scaleUp(inPlayer.dx);
+              player.y = sangraama.scaleUp(inPlayer.dy);
               player.a = inPlayer.da;
               var life = inPlayer.health + '%';
               var score = inPlayer.score;
@@ -152,15 +148,15 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
               if (wsIndex == primaryCon) { // if it's the primary connection
                 // check whether play is inside the virual box. If not, set virtual point as user current location
-                if (!aoihandler.isInVBox(inPlayer.dx, inPlayer.dy)) {
+                if (!aoihandler.isInVBox(sangraama.scaleUp(inPlayer.dx), sangraama.scaleUp(inPlayer.dy))) {
                   console.log(TAG + 'player is outside of the virtual box');
                   //console.log(TAG + 'case1: '); console.log(inPlayer);
-                  aoihandler.setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                  wsList[wsIndex].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                  aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
+                  wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.userID)));
                 }
 
                 // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side
-                /*var want = aoihandler.isFulfillAOI(inPlayer.dx, inPlayer.dy);
+                /*var want = aoihandler._isFulfillAOI(sangraama.scaleDown(inPlayer.dx), sangraama.scaleDown(inPlayer.dy));
                 _.map(want, function(val, k) {
                   console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
                   // Ask for AOI
@@ -174,6 +170,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
               }
 
             }
+
             gEngine.drawRotatedImage(ship, inPlayer);
             break;
 
@@ -187,30 +184,30 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 5:
             gEngine.drawRotatedImage(bullet, inPlayer);
-            console.log("Bullet x: " + inPlayer.dx + " y:" + inPlayer.dy);
+            // console.log("Bullet x: " + inPlayer.dx + " y:" + inPlayer.dy);
             break;
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
             console.log(inPlayer);
-            mapLoader.drawMap(inPlayer.x, inPlayer.y);
+            mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
 
             console.log(TAG + ' check id equal player:' + player.userID + ' inplayer:' + inPlayer.userID);
             if (inPlayer.userID == player.userID) {
-              console.log(TAG + ' set Virtual point if this is the primary connection');
-              aoihandler.setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
-              player.x = inPlayer.x;
-              player.y = inPlayer.y;
+              console.log(TAG + ' set Virtual point if this is the primary connection as x_vp:' + inPlayer.x_vp + ' y_vp' + inPlayer.y_vp);
+              aoihandler._setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
+              player.x = sangraama.scaleUp(inPlayer.x);
+              player.y = sangraama.scaleUp(inPlayer.y);
               // Set virtual points of dummy players same as player
               for (var i = 0; i < wsList.length; i++) {
                 if (wsList[i] != undefined && i != wsIndex && wsList[i].isReady() == 1) {
-                  wsList[i].send(JSON.stringify(aoihandler.getVirtualPointToJSON(player.userID)));
+                  wsList[i].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.userID)));
                 }
               }
 
               // Idea : control the AOI in client side with "Virtual Box View". Uncommenting this, enable the "filfill the AOI" in client-side
-              var want = aoihandler.isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
+              var want = aoihandler._isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
               _.map(want, function(val, k) {
                 console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
                 // Ask for AOI
@@ -230,7 +227,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* set size of the tiles */
             console.log(TAG + 'Type(11):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
             if (inPlayer.tiles != undefined) {
-              aoihandler.addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
+              aoihandler._addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             } else {
               console.log(TAG + ' tile details are not send by the server');
               // NOTE: have to identify why is it sending empty tiles
@@ -246,8 +243,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             var info = JSON.parse(inPlayer.info);
             console.log(TAG + ' make new player connection to url:' + info.url + ' already connected:' + aoihandler.isAlreadyConnect(info.url));
 
-            player.x = info.positionX;
-            player.y = info.positionY;
+            /*Is this necessary :: player.x = sangraama.scaleUp(info.positionX);
+            player.y = sangraama.scaleUp(info.positionY);*/
 
             if (aoihandler.isAlreadyConnect(info.url)) { // If already connected as a dummy player
               var dIndex = aoihandler.getAlreadyConnectWS(info.url).wsIndex; // get dummy connection ws index
@@ -261,8 +258,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 wsList[primaryCon].send(JSON.stringify({ // reset dummy settings
                   type: 4,
                   userID: player.userID,
-                  x: player.x,
-                  y: player.y,
+                  x: sangraama.scaleDown(player.x),
+                  y: sangraama.scaleDown(player.y),
                   //x_vp: aoihandler.getVirtualPoint().x_vp,
                   //y_vp: aoihandler.getVirtualPoint().y_vp,
                   a: 0,
@@ -279,19 +276,19 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 wsList[primaryCon].send(JSON.stringify({ // request for create a player
                   type: 30,
                   userID: player.userID,
-                  x: player.x,
-                  y: player.y,
-                  w: aoihandler.getAOI().aoi_w,
-                  h: aoihandler.getAOI().aoi_h,
-                  x_vp: aoihandler.getVirtualPoint().x_vp,
-                  y_vp: aoihandler.getVirtualPoint().y_vp,
+                  x: sangraama.scaleDown(player.x),
+                  y: sangraama.scaleDown(player.y),
+                  w: aoihandler._getAOI().aoi_w,
+                  h: aoihandler._getAOI().aoi_h,
+                  x_vp: aoihandler._getVirtualPoint().x_vp,
+                  y_vp: aoihandler._getVirtualPoint().y_vp,
                   v_x: player.v_x,
                   v_y: player.v_y,
                   a: player.a,
                   s: 0
                 }));
-                wsList[primaryCon].send(JSON.stringify(aoihandler.getAOIToJSON()));
-                wsList[primaryCon].send(JSON.stringify(aoihandler.getVirtualPointToJSON()));
+                wsList[primaryCon].send(JSON.stringify(aoihandler._getAOIToJSON()));
+                wsList[primaryCon].send(JSON.stringify(aoihandler._getVirtualPointToJSON()));
                 break;
               } else if (wsList[dIndex].isReady() == 3) { // if previous ws is closed
                 console.log(dIndex + ' previous ws closed...');
