@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   
   <title>Sangraama:සංග්‍රාම</title>
-        
+      
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-29231762-1']);
@@ -20,30 +20,12 @@
 
 
 <!--Stylesheets-->
-<link href="css/login.css" rel="stylesheet" type="text/css" />
+<link href="css/menu.css" rel="stylesheet" type="text/css" />
 <link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
 
 <!--Scripts-->
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <!--Sliding icons-->
-<script type="text/javascript">
-$(document).ready(function() {
-  $(".username").focus(function() {
-    $(".user-icon").css("left","-48px");
-  });
-  $(".username").blur(function() {
-    $(".user-icon").css("left","0px");
-  });
-  
-  $(".password").focus(function() {
-    $(".pass-icon").css("left","-48px");
-  });
-  $(".password").blur(function() {
-    $(".pass-icon").css("left","0px");
-  });
-});
-</script>
-
 </head>
 <body>
 
@@ -51,42 +33,72 @@ $(document).ready(function() {
       Sangraama : සංග්‍රාම
     </div>
     
-<div id="wrapper">
-  <!--Sliding icons-->
-    <div class="user-icon"></div>
-    <div class="pass-icon"></div>
-    <!--END Sliding icons-->
-
+ 
 <!--login form inputs-->
-<form name="login-form" class="login-form" action="" method="post">
-
-  <!--Header-->
-    <div class="header">
-    <h1>Login Form</h1>
-    <span>Please login by using this login form or if you dont have an account, you can Register!</span>
+<form name="menu-form" action="" method="post">
+  <div class = "user-data">
+    <div class = "user-info">
     </div>
-    <!--END header-->
+    <div class = "user-image">
+    </div>
+    <div class = "user-ship">
+    </div>
+    <div class = "user-bullet">
+    </div>
+  </div>
+  <div class="start_button">
+
+  </div>
+  <div class = "ship-data">
+    <div class = "ship">
+      <div class="ship_footer">
+      1000 pts
+      </div>
+    </div>
+     <div class = "ship">
+      <div class="ship_footer">
+        2000 pts
+      </div>
+    </div>
+    <div class = "ship">
+      <div class="ship_footer">
+        3000 pts
+      </div>
+    </div>
+    <div class = "ship">
+      <div class="ship_footer">
+        4000 pts
+      </div>
+    </div>
+  </div>
+   <div class = "bullet-data">
+    <div class = "bullet">
+      <div class="bullet_footer">
+      100 pts
+      </div>
+    </div>
+     <div class = "bullet">
+      <div class="bullet_footer">
+      200 pts
+      </div>
+    </div>
+    <div class = "bullet">
+      <div class="bullet_footer">
+      300 pts
+      </div>
+    </div>
+    <div class = "bullet">
+      <div class="bullet_footer">
+      1000 pts
+      </div>
+    </div>
+  </div>
+
   
-  <!--Input fields-->
-    <div class="content">
-  <!--USERNAME--><input name="username" type="text" class="input username" placeholder="Username" /><!--END USERNAME-->
-    <!--PASSWORD--><input name="password" type="password" class="input password" placeholder="Password" /><!--END PASSWORD-->
-    </div>
-    <!--END Input fields-->
-    
-    <!--Buttons-->
-    <div class="footer">
-    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="connect()" /><!--END Login button-->
-    <!--Register button--><input type="submit" name="submit" value="Register" class="register" /><!--END Register button-->
-    </div>
-    <!--END Buttons-->
-
 </form>
 <!--end login form-->
 
-</div>
 
-<!--bg gradient--><div class="gradient"></div><!--END bg gradient-->
 <script type="text/javascript">
 
   var ws;
@@ -122,7 +134,7 @@ $(document).ready(function() {
     ws.onerror = function(event) {
       console.log('Connection error');
     };
-    window.location.href='menu.html';
+    window.location.href='play.html';
   }
   </script>
 
