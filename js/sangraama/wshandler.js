@@ -126,13 +126,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
-      // Can be replace by map
-      console.log(data);
+
       if (wsIndex == primaryCon) {
         gEngine.clear();
       } else {
         gEngine.clear2();
       }
+
       for (var index in data) {
         var inPlayer = data[index];
 
@@ -154,8 +154,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   "width": life
                 })
                 $("#score").text(score);
-
-
 
                 // check whether play is inside the virual box. If not, set virtual point as user current location
                 if (!aoihandler.isInVBox(player.x, player.y)) {
@@ -220,7 +218,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
               // Idea : control the AOI in client side with "Virtual Box View". Uncommenting this, enable the "filfill the AOI" in client-side
               var want = aoihandler._isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
               _.map(want, function(val, k) {
-                console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
+                console.log(TAG + 'want area ' + sangraama.scaleUp(val.x) + ' : ' + sangraama.scaleUp(val.y));
                 // Ask for AOI
                 wsList[wsIndex].send(JSON.stringify({
                   type: 2,
@@ -377,7 +375,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     };
     ws.onclose = function() {
-      console.log('Connection closed $$$$$$$$$$$$' + hostURL);
+      console.log('Connection closed $$$$$$$$$$$$ ' + hostURL);
     };
     ws.onerror = function(event) {
       console.log('Connection error ' + hostURL);
