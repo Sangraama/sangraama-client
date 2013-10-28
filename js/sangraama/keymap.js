@@ -7,15 +7,15 @@ function doKeyDown(evt) {
       /* Up arrow was pressed */
       player.v_y = -1;
       player.a = 270;
-      // if (D)
-      console.log('up pressed');
+      /*if (D)
+        console.log('up pressed');*/
       break;
     case 40:
       /* Down arrow was pressed */
       player.v_y = 1;
       player.a = 90;
-      // if (D)
-      console.log('down pressed');
+     /* if (D)
+        console.log('down pressed');*/
       break;
     case 37:
       /* Left arrow was pressed */
@@ -101,7 +101,7 @@ function doMouseDown(evt) {
   switch (evt.which) {
     case 1:
       if (D)
-        console.log('Player x:' + player.x + ' y:'+ player.y + ' Left mouse button pressed');
+        console.log('Player x:' + player.x + ' y:' + player.y + ' Left mouse button pressed');
       break;
     case 2:
       if (D)

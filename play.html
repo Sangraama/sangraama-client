@@ -81,11 +81,11 @@
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();
       // Set initial virtual point location as player location
-      aoihandler.setVirtualPoint(player.x,player.y);
+      aoihandler._setVirtualPoint(sangraama.scaleDown(player.x),sangraama.scaleDown(player.y));
 
       // Clear the map before start game @assign: Amila
-      
       mapLoader.drawMap(player.x, player.y);
+      
       // Disable start and enable stop game
       $('#stop').removeClass('disabled');
       $('#stop').attr("data-toggle", "modal");
