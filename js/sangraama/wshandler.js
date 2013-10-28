@@ -355,6 +355,21 @@ function WebSocketHandler(hostAddress, wsIndex) {
             }
             break;
 
+          case 33:
+
+            console.log("## Bullet passing ##");
+            var info = JSON.parse(inPlayer.info);
+            var i = 0;
+            do{
+              if(wsList[i] != undefined && wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1){
+                wsList[i].send(JSON.stringify(inPlayer));
+                break;
+              }
+              i++;
+            }while(i<wsSize);
+
+            break;
+
           default:
             console.log("Warning. Unsupported message type " + inPlayer.type);
         }
