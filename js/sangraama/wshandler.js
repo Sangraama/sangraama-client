@@ -127,17 +127,18 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
       // Can be replace by map
-      gEngine.clear();
+      // gEngine.clear();
       for (var index in data) {
         var inPlayer = data[index];
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
+            gEngine.clear();
             /**
              * Seperate updates wether send by "primary server - player" OR "secondary server - dummy"
              */
             if (wsIndex == primaryCon) { // Data send by Player
-
+              gEngine.drawRotatedImage(ship, inPlayer);
               if (player.userID == inPlayer.userID) { // If this is the current player details, then proceed following
                 player.x = sangraama.scaleUp(inPlayer.dx);
                 player.y = sangraama.scaleUp(inPlayer.dy);
@@ -148,15 +149,17 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   "width": life
                 })
                 $("#score").text(score);
-              }
-              gEngine.drawRotatedImage(ship, inPlayer);
 
-              // check whether play is inside the virual box. If not, set virtual point as user current location
-              if (!aoihandler.isInVBox(sangraama.scaleUp(inPlayer.dx), sangraama.scaleUp(inPlayer.dy))) {
-                console.log(TAG + 'player is outside of the virtual box');
-                //console.log(TAG + 'case1: '); console.log(inPlayer);
-                aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.userID)));
+
+
+                // check whether play is inside the virual box. If not, set virtual point as user current location
+                if (!aoihandler.isInVBox(player.x, player.y)) {
+                  console.log(TAG + 'player is outside of the virtual box');
+                  //console.log(TAG + 'case1: '); console.log(inPlayer);
+                  aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
+                  wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.userID)));
+                }
+
               }
 
               // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side
@@ -171,10 +174,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
                     y: val.y
                   }));
                 });*/
-
             } // -- end player
             else { // Data send by Dummy
-              
+              console.log('DUMMY DATA @@@@@@@@@@@@');
+              // gEngine.drawRotatedImage(ship, inPlayer);
             } // -- end dummy
             break;
 
@@ -352,6 +355,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log("Warning. Unsupported message type " + inPlayer.type);
         }
       }
+
     };
     ws.onclose = function() {
       console.log('Connection closed ' + hostURL);
