@@ -133,30 +133,34 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
-            //if(D) console.log('Case 1');
-            //console.log(TAG + 'case1: '); 
-            if (player.userID == inPlayer.userID) { // If this is the current player details, then proceed following
-              player.x = sangraama.scaleUp(inPlayer.dx);
-              player.y = sangraama.scaleUp(inPlayer.dy);
-              player.a = inPlayer.da;
-              var life = inPlayer.health + '%';
-              var score = inPlayer.score;
-              $("#life_progress").css({
-                "width": life
-              })
-              $("#score").text(score);
+            /**
+             * Seperate updates wether send by "primary server - player" OR "secondary server - dummy"
+             */
+            if (wsIndex == primaryCon) { // Data send by Player
 
-              if (wsIndex == primaryCon) { // if it's the primary connection
-                // check whether play is inside the virual box. If not, set virtual point as user current location
-                if (!aoihandler.isInVBox(sangraama.scaleUp(inPlayer.dx), sangraama.scaleUp(inPlayer.dy))) {
-                  console.log(TAG + 'player is outside of the virtual box');
-                  //console.log(TAG + 'case1: '); console.log(inPlayer);
-                  aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                  wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.userID)));
-                }
+              if (player.userID == inPlayer.userID) { // If this is the current player details, then proceed following
+                player.x = sangraama.scaleUp(inPlayer.dx);
+                player.y = sangraama.scaleUp(inPlayer.dy);
+                player.a = inPlayer.da;
+                var life = inPlayer.health + '%';
+                var score = inPlayer.score;
+                $("#life_progress").css({
+                  "width": life
+                })
+                $("#score").text(score);
+              }
+              gEngine.drawRotatedImage(ship, inPlayer);
 
-                // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side
-                /*var want = aoihandler._isFulfillAOI(sangraama.scaleDown(inPlayer.dx), sangraama.scaleDown(inPlayer.dy));
+              // check whether play is inside the virual box. If not, set virtual point as user current location
+              if (!aoihandler.isInVBox(sangraama.scaleUp(inPlayer.dx), sangraama.scaleUp(inPlayer.dy))) {
+                console.log(TAG + 'player is outside of the virtual box');
+                //console.log(TAG + 'case1: '); console.log(inPlayer);
+                aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
+                wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.userID)));
+              }
+
+              // Idea : control the AOI in client side with "Center View". By uncommenting this, enable the "filfill the AOI" in client-side
+              /*var want = aoihandler._isFulfillAOI(sangraama.scaleDown(inPlayer.dx), sangraama.scaleDown(inPlayer.dy));
                 _.map(want, function(val, k) {
                   console.log(TAG + 'want area ' + val.x + ' : ' + val.y);
                   // Ask for AOI
@@ -167,11 +171,11 @@ function WebSocketHandler(hostAddress, wsIndex) {
                     y: val.y
                   }));
                 });*/
-              }
 
-            }
-
-            gEngine.drawRotatedImage(ship, inPlayer);
+            } // -- end player
+            else { // Data send by Dummy
+              
+            } // -- end dummy
             break;
 
           case 4:
