@@ -127,13 +127,18 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
       // Can be replace by map
-      // gEngine.clear();
+      console.log(data);
+      if (wsIndex == primaryCon) {
+        gEngine.clear();
+      } else {
+        gEngine.clear2();
+      }
       for (var index in data) {
         var inPlayer = data[index];
 
         switch (inPlayer.type) {
           case 1: // update client graphichs
-            gEngine.clear();
+
             /**
              * Seperate updates wether send by "primary server - player" OR "secondary server - dummy"
              */
@@ -176,8 +181,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 });*/
             } // -- end player
             else { // Data send by Dummy
-              console.log('DUMMY DATA @@@@@@@@@@@@');
-              // gEngine.drawRotatedImage(ship, inPlayer);
+              gEngine.drawRotatedImage2(ship, inPlayer);
             } // -- end dummy
             break;
 
@@ -358,7 +362,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     };
     ws.onclose = function() {
-      console.log('Connection closed ' + hostURL);
+      console.log('Connection closed $$$$$$$$$$$$' + hostURL);
     };
     ws.onerror = function(event) {
       console.log('Connection error ' + hostURL);
