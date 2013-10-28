@@ -53,7 +53,7 @@
     // player.x = Math.floor(Math.random() * 900);
     player.x = Math.floor(Math.random() * 100) + 2400; //create at edge
     //player.x = 50;
-    player.y = 500;
+    player.y = 700;
     // player.y = Math.floor(Math.random() * 100) + 5
     // drawRotatedImage(ship, player);
     cPlayer = new Player();
