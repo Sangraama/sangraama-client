@@ -11,6 +11,7 @@
   var dy = 5;
   var ship = new Image();
   var bullet = new Image();
+  var blast = new Image();
   var mapImage = new Image();
   var TO_RADIANS = Math.PI / 180;
   var FROM_RADIANS = 180 / Math.PI;
@@ -46,6 +47,7 @@
     clickSound = new Audio('audio/shoot.mp3');
     ship.src = 'img/arrow.jpg';
     bullet.src = 'img/bullet.png';
+    blast.src = 'img/blast.png';
     mapImage.src = 'assert/map/mapImage.jpg';
 
     // Create player location (this will be given by the login server)

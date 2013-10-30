@@ -126,7 +126,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
-
       if (wsIndex == primaryCon) {
         gEngine.clear();
       } else {
@@ -195,6 +194,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
             gEngine.drawRotatedImage(bullet, inPlayer);
             // console.log("Bullet x: " + inPlayer.dx + " y:" + inPlayer.dy);
             break;
+
+          case 6:
+            gEngine.drawBlastImage(blast, inPlayer);
+            // console.log("Bullet x: " + inPlayer.dx + " y:" + inPlayer.dy);
+            break;
+
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
@@ -358,13 +363,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log("## Bullet passing ##");
             var info = JSON.parse(inPlayer.info);
             var i = 0;
-            do{
-              if(wsList[i] != undefined && wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1){
+            do {
+              if (wsList[i] != undefined && wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
                 wsList[i].send(JSON.stringify(inPlayer));
                 break;
               }
               i++;
-            }while(i<wsSize);
+            } while (i < wsSize);
 
             break;
 

@@ -47,6 +47,16 @@ function GraphicEngine() {
     ctx.restore();
   }
 
+  this.drawBlastImage = function(image, player) {
+    var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+    var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
+    ctx.save();
+    ctx.translate(x, y);
+    // ctx.rotate(player.da * TO_RADIANS);
+    ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+    ctx.restore();
+  }
+
   this.drawRotatedImage2 = function(image, player) {
     var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
     var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;

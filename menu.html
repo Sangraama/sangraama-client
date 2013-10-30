@@ -11,11 +11,11 @@
     _gaq.push(['_setDomainName', 'dzyngiri.com']);
     _gaq.push(['_trackPageview']);
   
-    (function() {
+    /*(function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+    })();*/
   </script>
 
 
@@ -24,7 +24,7 @@
 <link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
 
 <!--Scripts-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.0.2.js"></script>
 <!--Sliding icons-->
 </head>
 <body>
@@ -100,7 +100,10 @@
 
 
 <script type="text/javascript">
-
+ window.onload = function() {
+   var stringValue = window.localStorage.getItem("test");
+ console.log(stringValue);
+}
   var ws;
   function connect() {
     

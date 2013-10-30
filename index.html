@@ -11,11 +11,11 @@
     _gaq.push(['_setDomainName', 'dzyngiri.com']);
     _gaq.push(['_trackPageview']);
   
-    (function() {
+    /*(function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+    })();*/
   </script>
 
 
@@ -24,7 +24,7 @@
 <link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
 
 <!--Scripts-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.0.2.js"></script>
 <!--Sliding icons-->
 <script type="text/javascript">
 $(document).ready(function() {
@@ -69,14 +69,14 @@ $(document).ready(function() {
   
   <!--Input fields-->
     <div class="content">
-  <!--USERNAME--><input name="username" type="text" class="input username" placeholder="Username" /><!--END USERNAME-->
-    <!--PASSWORD--><input name="password" type="password" class="input password" placeholder="Password" /><!--END PASSWORD-->
+  <!--USERNAME--><input id = "userName" name="username" type="text" class="input username" placeholder="Username" /><!--END USERNAME-->
+    <!--PASSWORD--><input id = "password" name="password" type="password" class="input password" placeholder="Password" /><!--END PASSWORD-->
     </div>
     <!--END Input fields-->
     
     <!--Buttons-->
     <div class="footer">
-    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="connect()" /><!--END Login button-->
+    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="checkUser()" /><!--END Login button-->
     <!--Register button--><input type="submit" name="submit" value="Register" class="register" /><!--END Register button-->
     </div>
     <!--END Buttons-->
@@ -88,7 +88,9 @@ $(document).ready(function() {
 
 <!--bg gradient--><div class="gradient"></div><!--END bg gradient-->
 <script type="text/javascript">
-
+ window.onload = function() {
+  connect();
+ }
   var ws;
   function connect() {
     
@@ -122,7 +124,20 @@ $(document).ready(function() {
     ws.onerror = function(event) {
       console.log('Connection error');
     };
-    window.location.href='menu.html';
+    // window.location.href='menu.html';
+  }
+
+
+  function checkUser(){
+    var msg = {type : 1,
+      username:$("#userName ").val(),
+    password : $("#password ").val()
+  };
+  ws.send(JSON.stringify(msg));
+  window.localStorage.setItem("test", JSON.stringify(msg));
+window.location.href='menu.html';
+/* Page B */
+
   }
   </script>
 
