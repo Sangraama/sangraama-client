@@ -14,7 +14,7 @@ function doKeyDown(evt) {
       /* Down arrow was pressed */
       player.v_y = 1;
       player.a = 90;
-     /* if (D)
+      /* if (D)
         console.log('down pressed');*/
       break;
     case 37:
@@ -104,12 +104,19 @@ function doMouseDown(evt) {
         console.log('Player x:' + player.x + ' y:' + player.y + ' Left mouse button pressed');
       break;
     case 2:
-      if (D)
-        console.log('Middle mouse button pressed');
+      if (D){
+        console.log('Player Virtual point x:' + aoihandler.getVirtualPoint().x_vp + ' y:' + aoihandler.getVirtualPoint().y_vp
+          +' AOI w:' + aoihandler.getAOI().aoi_w + ' h:' + aoihandler.getAOI().aoi_h);
+        console.log('Corners are '
+          +' LD x:' + (aoihandler.getVirtualPoint().x_vp - (aoihandler.getAOI().aoi_w / 2)) + ' y:' + (aoihandler.getVirtualPoint().y_vp - (aoihandler.getAOI().aoi_h / 2))
+          +' LU x:' + (aoihandler.getVirtualPoint().x_vp - (aoihandler.getAOI().aoi_w / 2)) + ' y:' + (aoihandler.getVirtualPoint().y_vp + (aoihandler.getAOI().aoi_h / 2))
+          +' RD x:' + (aoihandler.getVirtualPoint().x_vp + (aoihandler.getAOI().aoi_w / 2)) + ' y:' + (aoihandler.getVirtualPoint().y_vp - (aoihandler.getAOI().aoi_h / 2))
+          +' RU x:' + (aoihandler.getVirtualPoint().x_vp + (aoihandler.getAOI().aoi_w / 2)) + ' y:' + (aoihandler.getVirtualPoint().y_vp + (aoihandler.getAOI().aoi_h / 2)));
+      }
       break;
     case 3:
-      if (D)
-        console.log('Right mouse button pressed');
+      if (D) 
+        console.log('Right clicked');
       break;
     default:
       if (D)
