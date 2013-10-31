@@ -251,6 +251,29 @@ function WebSocketHandler(hostAddress, wsIndex) {
             }
             break;
 
+            case 20:
+
+            console.log("## Bullet passing ##");
+            var info = JSON.parse(inPlayer.info);
+            var i = 0;
+            do {
+              if (wsList[i] != undefined && wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
+                wsList[i].send(JSON.stringify(inPlayer));
+                break;
+              }
+              i++;
+            } while (i < wsSize);
+
+            break;
+
+          case 21:
+
+            console.log("## Score Change Passing ##");
+            if (wsList[primaryCon] != undefined) {
+                wsList[primaryCon].send(JSON.stringify(inPlayer));
+            }
+            break;
+
           case 30:
             /* connect to another server (make it as primary connection)
              */
@@ -359,21 +382,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 i++;
               } while (i < wsSize);
             }
-            break;
-
-          case 33:
-
-            console.log("## Bullet passing ##");
-            var info = JSON.parse(inPlayer.info);
-            var i = 0;
-            do {
-              if (wsList[i] != undefined && wsList[i].getHostAddress() == info.url && wsList[i].isReady() == 1) {
-                wsList[i].send(JSON.stringify(inPlayer));
-                break;
-              }
-              i++;
-            } while (i < wsSize);
-
             break;
 
           default:
