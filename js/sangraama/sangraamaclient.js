@@ -68,7 +68,7 @@
     aoihandler._setVirtualPoint(sangraama.scaleDown(player.x), sangraama.scaleDown(player.y));
     console.log(TAG + ' initialized window onloads ... ');
   };
-
+  
   function SangraamaClient() {
     /**
      * This is the main configuration for client-side. Others values set equal to this.
