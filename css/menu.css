@@ -213,13 +213,25 @@ LOGIN FORM
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	background: url(../img/arrow.jpg) no-repeat center;	
+	/*background: url(../img/arrow.jpg) no-repeat center;	*/
 	border: 1px solid #fff;
 	border-radius: 5px;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
+
+.user-ship-img {
+	width: 200px;
+	height: 150px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	/*float:left;*/
+	z-index:5;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	}
 
 .user-bullet {
 	width: 230px;
@@ -230,7 +242,7 @@ LOGIN FORM
 	z-index:5;
 	position: absolute;
 	bottom: 0;
-	background: url(../img/bullet.png) no-repeat center;	
+	/*background: url(../img/bullet.png) no-repeat center;	*/
 	border: 1px solid #fff;
 	border-radius: 5px;
 	
@@ -238,6 +250,15 @@ LOGIN FORM
 	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
+.user-bullet-img {
+	width: 100px;
+	height: 100px;
+	margin-left: 50px;
+	margin-top: 50px;
+	/*float:left;*/
+	z-index:5;
+	position: absolute;
+	}
 
 .user-image {
 	width: 230px;
@@ -295,7 +316,63 @@ LOGIN FORM
 	float : left;
 	z-index:5;
 	position: relative;
-	background:blue url(../img/arrow.jpg) no-repeat center;	
+	background:blue;	
+	border: 1px solid #fff;
+	border-radius: 5px;
+	cursor: pointer;
+	
+	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.ship-img{
+	margin-left: 5px;
+	margin-top: 30px;
+
+}
+.ship2 {
+	width: 117px;
+	height: 160px;
+	margin-left: 5px;
+	margin-top: 30px;
+	float : left;
+	z-index:5;
+	position: relative;
+	background:blue url(../img/ship2.png) no-repeat center;	
+	border: 1px solid #fff;
+	border-radius: 5px;
+	cursor: pointer;
+	
+	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.ship3 {
+	width: 117px;
+	height: 160px;
+	margin-left: 5px;
+	margin-top: 30px;
+	float : left;
+	z-index:5;
+	position: relative;
+	background:blue url(../img/ship3.png) no-repeat center;	
+	border: 1px solid #fff;
+	border-radius: 5px;
+	cursor: pointer;
+	
+	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.ship4 {
+	width: 117px;
+	height: 160px;
+	margin-left: 5px;
+	margin-top: 30px;
+	float : left;
+	z-index:5;
+	position: relative;
+	background:blue url(../img/ship4.png) no-repeat center;	
 	border: 1px solid #fff;
 	border-radius: 5px;
 	cursor: pointer;
@@ -355,6 +432,10 @@ LOGIN FORM
 	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.bullet-img{
+	margin-left: 40px;
+	margin-top: 40px;
 }
 .bullet .bullet_footer {
 	width: 117px;

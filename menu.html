@@ -38,56 +38,68 @@
 <form name="menu-form" action="" method="post">
   <div class = "user-data">
     <div class = "user-info">
+      <div id = "userName">
+      </div>
     </div>
     <div class = "user-image">
     </div>
     <div class = "user-ship">
+      <img  id = "userShip" src="img/ship1.png" class = "user-ship-img" >
     </div>
     <div class = "user-bullet">
+       <img  src="img/bullet1.png" class = "user-bullet-img" >
     </div>
   </div>
   <div class="start_button">
 
   </div>
   <div class = "ship-data">
-    <div class = "ship">
+    <div id ="ship1" class = "ship">
+      <img  src="img/ship1.png" class = "ship-img" >
       <div class="ship_footer">
       1000 pts
       </div>
     </div>
-     <div class = "ship">
+     <div id ="ship2" class = "ship">
+       <img  src="img/ship2.png" class = "ship-img" >
       <div class="ship_footer">
         2000 pts
       </div>
     </div>
-    <div class = "ship">
+    <div id ="ship3" class = "ship">
+       <img  src="img/ship3.png" class = "ship-img" >
       <div class="ship_footer">
         3000 pts
       </div>
     </div>
-    <div class = "ship">
+    <div id ="ship4" class = "ship">
+       <img src="img/ship4.png" class = "ship-img" >
       <div class="ship_footer">
         4000 pts
       </div>
     </div>
   </div>
    <div class = "bullet-data">
-    <div class = "bullet">
+    <div id= "bullet1" class = "bullet">
+       <img src="img/bullet1.png" class = "bullet-img" >
       <div class="bullet_footer">
       100 pts
       </div>
     </div>
-     <div class = "bullet">
+     <div id= "bullet2" class = "bullet">
+      <img src="img/bullet2.png" class = "bullet-img" >
       <div class="bullet_footer">
       200 pts
       </div>
     </div>
-    <div class = "bullet">
+    <div id= "bullet3" class = "bullet">
+      <img src="img/bullet3.png" class = "bullet-img" >
       <div class="bullet_footer">
       300 pts
       </div>
     </div>
-    <div class = "bullet">
+    <div id= "bullet4" class = "bullet">
+      <img src="img/bullet4.png" class = "bullet-img" >
       <div class="bullet_footer">
       1000 pts
       </div>
@@ -101,7 +113,11 @@
 
 <script type="text/javascript">
  window.onload = function() {
-   var stringValue = window.localStorage.getItem("test");
+   var stringValue = window.localStorage.getItem("user");
+   var user = JSON.parse(stringValue);
+   $('#userName').text(user.userName);
+   $('#userShip').attr('src','img/ship'+user.shipType+'.png');
+   
  console.log(stringValue);
 }
   var ws;
@@ -139,6 +155,33 @@
     };
     window.location.href='play.html';
   }
+
+
+
+  $('#ship1')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship1.png');
+    }
+  );
+   $('#ship2')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship2.png');
+    }
+  );
+   $('#ship3')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship3.png');
+    }
+  );
+   $('#ship4')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship4.png');
+    }
+  );
   </script>
 
 

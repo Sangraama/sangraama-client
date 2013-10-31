@@ -45,7 +45,7 @@
     mapLoader.loadMap();
 
     clickSound = new Audio('audio/shoot.mp3');
-    ship.src = 'img/arrow.jpg';
+    ship.src = 'img/ship1.png';
     bullet.src = 'img/bullet.png';
     blast.src = 'img/blast.png';
     mapImage.src = 'assert/map/mapImage.jpg';
