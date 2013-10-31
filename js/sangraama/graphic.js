@@ -40,7 +40,7 @@
     }
 
     this.drawRotatedImage = function(image, player) {
-      console.log('drw p');
+      // console.log('drw p');
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
       ctx.save();
@@ -51,7 +51,7 @@
     }
 
     this.drawBlastImage = function(image, player) {
-      console.log('draw np');
+      // console.log('draw np');
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
       ctx.save();

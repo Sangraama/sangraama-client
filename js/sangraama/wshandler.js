@@ -127,10 +127,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
       if (wsIndex == primaryCon) {
-        console.log('p'+event.data);
+        // console.log('p'+event.data);
         gEngine.clear();
       } else {
-        console.log('np'+event.data);
+        // console.log('np'+event.data);
         gEngine.clear2();
       }
       // gEngine.clear();
