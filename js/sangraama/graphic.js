@@ -2,6 +2,9 @@
 
   function GraphicEngine() {
     var TAG = 'GraphicEngine : ';
+    var TO_RADIANS = Math.PI / 180;
+    var FROM_RADIANS = 180 / Math.PI;
+
     var canvasSize;
     var canvas;
     var canvas2;
