@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -11,21 +11,13 @@
     _gaq.push(['_setDomainName', 'dzyngiri.com']);
     _gaq.push(['_trackPageview']);
   
-    /*(function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();*/
-  </script>
+     </script>
 
 
-<!--Stylesheets-->
 <link href="css/menu.css" rel="stylesheet" type="text/css" />
 <link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
 
-<!--Scripts-->
 <script type="text/javascript" src="js/lib/jquery-2.0.2.js"></script>
-<!--Sliding icons-->
 </head>
 <body>
 
@@ -34,11 +26,14 @@
     </div>
     
  
-<!--login form inputs-->
 <form name="menu-form" action="" method="post">
   <div class = "user-data">
     <div class = "user-info">
       <div id = "userName">
+      </div>
+      <div id = "userScore">
+      </div>
+      <div id = "userHealth">
       </div>
     </div>
     <div class = "user-image">
@@ -50,9 +45,11 @@
        <img  src="img/bullet1.png" class = "user-bullet-img" >
     </div>
   </div>
-  <div class="start_button">
-
-  </div>
+  <div id = "startButton" class="start_button">
+    <div  class="start_button_text">
+Play
+   </div>
+    </div>
   <div class = "ship-data">
     <div id ="ship1" class = "ship">
       <img  src="img/ship1.png" class = "ship-img" >
@@ -108,15 +105,18 @@
 
   
 </form>
-<!--end login form-->
 
 
 <script type="text/javascript">
+var user;
  window.onload = function() {
    var stringValue = window.localStorage.getItem("user");
-   var user = JSON.parse(stringValue);
+   user = JSON.parse(stringValue);
    $('#userName').text(user.userName);
+    $('#userScore').text('Score : '+user.score);
+     $('#userHealth').text('Health : '+user.health+'%');
    $('#userShip').attr('src','img/ship'+user.shipType+'.png');
+    $('#userBullet').attr('src','img/bullet'+user.shipType+'.png');
    
  console.log(stringValue);
 }
@@ -162,24 +162,66 @@
    .click(
     function(){
       $('#userShip').attr('src','img/ship1.png');
+      user.shipType = 1;
     }
   );
    $('#ship2')
    .click(
     function(){
       $('#userShip').attr('src','img/ship2.png');
+       user.shipType = 2;
     }
   );
    $('#ship3')
    .click(
     function(){
       $('#userShip').attr('src','img/ship3.png');
+       user.shipType = 3;
     }
   );
    $('#ship4')
    .click(
     function(){
       $('#userShip').attr('src','img/ship4.png');
+       user.shipType = 4;
+    }
+  );
+
+   $('#bullet1')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet1.png');
+       user.bulletType = 1;
+    }
+  );
+   $('#bullet2')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet2.png');
+      user.bulletType = 2;
+    }
+  );
+   $('#bullet3')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet3.png');
+      user.bulletType = 3;
+    }
+  );
+   $('#bullet4')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet4.png');
+      user.bulletType = 4;
+    }
+  );
+
+
+    $('#startButton')
+   .click(
+    function(){
+      window.localStorage.setItem("user", JSON.stringify(user));
+     window.location.href='play.html';
     }
   );
   </script>

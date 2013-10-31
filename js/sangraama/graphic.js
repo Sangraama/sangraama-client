@@ -40,10 +40,10 @@
     }
 
     this.drawRotatedImage = function(image, player) {
+      console.log('drw p');
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
       ctx.save();
-      console.log('draw p x: '+player.dx+'y : '+player.dy +'id : '+player.userID);
       ctx.translate(x, y);
       ctx.rotate(player.da * TO_RADIANS);
       ctx.drawImage(image, -(image.width / 2), -(image.height / 2));

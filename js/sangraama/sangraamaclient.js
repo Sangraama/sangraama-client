@@ -35,6 +35,9 @@
 
   // Setup client side
   window.onload = function() {
+    var stringValue = window.localStorage.getItem("user");
+    var user = JSON.parse(stringValue);
+    console.log(stringValue);
     sangraama = new SangraamaClient();
     sangraama.init();
     mapLoader = new MapLoader();
@@ -45,17 +48,17 @@
     mapLoader.loadMap();
 
     clickSound = new Audio('audio/shoot.mp3');
-    ship.src = 'img/ship1.png';
-    bullet.src = 'img/bullet.png';
+    ship.src = 'img/ship' + user.shipType + '.png';
+    bullet.src = 'img/bullet' + user.bulletType + '.png';
     blast.src = 'img/blast.png';
     mapImage.src = 'assert/map/mapImage.jpg';
 
     // Create player location (this will be given by the login server)
-    player.userID = Math.floor(Math.random() * 101);
+    player.userID = user.userId;
     // player.x = Math.floor(Math.random() * 900);
-    player.x = Math.floor(Math.random() * 100) + 2300; //create at edge
+    player.x = user.x; //create at edge
     //player.x = 50;
-    player.y = 700;
+    player.y = user.y;
     // player.y = Math.floor(Math.random() * 100) + 5
     // drawRotatedImage(ship, player);
     cPlayer = new Player();
@@ -68,7 +71,7 @@
     aoihandler._setVirtualPoint(sangraama.scaleDown(player.x), sangraama.scaleDown(player.y));
     console.log(TAG + ' initialized window onloads ... ');
   };
-  
+
   function SangraamaClient() {
     /**
      * This is the main configuration for client-side. Others values set equal to this.

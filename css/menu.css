@@ -269,7 +269,7 @@ LOGIN FORM
 	z-index:5;
 	border: 1px solid #fff;
 	border-radius: 5px;
-	
+	background: url(../img/anonymus.jpg) no-repeat center;	
 	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -285,7 +285,10 @@ LOGIN FORM
 	background: #f3f3f3;
 	border: 1px solid #fff;
 	border-radius: 5px;
-	
+	text-align:center;
+	font-family:"PacificoRegular", Georgia, Times, serif;
+	font-weight:normal;
+	font-size:30px;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -395,7 +398,7 @@ LOGIN FORM
 	-webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.15);
 }
 .ship:hover{
-	background:black url(../img/arrow.jpg) no-repeat center;	
+	background:black;	
 }
 .start_button{
 	width: 100px;
@@ -407,13 +410,22 @@ LOGIN FORM
 	text-align: center;
 	border: 5px solid white;
 	border-radius: 100px;
+	cursor: pointer;
 
 }
+.start_button_text{
+    text-align:center;
+	font-family:"PacificoRegular", Georgia, Times, serif;
+	font-weight:normal;
+	font-size:30px;
+	margin-top: 15px;
+}
+
 .start_button:hover{
-	background: black;
+	background: white;
 }
 .bullet:hover{
-	background:black url(../img/bullet.png) no-repeat center;	
+	background: black;
 }
 
 .bullet {
@@ -425,7 +437,6 @@ LOGIN FORM
 	z-index:5;
 	position: relative;
 	cursor: pointer;
-	background: green url(../img/bullet.png) no-repeat center;	
 	border: 1px solid #fff;
 	border-radius: 5px;
 	
