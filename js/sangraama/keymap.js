@@ -1,49 +1,39 @@
 var prevKey = 0;
+var D = true;
 
 function doKeyDown(evt) {
   if (prevKey != evt.keyCode) {
     switch (evt.keyCode) {
       case 38:
         /* Up arrow was pressed */
-        /*player.v_y = -1;
-      player.a = 270;*/
         player.setV_y(-1);
-
         /*if (D)
         console.log('up pressed');*/
         break;
       case 40:
         /* Down arrow was pressed */
-        /*player.v_y = 1;
-      player.a = 90;*/
         player.setV_y(1);
         /* if (D)
         console.log('down pressed');*/
         break;
       case 37:
         /* Left arrow was pressed */
-        /*player.v_x = -1;
-      player.a = 180;*/
         player.setV_x(-1);
         // if (D)
         // console.log('left pressed');
         break;
       case 39:
         /* Right arrow was pressed */
-        /*player.v_x = 1;
-      player.a = 0;*/
         player.setV_x(1);
         // if (D)
         // console.log('right pressed');
         break;
       case 82:
         /* R was pressed */
-        // player.da = 1;
         player.rotateR();
         break;
       case 76:
         /* L was pressed */
-        // player.da = -1;
         player.rotateL();
         break;
       case 32:
@@ -56,7 +46,6 @@ function doKeyDown(evt) {
       default:
         //console.log(evt.keyCode);
     }
-
     prevKey = evt.keyCode;
     sangraama.updateServer();
   }
@@ -87,7 +76,7 @@ function doKeyUp(evt) {
       break;
     case 32:
       /* Space was released */
-      // player.s = 0;
+      // Auto Reset
       break;
     case 76:
       /* L was released */

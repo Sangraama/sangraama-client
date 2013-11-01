@@ -379,7 +379,7 @@ function aoihandler() {
     _v_point.x_vp = x_vp;
     _v_point.y_vp = y_vp;
     // console.log(TAG + 'set VP [server side units] x_vp:' + x_vp + ' y_vp:' + y_vp);
-    this.setVirtualPoint(sangraama.scaleUp(x_vp), sangraama.scaleUp(y_vp));
+    this.setVirtualPoint(x_vp * scalingFactor, y_vp * scalingFactor);
   }
 
   /**

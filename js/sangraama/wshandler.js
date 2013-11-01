@@ -6,6 +6,7 @@ http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
 function WebSocketHandler(hostAddress, wsIndex) {
   var D = true; // debug
   var TAG = 'WSHandler : ';
+
   var ws = null;
   // The assigned index in the ws array
   var wsIndex = wsIndex;
@@ -82,20 +83,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
         console.log(TAG + ' ws:' + wsIndex + ' is the primary connection. Make a player.');
         if (wsList[sangraama.getNextPrimaryCon()].isReady() == 1) { // if next this web socket connection is ready
           wsList[sangraama.getNextPrimaryCon()].send(JSON.stringify(player._getCreatePlayerToJSON()));
-          /*{ // request for create a player
-            type: 30,
-            userID: player.getUserID(),
-            x: sangraama.scaleDown(player.x),
-            y: sangraama.scaleDown(player.y),
-            w: aoihandler._getAOI().aoi_w,
-            h: aoihandler._getAOI().aoi_h,
-            x_vp: aoihandler._getVirtualPoint().x_vp,
-            y_vp: aoihandler._getVirtualPoint().y_vp,
-            v_x: player.v_x,
-            v_y: player.v_y,
-            a: player.a,
-            s: 0
-          }));*/
           // swap connections
           sangraama.setPrimaryCon(sangraama.getNextPrimaryCon());
           sangraama.setNextPrimaryCon(-1);
@@ -105,14 +92,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
       } else { // if this is not a primary connection
         console.log(TAG + ' ws:' + wsIndex + ' is the update connection. Make a dummy player.');
         if (wsList[wsIndex].isReady() == 1) {
-          wsList[wsIndex].send(JSON.stringify({ // request for create a player
-            type: 31,
-            userID: player.getUserID(),
-            w: aoihandler._getAOI().aoi_w,
-            h: aoihandler._getAOI().aoi_h,
-            x_vp: aoihandler._getVirtualPoint().x_vp,
-            y_vp: aoihandler._getVirtualPoint().y_vp
-          }));
+          wsList[wsIndex].send(JSON.stringify(player._getDummyPlayerToJSON()));
         }
       }
 
@@ -125,13 +105,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
     ws.onmessage = function(event) {
       var data = JSON.parse(event.data);
       if (wsIndex == sangraama.getPrimaryCon()) {
-        // console.log('p'+event.data);
         gEngine.clear();
       } else {
-        // console.log('np'+event.data);
         gEngine.clear2();
       }
-      // gEngine.clear();
 
       for (var index in data) {
         var inPlayer = data[index];
@@ -159,7 +136,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 // check whether play is inside the virual box. If not, set virtual point as user current location
                 if (!aoihandler.isInVBox(player.getX(), player.getY())) {
                   console.log(TAG + 'player is outside of the virtual box');
-                  //console.log(TAG + 'case1: '); console.log(inPlayer);
                   aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
                   wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.getUserID())));
                 }
@@ -195,19 +171,16 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 5:
             gEngine.drawRotatedImage(bullet, inPlayer);
-            // console.log("Bullet x: " + inPlayer.dx + " y:" + inPlayer.dy);
             break;
 
           case 6:
             gEngine.drawBlastImage(blast, inPlayer);
-            // console.log("Bullet x: " + inPlayer.dx + " y:" + inPlayer.dy);
             break;
 
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
-            console.log(inPlayer);
             mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
 
             if (inPlayer.userID == player.getUserID()) {
@@ -265,8 +238,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 30:
             /* connect to another server (make it as primary connection)
              */
-            console.log(TAG + ' case 30 ');
-            console.log(inPlayer);
             console.log(TAG + ' Type(30):' + inPlayer.type);
             var info = JSON.parse(inPlayer.info);
             console.log(TAG + ' make new player connection to url:' + info.url + ' already connected:' + aoihandler.isAlreadyConnect(info.url));
@@ -290,23 +261,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 // swap primary Connection
                 sangraama.setPrimaryCon(dIndex);
                 sangraama.setNextPrimaryCon(-1);
-                console.log('Set primary connections as ' + prevPrimarycon + ' << primary:' + sangraama.getPrimaryCon() + ' <<' + nextPrimaryCon);
+                console.log('Set primary connections as ' + sangraama.getPrevPrimaryCon() + ' << primary:' + sangraama.getPrimaryCon() + ' <<' + sangraama.getNextPrimaryCon());
 
                 wsList[sangraama.getPrimaryCon()].send(JSON.stringify(player._getCreatePlayerToJSON()));
-                /*{ // request for create a player
-                  type: 30,
-                  userID: player.getUserID(),
-                  x: sangraama.scaleDown(player.x),
-                  y: sangraama.scaleDown(player.y),
-                  w: aoihandler._getAOI().aoi_w,
-                  h: aoihandler._getAOI().aoi_h,
-                  x_vp: aoihandler._getVirtualPoint().x_vp,
-                  y_vp: aoihandler._getVirtualPoint().y_vp,
-                  v_x: player.v_x,
-                  v_y: player.v_y,
-                  a: player.a,
-                  s: 0
-                }));*/
                 wsList[sangraama.getPrimaryCon()].send(JSON.stringify(aoihandler._getAOIToJSON()));
                 wsList[sangraama.getPrimaryCon()].send(JSON.stringify(aoihandler._getVirtualPointToJSON()));
                 break;
@@ -340,7 +297,6 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* connecting to another server and get updates in order to fulfill AOI */
             var info = JSON.parse(inPlayer.info);
             console.log('Type(31):' + inPlayer.type + ' url:' + info.url + ' details of the server which need to get updates to fulfill AOI');
-            console.log(inPlayer);
 
             if (!aoihandler.isAlreadyConnect(info.url)) { // If there is not connected
               var i = 0;

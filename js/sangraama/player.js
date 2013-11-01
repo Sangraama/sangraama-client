@@ -22,10 +22,6 @@ function Player() {
     };
   }
 
-  // Test purpose
-  this.printPlayer = function() {
-    return p;
-  }
   // Get Events to send server in JSON
   this._getEventToJSON = function() {
     var s = p.s;
@@ -65,7 +61,7 @@ function Player() {
   }
 
   // Get create a dummy player (JSON) : only for testing
-  this.getDummyPlayerToJSON = function() {
+  this._getDummyPlayerToJSON = function() {
     return {
       type: 31,
       userID: p.userID,

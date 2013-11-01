@@ -1,5 +1,3 @@
-  var D = true;
-
   var player;
   var gEngine;
   var aoihandler;
@@ -10,20 +8,6 @@
   var blast = new Image();
   var mapImage = new Image();
 
-  // stablish
-  /*  var player = {
-    type: 1,
-    userID: 1,
-    x: 0, // have to move x,y like w & h in order to optimize. Otherwise we are sending them all the time. #gihan
-    y: 0,
-    v_x: 0,
-    v_y: 0,
-    a: 0, //actual angle
-    da: 0, // delta angle
-    s: 0
-  };*/
-
-  // Setup client side
   window.onload = function() {
     var stringValue = window.localStorage.getItem("user");
     var user = JSON.parse(stringValue);
@@ -50,8 +34,8 @@
     player.init(user.userId);
     player.setCoordination(user.x, user.y);
 
-    player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor());
-    player.setCoordination(Math.floor(Math.random() * 200) + 2000, Math.floor(Math.random() * 500) + 400);
+/*    player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor());
+    player.setCoordination(Math.floor(Math.random() * 200) + 2000, Math.floor(Math.random() * 500) + 400);*/
 
     // Initialize AIO handler
     aoihandler = new aoihandler();
