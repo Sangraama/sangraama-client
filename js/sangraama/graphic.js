@@ -43,7 +43,6 @@
     }
 
     this.drawRotatedImage = function(image, player) {
-      // console.log('drw p');
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
       ctx.save();
@@ -54,7 +53,6 @@
     }
 
     this.drawBlastImage = function(image, player) {
-      // console.log('draw np');
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
       ctx.save();
@@ -62,6 +60,16 @@
       // ctx.rotate(player.da * TO_RADIANS);
       ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
       ctx.restore();
+    }
+
+    this.drawBlastImage2 = function(image, player) {
+      var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+      var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
+      ctx2.save();
+      ctx2.translate(x, y);
+      // ctx.rotate(player.da * TO_RADIANS);
+      ctx2.drawImage(image, -(image.width / 2), -(image.height / 2));
+      ctx2.restore();
     }
 
     this.drawRotatedImage2 = function(image, player) {

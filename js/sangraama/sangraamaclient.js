@@ -31,10 +31,10 @@
 
     // Create player location (this will be given by the login server) as a signed msg
     player = new Player();
-    player.init(user.userId);
+    player.init(user.userId, sangraama.getScalingFactor());
     player.setCoordination(user.x, user.y);
 
-/*    player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor());
+    /*player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor());
     player.setCoordination(Math.floor(Math.random() * 200) + 2000, Math.floor(Math.random() * 500) + 400);*/
 
     // Initialize AIO handler
