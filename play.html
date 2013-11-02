@@ -96,14 +96,14 @@
     // Close all opened websockets
     for ( var i = 0; i < 10; i++) {
       if (wsList[i] != null || wsList[i] != undefined) {
-        if (primaryCon == i) {
-          primaryCon--;
+        if (sangraama.getPrimaryCon() == i) {
+          sangraama.setPrimaryCon(i-1);
         }
         console.log('Stopped the connection ' + wsList[i].getHostAddress());
         wsList[i].close(i);// try closing connection
       }
     }
-    primaryCon = 0;
+    sangraama.setPrimaryCon(0);
     // Disable stop and enable start game
     $('#start').removeClass('disabled');
     $('#start').attr("data-toggle", "modal");
