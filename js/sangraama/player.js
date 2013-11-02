@@ -81,6 +81,8 @@ function Player() {
   // Set Velocity Event x direction
   // +1 for go right ; -1 for go left
   this.setV_x = function(v_x) {
+    testing.triggerMove(); // Trigger test
+                           
     if (p.v_y != 0) {
       p.v_x = (v_x > 0) ? .7 : -.7;
       p.v_y = (p.v_y > 0) ? .7 : -.7;
@@ -94,6 +96,8 @@ function Player() {
   }
   // Set Velocity Event y direction
   this.setV_y = function(v_y) {
+    testing.triggerMove(); // Trigger test
+                           
     if (p.v_x != 0) {
       p.v_y = (v_y > 0) ? .7 : -.7;
       p.v_x = (p.v_x > 0) ? .7 : -.7;
@@ -152,6 +156,8 @@ function Player() {
   this._setCoordination = function(x, y) {
     _c.x = x;
     _c.y = y;
+    
+    testing.responseMove();
   }
   // Only for test
   this.setCoordination = function(x, y) {
@@ -169,6 +175,9 @@ function Player() {
   }
   this.getY = function() {
     return _c.y * scalingFactor;
+  }
+  this._getCoordination = function(){
+    return _c;
   }
 }
 //-->

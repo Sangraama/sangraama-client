@@ -8,7 +8,13 @@
   var blast = new Image();
   var mapImage = new Image();
 
+  // Single Player Performance Testing
+  var testing;
+
   window.onload = function() {
+    testing = new singletest();
+    testing.init();
+
     var stringValue = window.localStorage.getItem("user");
     var user = JSON.parse(stringValue);
     console.log(stringValue);
