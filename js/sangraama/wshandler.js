@@ -170,7 +170,11 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 5:
-            gEngine.drawRotatedImage(bullet, inPlayer);
+            if (wsIndex == sangraama.getPrimaryCon()) {
+              gEngine.drawRotatedImage(bullet, inPlayer);
+            } else {
+              gEngine.drawRotatedImage2(bullet, inPlayer);
+            }
             break;
 
           case 6:
