@@ -327,7 +327,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     };
     ws.onclose = function() {
-      console.log('Connection closed $$$$$$$$$$$$ ' + hostURL);
+      console.log('Connection closed ' + hostURL);
     };
     ws.onerror = function(event) {
       console.log('Connection error ' + hostURL);
