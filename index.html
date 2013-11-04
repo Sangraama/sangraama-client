@@ -95,9 +95,9 @@ $(document).ready(function() {
   function connect() {
     
     if ('MozWebSocket' in window) {
-      ws = new MozWebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+      ws = new MozWebSocket('ws://192.248.8.248:8088/Login-Server/sangraama/player');
     } else if ('WebSocket' in window) {
-      ws = new WebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+      ws = new WebSocket('ws://192.248.8.248:8088/Login-Server/sangraama/player');
     } else {
       alert('Your browser does not support WebSockets');
     }
