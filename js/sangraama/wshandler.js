@@ -218,6 +218,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log(TAG + 'Type(11):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
             if (inPlayer.tiles != undefined) {
               aoihandler._addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
+              testing.responsePassClient(hostAddress);//stopping pass connection test 
+
             } else {
               console.log(TAG + ' tile details are not send by the server');
               // NOTE: have to identify why is it sending empty tiles
@@ -241,6 +243,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log(TAG + ' Type(30):' + inPlayer.type);
             var info = JSON.parse(inPlayer.info);
             console.log(TAG + ' make new player connection to url:' + info.url + ' already connected:' + aoihandler.isAlreadyConnect(info.url));
+
+            testing.triggerPassClient(info.url); //code to trigger testing of pass client\
 
             /*Is this necessary :: player.x = sangraama.scaleUp(info.positionX);
             player.y = sangraama.scaleUp(info.positionY);*/
