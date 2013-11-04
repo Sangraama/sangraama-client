@@ -4,23 +4,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   
   <title>Sangraama:සංග්‍රාම</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <meta name="description" content="Tutorial on creating a beautiful Login Form using HTML, CSS3 and jQuery" />
-    <meta name="keywords" content="login form, psd, html, css3, jquery, tutorial" />
-    <meta name="author" content="Dzyngiri" />
-    
+        
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-29231762-1']);
     _gaq.push(['_setDomainName', 'dzyngiri.com']);
     _gaq.push(['_trackPageview']);
   
-    (function() {
+    /*(function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+    })();*/
   </script>
 
 
@@ -29,7 +24,7 @@
 <link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
 
 <!--Scripts-->
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/lib/jquery-2.0.2.js"></script>
 <!--Sliding icons-->
 <script type="text/javascript">
 $(document).ready(function() {
@@ -74,14 +69,14 @@ $(document).ready(function() {
   
   <!--Input fields-->
     <div class="content">
-  <!--USERNAME--><input name="username" type="text" class="input username" placeholder="Username" /><!--END USERNAME-->
-    <!--PASSWORD--><input name="password" type="password" class="input password" placeholder="Password" /><!--END PASSWORD-->
+  <!--USERNAME--><input id = "userName" name="username" type="text" class="input username" placeholder="Username" /><!--END USERNAME-->
+    <!--PASSWORD--><input id = "password" name="password" type="password" class="input password" placeholder="Password" /><!--END PASSWORD-->
     </div>
     <!--END Input fields-->
     
     <!--Buttons-->
     <div class="footer">
-    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="connect()" /><!--END Login button-->
+    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="checkUser()" /><!--END Login button-->
     <!--Register button--><input type="submit" name="submit" value="Register" class="register" /><!--END Register button-->
     </div>
     <!--END Buttons-->
@@ -93,7 +88,9 @@ $(document).ready(function() {
 
 <!--bg gradient--><div class="gradient"></div><!--END bg gradient-->
 <script type="text/javascript">
-
+ window.onload = function() {
+  connect();
+ }
   var ws;
   function connect() {
     
@@ -108,9 +105,16 @@ $(document).ready(function() {
       console.log('Connection opened');
     };
     ws.onmessage = function(event) {
-      var players = JSON.parse(event.data);
+      var user = JSON.parse(event.data);
       console.log(event.data);
-      clear();
+      switch(user.type){
+        case 1:
+      window.localStorage.setItem("user", event.data);
+        window.location.href='menu.html';
+        break;
+        default:
+      }
+      /*clear();
       for ( var index in players) {
         var inPlayer = players[index];
         if (inPlayer.type == 1) {
@@ -119,7 +123,7 @@ $(document).ready(function() {
           ws.close();
           connect(inPlayer.url);
         }
-      }
+      }*/
     };
     ws.onclose = function() {
       console.log('Connection closed');
@@ -127,7 +131,20 @@ $(document).ready(function() {
     ws.onerror = function(event) {
       console.log('Connection error');
     };
-    window.location.href='play.html';
+    // window.location.href='menu.html';
+  }
+
+
+  function checkUser(){
+    var msg = {type : 1,
+      username:$("#userName ").val(),
+    password : $("#password ").val()
+  };
+  ws.send(JSON.stringify(msg));
+  // window.localStorage.setItem("test", JSON.stringify(msg));
+// window.location.href='menu.html';
+/* Page B */
+
   }
   </script>
 

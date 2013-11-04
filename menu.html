@@ -1,0 +1,231 @@
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <title>Sangraama:සංග්‍රාම</title>
+      
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-29231762-1']);
+    _gaq.push(['_setDomainName', 'dzyngiri.com']);
+    _gaq.push(['_trackPageview']);
+  
+     </script>
+
+
+<link href="css/menu.css" rel="stylesheet" type="text/css" />
+<link href="fonts/pacifico/stylesheet.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="js/lib/jquery-2.0.2.js"></script>
+</head>
+<body>
+
+  <div class="heading">
+      Sangraama : සංග්‍රාම
+    </div>
+    
+ 
+<form name="menu-form" action="" method="post">
+  <div class = "user-data">
+    <div class = "user-info">
+      <div id = "userName">
+      </div>
+      <div id = "userScore">
+      </div>
+      <div id = "userHealth">
+      </div>
+    </div>
+    <div class = "user-image">
+    </div>
+    <div class = "user-ship">
+      <img  id = "userShip" src="img/ship1.png" class = "user-ship-img" >
+    </div>
+    <div class = "user-bullet">
+       <img  id ="userBullet" src="img/bullet1.png" class = "user-bullet-img" >
+    </div>
+  </div>
+  <div id = "startButton" class="start_button">
+    <div  class="start_button_text">
+Play
+   </div>
+    </div>
+  <div class = "ship-data">
+    <div id ="ship1" class = "ship">
+      <img  src="img/ship1.png" class = "ship-img" >
+      <div class="ship_footer">
+      1000 pts
+      </div>
+    </div>
+     <div id ="ship2" class = "ship">
+       <img  src="img/ship2.png" class = "ship-img" >
+      <div class="ship_footer">
+        2000 pts
+      </div>
+    </div>
+    <div id ="ship3" class = "ship">
+       <img  src="img/ship3.png" class = "ship-img" >
+      <div class="ship_footer">
+        3000 pts
+      </div>
+    </div>
+    <div id ="ship4" class = "ship">
+       <img src="img/ship4.png" class = "ship-img" >
+      <div class="ship_footer">
+        4000 pts
+      </div>
+    </div>
+  </div>
+   <div class = "bullet-data">
+    <div id= "bullet1" class = "bullet">
+       <img src="img/bullet1.png" class = "bullet-img" >
+      <div class="bullet_footer">
+      100 pts
+      </div>
+    </div>
+     <div id= "bullet2" class = "bullet">
+      <img src="img/bullet2.png" class = "bullet-img" >
+      <div class="bullet_footer">
+      200 pts
+      </div>
+    </div>
+    <div id= "bullet3" class = "bullet">
+      <img src="img/bullet3.png" class = "bullet-img" >
+      <div class="bullet_footer">
+      300 pts
+      </div>
+    </div>
+    <div id= "bullet4" class = "bullet">
+      <img src="img/bullet4.png" class = "bullet-img" >
+      <div class="bullet_footer">
+      1000 pts
+      </div>
+    </div>
+  </div>
+
+  
+</form>
+
+
+<script type="text/javascript">
+var user;
+ window.onload = function() {
+   var stringValue = window.localStorage.getItem("user");
+   user = JSON.parse(stringValue);
+   $('#userName').text(user.userName);
+    $('#userScore').text('Score : '+user.score);
+     $('#userHealth').text('Health : '+user.health+'%');
+   $('#userShip').attr('src','img/ship'+user.shipType+'.png');
+    $('#userBullet').attr('src','img/bullet'+user.shipType+'.png');
+   
+ console.log(stringValue);
+}
+  var ws;
+  function connect() {
+    
+    if ('MozWebSocket' in window) {
+      ws = new MozWebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+    } else if ('WebSocket' in window) {
+      ws = new WebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+    } else {
+      alert('Your browser does not support WebSockets');
+    }
+    ws.onopen = function() {
+      console.log('Connection opened');
+    };
+    ws.onmessage = function(event) {
+      var players = JSON.parse(event.data);
+      console.log(event.data);
+      clear();
+      for ( var index in players) {
+        var inPlayer = players[index];
+        if (inPlayer.type == 1) {
+          drawRotatedImage(ship, inPlayer);
+        } else if (player.id == inPlayer.id) {
+          ws.close();
+          connect(inPlayer.url);
+        }
+      }
+    };
+    ws.onclose = function() {
+      console.log('Connection closed');
+    };
+    ws.onerror = function(event) {
+      console.log('Connection error');
+    };
+    window.location.href='play.html';
+  }
+
+
+
+  $('#ship1')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship1.png');
+      user.shipType = 1;
+    }
+  );
+   $('#ship2')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship2.png');
+       user.shipType = 2;
+    }
+  );
+   $('#ship3')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship3.png');
+       user.shipType = 3;
+    }
+  );
+   $('#ship4')
+   .click(
+    function(){
+      $('#userShip').attr('src','img/ship4.png');
+       user.shipType = 4;
+    }
+  );
+
+   $('#bullet1')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet1.png');
+       user.bulletType = 1;
+    }
+  );
+   $('#bullet2')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet2.png');
+      user.bulletType = 2;
+    }
+  );
+   $('#bullet3')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet3.png');
+      user.bulletType = 3;
+    }
+  );
+   $('#bullet4')
+   .click(
+    function(){
+      $('#userBullet').attr('src','img/bullet4.png');
+      user.bulletType = 4;
+    }
+  );
+
+
+    $('#startButton')
+   .click(
+    function(){
+      window.localStorage.setItem("user", JSON.stringify(user));
+     window.location.href='play.html';
+    }
+  );
+  </script>
+
+
+</body>
+</html>
