@@ -1,4 +1,5 @@
   var playerList = new Array();
+  var playerList2 = new Array();
 
   function GraphicEngine() {
     var TAG = 'GraphicEngine : ';
@@ -50,6 +51,20 @@
       ctx.rotate(player.da * TO_RADIANS);
       ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
       ctx.restore();
+    }
+
+    this.processObjects = function() {
+      gEngine.clear();
+      for (var index in playerList) {
+        this.drawShip(playerList[index]);
+      }
+      playerList = [];
+      gEngine.clear2();
+      for (var index in playerList2) {
+        this.drawShip2(playerList2[index]);
+      }
+      playerList2 = [];
+      //gEngine.clear();
     }
 
     this.drawShip = function(player) {
@@ -143,7 +158,7 @@
       ctx2.save();
       ctx2.translate(x, y);
       ctx2.rotate(bullet.da * TO_RADIANS);
-      var image = bulletp1;
+      var image = bullet1;
       switch (bullet.it) {
         case 1:
           image = bullet1;

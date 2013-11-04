@@ -55,6 +55,8 @@
     aoihandler.setAOI(screenSize.width, screenSize.height);
     aoihandler._setVirtualPoint(player._getX(), player._getY());
     console.log(' initialized window onloads ... ');
+    // window.setInterval('gEngine.processObjects()',50);
+    // window.setInterval('gEngine.clear()',200);
   };
 
   function SangraamaClient() {

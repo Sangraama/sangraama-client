@@ -1,5 +1,7 @@
 var wsSize = 10;
 var wsList = new Array(wsSize);
+var pc1 = 0;
+var pc2 = 0;
 /* this structure was built using 1.1 method in tutorial
 http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
 
@@ -109,6 +111,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
       } else {
         gEngine.clear2();
       }
+      pc1 = 0;
+      pc2 = 0;
 
       for (var index in data) {
         var inPlayer = data[index];
@@ -121,6 +125,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
              */
             if (wsIndex == sangraama.getPrimaryCon()) { // Data send by Player
               gEngine.drawShip(inPlayer);
+              /*playerList[pc1] = inPlayer;
+              pc1++;*/
               if (player.getUserID() == inPlayer.userID) { // If this is the current player details, then proceed following
                 /*      player.x = sangraama.scaleUp(inPlayer.dx);
                 player.y = sangraama.scaleUp(inPlayer.dy);*/
@@ -157,7 +163,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             } // -- end player
             else { // Data send by Dummy
               gEngine.drawShip2(inPlayer);
-
+              /*playerList1[pc2] = inPlayer;
+              pc2++;*/
             } // -- end dummy
             break;
 
