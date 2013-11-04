@@ -120,7 +120,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
              * Seperate updates wether send by "primary server - player" OR "secondary server - dummy"
              */
             if (wsIndex == sangraama.getPrimaryCon()) { // Data send by Player
-              gEngine.drawRotatedImage(ship, inPlayer);
+              gEngine.drawShip(inPlayer);
               if (player.getUserID() == inPlayer.userID) { // If this is the current player details, then proceed following
                 /*      player.x = sangraama.scaleUp(inPlayer.dx);
                 player.y = sangraama.scaleUp(inPlayer.dy);*/
@@ -156,7 +156,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 });*/
             } // -- end player
             else { // Data send by Dummy
-              gEngine.drawRotatedImage2(ship, inPlayer);
+              gEngine.drawShip2(inPlayer);
 
             } // -- end dummy
             break;
@@ -171,9 +171,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 5:
             if (wsIndex == sangraama.getPrimaryCon()) {
-              gEngine.drawRotatedImage(bullet, inPlayer);
+              gEngine.drawBullet(inPlayer);
             } else {
-              gEngine.drawRotatedImage2(bullet, inPlayer);
+              gEngine.drawBullet2(inPlayer);
             }
             break;
 

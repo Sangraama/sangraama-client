@@ -52,6 +52,121 @@
       ctx.restore();
     }
 
+    this.drawShip = function(player) {
+      var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+      var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(player.da * TO_RADIANS);
+      var image = ship1;
+      switch (player.it) {
+        case 1:
+          image = ship1;
+          break;
+        case 2:
+          image = ship2;
+          break;
+        case 3:
+          image = ship3;
+          break;
+        case 4:
+          image = ship4;
+          break;
+        default:
+          image = ship1;
+
+
+      }
+      ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+      ctx.restore();
+    }
+    this.drawShip2 = function(player) {
+      var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+      var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
+      ctx2.save();
+      ctx2.translate(x, y);
+      ctx2.rotate(player.da * TO_RADIANS);
+      var image = ship1;
+      switch (player.it) {
+        case 1:
+          image = ship1;
+          break;
+        case 2:
+          image = ship2;
+          break;
+        case 3:
+          image = ship3;
+          break;
+        case 4:
+          image = ship4;
+          break;
+        default:
+          image = ship1;
+
+
+      }
+      ctx2.drawImage(image, -(image.width / 2), -(image.height / 2));
+      ctx2.restore();
+    }
+
+    this.drawBullet = function(bullet) {
+      var x = (bullet.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+      var y = (bullet.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(bullet.da * TO_RADIANS);
+      var image = bullet1;
+      switch (bullet.it) {
+        case 1:
+          image = bullet1;
+          break;
+        case 2:
+          image = bullet2;
+          break;
+        case 3:
+          image = bullet3;
+          break;
+        case 4:
+          image = bullet4;
+          break;
+        default:
+          image = bullet1;
+
+
+      }
+      ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
+      ctx.restore();
+    }
+    this.drawBullet2 = function(bullet) {
+      var x = (bullet.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
+      var y = (bullet.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
+      ctx2.save();
+      ctx2.translate(x, y);
+      ctx2.rotate(bullet.da * TO_RADIANS);
+      var image = bulletp1;
+      switch (bullet.it) {
+        case 1:
+          image = bullet1;
+          break;
+        case 2:
+          image = bullet2;
+          break;
+        case 3:
+          image = bullet3;
+          break;
+        case 4:
+          image = bullet4;
+          break;
+        default:
+          image = bullet1;
+
+
+      }
+      ctx2.drawImage(image, -(image.width / 2), -(image.height / 2));
+      ctx2.restore();
+    }
+
+
     this.drawBlastImage = function(image, player) {
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
