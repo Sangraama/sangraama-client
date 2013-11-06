@@ -74,7 +74,7 @@
   $('#stop').removeAttr('data-toggle');
 
   $('#start').click(function() {
-      var hostLocation = 'localhost:8080';
+      var hostLocation = '192.168.0.118:8080';
       var URL = hostLocation + '/sangraama-server/sangraama/player';
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);

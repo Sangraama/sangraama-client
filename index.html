@@ -63,7 +63,7 @@ $(document).ready(function() {
   <!--Header-->
     <div class="header">
     <h1>Login Form</h1>
-    <span>Please login by using this login form or if you dont have an account, you can Register!</span>
+    <span>Please login by using this login form or if you dont have an account, you can Register using this same form.</span>
     </div>
     <!--END header-->
   
@@ -76,8 +76,8 @@ $(document).ready(function() {
     
     <!--Buttons-->
     <div class="footer">
-    <!--Login button--><input type="button" name="submit" value="Login" class="button" onclick="checkUser()" /><!--END Login button-->
-    <!--Register button--><input type="submit" name="submit" value="Register" class="register" /><!--END Register button-->
+    <!--Login button--><input type="button" name="submit" value="Login or Register" class="button login_button" onclick="checkUser()" /><!--END Login button-->
+   <!-- <input type="submit" name="submit" value="Register" class="register" /> -->
     </div>
     <!--END Buttons-->
 
@@ -95,9 +95,9 @@ $(document).ready(function() {
   function connect() {
     
     if ('MozWebSocket' in window) {
-      ws = new MozWebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+      ws = new MozWebSocket('ws://192.168.0.118:8080/Login-Server/sangraama/player');
     } else if ('WebSocket' in window) {
-      ws = new WebSocket('ws://localhost:8080/Login-Server/sangraama/player');
+      ws = new WebSocket('ws://192.168.0.118:8080/Login-Server/sangraama/player');
     } else {
       alert('Your browser does not support WebSockets');
     }

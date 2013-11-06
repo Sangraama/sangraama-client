@@ -307,10 +307,12 @@ FOOTER
 	-moz-box-shadow: inset 0 1px 0 rgba(0,0,0,0.15);
 	-webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.15);
 }
-
+.login_button{
+margin-left: 12%;	
+}
 /* Login button */
 .login-form .footer .button {
-	float:right;
+	/*float:right;*/
 	padding: 11px 25px;
 	
 	font-family: 'Bree Serif', serif;
