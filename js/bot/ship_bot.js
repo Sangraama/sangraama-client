@@ -37,12 +37,14 @@ function bot() {
     isStart = false;
     window.clearInterval(timer);
     // clear events
-    nav.stopGoRight();
+    nav.stopRandomNavigate();
   }
   // Logic
   run = function() {
-    console.log(t++ + ' player x:' + player.x + ' y:' + player.y);
-    nav.goRight();
+    if (!nav.isRandomNavigate()) {
+      console.log(t+++' player x:' + player.getX() + ' y:' + player.getY());
+      nav.randomNavigate();
+    }
   }
 }
 // -->

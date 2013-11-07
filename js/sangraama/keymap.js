@@ -47,7 +47,7 @@ function doKeyDown(evt) {
         //console.log(evt.keyCode);
     }
     prevKey = evt.keyCode;
-    sangraama.updateServer();
+    sangraama.triggerEvent();
   }
 }
 
@@ -85,7 +85,7 @@ function doKeyUp(evt) {
     default:
       //console.log(evt.keyCode);
   }
-  sangraama.updateServer();
+  sangraama.triggerEvent();
   prevKey = 0;
 }
 
