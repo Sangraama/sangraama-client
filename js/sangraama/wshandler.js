@@ -120,7 +120,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
              * Seperate updates wether send by "primary server - player" OR "secondary server - dummy"
              */
             if (wsIndex == sangraama.getPrimaryCon()) { // Data send by Player
-              /*gEngine.drawRotatedImage(ship, inPlayer);*/
+              gEngine.drawShip(inPlayer);
+              if (isBot)
+                bot.setEnemies(inPlayer);
+
               if (player.getUserID() == inPlayer.userID) { // If this is the current player details, then proceed following
                 /*      player.x = sangraama.scaleUp(inPlayer.dx);
                 player.y = sangraama.scaleUp(inPlayer.dy);*/
@@ -156,7 +159,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 });*/
             } // -- end player
             else { // Data send by Dummy
-              /*gEngine.drawRotatedImage2(ship, inPlayer);*/
+              gEngine.drawShip2(inPlayer);
+              if (isBot)
+                bot.setEnemies(inPlayer);
             } // -- end dummy
             break;
 
@@ -169,7 +174,11 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 5:
-            /*gEngine.drawRotatedImage(bullet, inPlayer);*/
+            if (wsIndex == sangraama.getPrimaryCon()) {
+              gEngine.drawBullet(inPlayer);
+            } else {
+              gEngine.drawBullet2(inPlayer);
+            }
             break;
 
           case 6:
@@ -326,7 +335,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
     };
     ws.onclose = function() {
-      console.log('Connection closed $$$$$$$$$$$$ ' + hostURL);
+      console.log('Connection closed ' + hostURL);
     };
     ws.onerror = function(event) {
       console.log('Connection error ' + hostURL);

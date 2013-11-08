@@ -5,7 +5,7 @@ function Player() {
   var p;
   var _c; // coordination of the player
 
-  this.init = function(userID, scale) {
+  this.init = function(userID, scale, shipType, bulletType) {
     scalingFactor = scale;
     // use 'this' to access this variable globally
     p = {
@@ -14,7 +14,9 @@ function Player() {
       v_y: 0,
       a: 0, //actual angle
       da: 0, // delta angle
-      s: 0
+      s: 0,
+      st: shipType,
+      bt: bulletType
     };
     _c = {
       x: 0,
@@ -56,7 +58,9 @@ function Player() {
       v_x: p.v_x,
       v_y: p.v_y,
       a: p.a,
-      s: 0
+      s: 0,
+      st: p.st,
+      bt: p.bt
     };
   }
 
