@@ -111,11 +111,9 @@
     $('#stop').removeAttr('data-toggle');
   });
 
-  var b;
   $('#botstart').click(function(){
-    b = new bot();
-    b.init();
-    b.start();
+    bot.start();
+    isBot = true;
     $("#botstart i").removeClass("icon-play").addClass("icon-stop");
 
     $('#botstart').addClass('disabled');
@@ -123,7 +121,8 @@
   });
 
   $('#botstop').click(function(){
-    b.stop();
+    bot.stop();
+    isBot = false;
     $("#botstart i").removeClass("icon-stop").addClass("icon-play");
 
     $('#botstart').removeClass('disabled');

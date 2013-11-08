@@ -26,19 +26,31 @@ function navigate() {
 
       window.setTimeout(function() {
         isRanNav = false;
-      }, Math.floor(Math.random() * 3000) + 1000);
+      }, Math.floor(Math.random() * 1000) + 500);
       sangraama.triggerEvent();
       isRanNav = true;
     }
     return isRanNav;
   }
-  this.stopRandomNavigate = function() {
-    if (isRanNav) {
+  this.moveOn = function(dir) {
+    // console.log('moveOn v_x:' + dir.v_x + ' v_y:' + dir.v_y);
+    if (dir.v_x == 0)
       player.resetV_x();
+    else
+      player.setV_x(dir.v_x);
+
+    if (dir.v_y == 0)
       player.resetV_y();
-      isRanNav = false;
-      sangraama.triggerEvent();
-    }
+    else
+      player.setV_y(dir.v_y);
+
+    sangraama.triggerEvent();
+  }
+  this.stopMove = function() {
+    player.resetV_x();
+    player.resetV_y();
+    isRanNav = false;
+    sangraama.triggerEvent();
   }
   this.getBestRoute = function(currentX, currentY, nextX, nextY) {
 

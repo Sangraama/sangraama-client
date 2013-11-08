@@ -1,4 +1,6 @@
   var player;
+  var bot;
+  var isBot = false;
   var gEngine;
   var aoihandler;
   var mapLoader;
@@ -47,7 +49,7 @@
     player.setCoordination(user.x, user.y);
 
     /*player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 200) + 2000, Math.floor(Math.random() * 500) + 400);*/
+    player.setCoordination(Math.floor(Math.random() * 500) + 2000, Math.floor(Math.random() * 400) + 400);*/
 
     // Initialize AIO handler
     aoihandler = new aoihandler();
@@ -55,6 +57,8 @@
     aoihandler.setAOI(screenSize.width, screenSize.height);
     aoihandler._setVirtualPoint(player._getX(), player._getY());
     console.log(' initialized window onloads ... ');
+    bot = new bot(); // Initialize bot
+    bot.init(player.getUserID());
   };
 
   function SangraamaClient() {

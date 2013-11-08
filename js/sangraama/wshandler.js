@@ -121,6 +121,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
              */
             if (wsIndex == sangraama.getPrimaryCon()) { // Data send by Player
               gEngine.drawShip(inPlayer);
+              if (isBot)
+                bot.setEnemies(inPlayer);
+
               if (player.getUserID() == inPlayer.userID) { // If this is the current player details, then proceed following
                 /*      player.x = sangraama.scaleUp(inPlayer.dx);
                 player.y = sangraama.scaleUp(inPlayer.dy);*/
@@ -157,7 +160,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
             } // -- end player
             else { // Data send by Dummy
               gEngine.drawShip2(inPlayer);
-
+              if (isBot)
+                bot.setEnemies(inPlayer);
             } // -- end dummy
             break;
 
