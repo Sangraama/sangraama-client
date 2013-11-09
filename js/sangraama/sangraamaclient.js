@@ -1,3 +1,5 @@
+  <!--//
+      
   var player;
   var bot;
   var isBot = false;
