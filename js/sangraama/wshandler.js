@@ -139,8 +139,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 // check whether play is inside the virual box. If not, set virtual point as user current location
                 if (!aoihandler.isInVBox(player.getX(), player.getY())) {
                   console.log(TAG + 'player is outside of the virtual box');
-                  aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                  wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.getUserID())));
+                  // aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
+                  wsList[wsIndex].send(JSON.stringify(aoihandler._createVirtualPointToJSON(player.getUserID(), inPlayer.dx, inPlayer.dy)));
                 }
 
               }
@@ -182,9 +182,15 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 6:
+            /* Player health got zero and remove from the world. Clean and redirect to Plyer's profile */
+            console.log(TAG + ' Type(06):' + inPlayer.type + ' close connection in ws:' + wsIndex + ' player defeated.');
             gEngine.drawBlastImage(blast, inPlayer);
+            aoihandler.removeConnectedHost(wsIndex);
+            aoihandler.removeTiles(wsIndex);
+            sangraama.stop();
+            // Go to the player's profile
+            self.location = 'http://localhost/www/sangraama-client/play.html';
             break;
-
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */

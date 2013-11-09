@@ -1,5 +1,5 @@
   <!--//
-      
+
   var player;
   var bot;
   var isBot = false;
@@ -48,8 +48,8 @@
     player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
     player.setCoordination(user.x, user.y);
 
-    /*player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 500) + 2000, Math.floor(Math.random() * 400) + 400);*/
+  /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
+    player.setCoordination(Math.floor(Math.random() * 500) + 2000, Math.floor(Math.random() * 200) + 200);*/
 
     // Initialize AIO handler
     aoihandler = new aoihandler();
@@ -77,6 +77,39 @@
       primaryCon = 0;
       nextPrimaryCon = 0;
       prevPrimarycon = 0;
+    }
+    /**
+     * Start playing game
+     * @return {[type]} [description]
+     */
+    this.play = function() {
+      var hostLocation = 'localhost:8080';
+      var URL = hostLocation + '/sangraama-server/sangraama/player';
+      // start wsList with 0 index
+      wsList[0] = new WebSocketHandler(URL, 0);
+      wsList[0].connect();
+      // Set initial virtual point location as player location
+      aoihandler._setVirtualPoint(player._getX(), player._getY());
+
+      // Clear the map before start game
+      mapLoader.drawMap(player.getX(), player.getY());
+    }
+    /**
+     * Stop playing game and clean up
+     * @return {[type]} [description]
+     */
+    this.stop = function() {
+      // Close all opened websockets
+      for (var i = 0; i < 10; i++) {
+        if (wsList[i] != null || wsList[i] != undefined) {
+          if (primaryCon == i) {
+            primaryCon = i - 1;
+          }
+          console.log('Stopped the connection ' + wsList[i].getHostAddress());
+          wsList[i].close(i); // try closing connection
+        }
+      }
+      primaryCon = 0;
     }
     /**
      * Get Scaling factor. The ratio of client-side displaying pixels : server side JBox2D physics world units

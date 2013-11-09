@@ -409,6 +409,21 @@ function aoihandler() {
       y_vp: _v_point.y_vp
     }
   }
+  /**
+   * Create Virtual point which can send to server
+   * @param  {[type]} userID [Player ID]
+   * @param  {[type]} x_vp [Virtual point x coordination]
+   * @param  {[type]} y_vp [Virtual point y coordination]
+   * @return {[type]}        [Coordination Object in JSON format]
+   */
+  this._createVirtualPointToJSON = function(userID, x_vp, y_vp) {
+    return {
+      type: 5,
+      userID: userID,
+      x_vp: x_vp,
+      y_vp: y_vp
+    }
+  }
 
 };
 // -->

@@ -74,16 +74,7 @@
   $('#stop').removeAttr('data-toggle');
 
   $('#start').click(function() {
-      var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama-server/sangraama/player';
-      // start wsList with 0 index
-      wsList[0] = new WebSocketHandler(URL, 0);
-      wsList[0].connect();
-      // Set initial virtual point location as player location
-      aoihandler._setVirtualPoint(sangraama.scaleDown(player.x),sangraama.scaleDown(player.y));
-
-      // Clear the map before start game @assign: Amila
-      mapLoader.drawMap(player.x, player.y);
+      sangraama.play();
       
       // Disable start and enable stop game
       $('#stop').removeClass('disabled');
@@ -93,17 +84,8 @@
   });
 
   $('#stop').click(function() {
-    // Close all opened websockets
-    for ( var i = 0; i < 10; i++) {
-      if (wsList[i] != null || wsList[i] != undefined) {
-        if (sangraama.getPrimaryCon() == i) {
-          sangraama.setPrimaryCon(i-1);
-        }
-        console.log('Stopped the connection ' + wsList[i].getHostAddress());
-        wsList[i].close(i);// try closing connection
-      }
-    }
-    sangraama.setPrimaryCon(0);
+    sangraama.stop();
+    
     // Disable stop and enable start game
     $('#start').removeClass('disabled');
     $('#start').attr("data-toggle", "modal");
