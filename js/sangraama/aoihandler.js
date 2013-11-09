@@ -1,5 +1,7 @@
 function aoihandler() {
-  var TAG = 'AOIHandler : '
+  var TAG = 'AOIHandler : ';
+  var z; // Territory ID
+
   var tiles = new Array();
   var connectedHosts = new Array();
   var aoiCallTimeout = 20;
@@ -19,7 +21,8 @@ function aoihandler() {
     edgeY: 0 // value of origin y + width
   };
 
-  this.init = function(scaling) {
+  this.init = function(scaling, Z) {
+    z = Z;
     scalingFactor = scaling;
     aoi = {
       aoi_w: 0,
@@ -367,7 +370,6 @@ function aoihandler() {
     v_point.x_vp = x_vp;
     v_point.y_vp = y_vp;
     console.log(TAG + 'set virtual point x_vp:' + x_vp + ' y_vp:' + y_vp);
-    gEngine.setOriginOfCanvas(x_vp - (aoi.aoi_w / 2), y_vp - (aoi.aoi_h / 2));
   }
   /**
    * Set Virtual point location of server side

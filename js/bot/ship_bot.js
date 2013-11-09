@@ -3,20 +3,22 @@
 function bot() {
   var D = true;
   var TAG = "Bot : ";
+  var z; // Territory ID
 
   var tolerance;
   var isStart = false;
   var timer;
   var c = new config();
   var t = 0;
-  var nav;
+  var nav, ai;
   var enemies = new Array();
   var enemy;
   var ship;
   var prevDir; // Previous direction of ship move. To avoid sending unnessery event to server
   var deadLockCnt = 0;
 
-  this.init = function(id) {
+  this.init = function(id, Z) {
+    z = Z;
     console.log(TAG + ' create a bot ...');
     tolerance = 4;
     // Create navigation
@@ -36,9 +38,9 @@ function bot() {
     };
 
     nav = new navigate();
-    nav.init(D);
-    ai = new ai();
-    ai.init(tolerance);
+    nav.init(D, z);
+    ai = new BotAI();
+    ai.init(tolerance, z);
   }
   this.isStart = function() {
     return isStart;
@@ -66,7 +68,7 @@ function bot() {
   // Logic
   run = function() {
     // console.log(TAG + ' #enemies = ' + enemies.length);
-    console.log(t+++' player x:' + player.getX() + ' y:' + player.getY());
+    console.log(t+++' player[' + z + '] x:' + player[z].getX() + ' y:' + player[z].getY());
     if (!nav.isRandomNavigate() && enemies.length == 0) {
       nav.randomNavigate();
     } else {
@@ -76,8 +78,8 @@ function bot() {
         var h = Math.abs(enemy.y - ship.y);
         if (w < tolerance + 5 || h < tolerance + 5 || Math.abs(h - w) < tolerance + 70) {
           if (t % (c.getUpdateRate()) == 0) {
-            player.shoot();
-            sangraama.triggerEvent();
+            player[z].shoot();
+            sangraama[z].triggerEvent();
             deadLockCnt = 0;
           }
         }
@@ -102,13 +104,13 @@ function bot() {
   this.setEnemies = function(data) {
     // console.log(data.userID);
     if (ship.userID == data.userID) {
-      ship.x = sangraama.scaleUp(data.dx);
-      ship.y = sangraama.scaleUp(data.dy);
+      ship.x = sangraama[z].scaleUp(data.dx);
+      ship.y = sangraama[z].scaleUp(data.dy);
     } else {
       enemies = _.union(enemies, [data.userID]);
       if (enemy.userID == data.userID) {
-        enemy.x = sangraama.scaleUp(data.dx);
-        enemy.y = sangraama.scaleUp(data.dy);
+        enemy.x = sangraama[z].scaleUp(data.dx);
+        enemy.y = sangraama[z].scaleUp(data.dy);
       }
     }
   }

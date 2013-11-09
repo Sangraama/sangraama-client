@@ -1,11 +1,14 @@
 <!--//
 
 function Player() {
+  var z; // Territory ID
+
   var scalingFactor;
   var p;
   var _c; // coordination of the player
 
-  this.init = function(userID, scale, shipType, bulletType) {
+  this.init = function(userID, scale, shipType, bulletType, Z) {
+    z = Z;
     scalingFactor = scale;
     // use 'this' to access this variable globally
     p = {
@@ -51,10 +54,10 @@ function Player() {
       s: p.s,
       x: _c.x,
       y: _c.y,
-      w: aoihandler._getAOI().aoi_w,
-      h: aoihandler._getAOI().aoi_h,
-      x_vp: aoihandler._getVirtualPoint().x_vp,
-      y_vp: aoihandler._getVirtualPoint().y_vp,
+      w: aoihandler[z]._getAOI().aoi_w,
+      h: aoihandler[z]._getAOI().aoi_h,
+      x_vp: aoihandler[z]._getVirtualPoint().x_vp,
+      y_vp: aoihandler[z]._getVirtualPoint().y_vp,
       v_x: p.v_x,
       v_y: p.v_y,
       a: p.a,
@@ -69,10 +72,10 @@ function Player() {
     return {
       type: 31,
       userID: p.userID,
-      w: aoihandler._getAOI().aoi_w,
-      h: aoihandler._getAOI().aoi_h,
-      x_vp: aoihandler._getVirtualPoint().x_vp,
-      y_vp: aoihandler._getVirtualPoint().y_vp
+      w: aoihandler[z]._getAOI().aoi_w,
+      h: aoihandler[z]._getAOI().aoi_h,
+      x_vp: aoihandler[z]._getVirtualPoint().x_vp,
+      y_vp: aoihandler[z]._getVirtualPoint().y_vp
     };
   }
 

@@ -1,10 +1,13 @@
 <!--//
 
-function ai() {
+function BotAI() {
+  var z; // Territory ID
+
   var range = 200; // Radius
   var gap = 30; // Gap between inner and outer cycles
   var tolerance = 4;
-  this.init = function(tolerance) {
+  this.init = function(tolerance, Z) {
+    z = Z;
     console.log('AI is waiting tolerance:' + tolerance);
   }
 
@@ -39,7 +42,7 @@ function ai() {
     } else if (Math.sqrt((h * h) + (w * w)) < range + gap) {
       // Not prefer to set angle here
       var angle = ((dirX > 0) ? ((dirY > 0) ? 45 : 315) : ((dirY > 0) ? 135 : 225));
-      player.setAngle(angle);
+      player[z].setAngle(angle);
       // console.log('angle :' + angle + ' h :' + h + ' w:' + w);
       return dir;
     }

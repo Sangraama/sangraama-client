@@ -3,11 +3,14 @@
 function navigate() {
   var D = false;
   var TAG = 'Bot/navigate: ';
+  var z; // Territory ID
+
   var evt;
   var isRanNav;
   var ranNavTimer;
 
-  this.init = function(d) {
+  this.init = function(d, Z) {
+    z = Z;
     D = d;
     isRanNav = false; // TRUE if random navigation on progress
     console.log(TAG + ' create anavigation object. debug:' + D);
@@ -19,15 +22,15 @@ function navigate() {
     if (!isRanNav) {
       var tmp = Math.floor(Math.random() * 4) % 3;
       if (tmp != 0)
-        player.setV_x(tmp - 1);
+        player[z].setV_x(tmp - 1);
       tmp = Math.floor(Math.random() * 4) % 3;
       if (tmp != 0)
-        player.setV_y(tmp - 1);
+        player[z].setV_y(tmp - 1);
 
       window.setTimeout(function() {
         isRanNav = false;
       }, Math.floor(Math.random() * 1000) + 500);
-      sangraama.triggerEvent();
+      sangraama[z].triggerEvent();
       isRanNav = true;
     }
     return isRanNav;
@@ -35,22 +38,22 @@ function navigate() {
   this.moveOn = function(dir) {
     // console.log('moveOn v_x:' + dir.v_x + ' v_y:' + dir.v_y);
     if (dir.v_x == 0)
-      player.resetV_x();
+      player[z].resetV_x();
     else
-      player.setV_x(dir.v_x);
+      player[z].setV_x(dir.v_x);
 
     if (dir.v_y == 0)
-      player.resetV_y();
+      player[z].resetV_y();
     else
-      player.setV_y(dir.v_y);
+      player[z].setV_y(dir.v_y);
 
-    sangraama.triggerEvent();
+    sangraama[z].triggerEvent();
   }
   this.stopMove = function() {
-    player.resetV_x();
-    player.resetV_y();
+    player[z].resetV_x();
+    player[z].resetV_y();
     isRanNav = false;
-    sangraama.triggerEvent();
+    sangraama[z].triggerEvent();
   }
   this.getBestRoute = function(currentX, currentY, nextX, nextY) {
 
