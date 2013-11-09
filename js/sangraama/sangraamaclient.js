@@ -1,3 +1,5 @@
+  <!--//
+      
   var player;
   var bot;
   var isBot = false;
@@ -38,8 +40,6 @@
     bullet2.src = 'img/bullet2.png';
     bullet3.src = 'img/bullet3.png';
     bullet4.src = 'img/bullet4.png';
-    /*ship.src = 'img/ship1.png';
-    bullet.src = 'img/bullet1.png';*/
     blast.src = 'img/blast.png';
     mapImage.src = 'assert/map/mapImage.jpg';
 

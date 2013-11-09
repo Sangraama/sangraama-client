@@ -53,7 +53,7 @@ function bot() {
       }, 3000 / c.getUpdateRate());*/
 
     timer = window.setInterval(function() {
-      run();
+      bot.run();
     }, Math.floor(Math.random() * 200) + 900 / c.getUpdateRate());
   }
   // Stop bot
@@ -64,7 +64,7 @@ function bot() {
     nav.stopMove();
   }
   // Logic
-  run = function() {
+  this.run = function() {
     // console.log(TAG + ' #enemies = ' + enemies.length);
     console.log(t+++' player x:' + player.getX() + ' y:' + player.getY());
     if (!nav.isRandomNavigate() && enemies.length == 0) {
