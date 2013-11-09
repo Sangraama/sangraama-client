@@ -50,8 +50,8 @@
       /*player[i].init(user.userId, sangraama[i].getScalingFactor(), user.shipType, user.bulletType, i);
       player[i].setCoordination(user.x, user.y);*/
 
-      player[i].init(Math.floor(Math.random() * 999998) + 1, sangraama[i].getScalingFactor(), 1, 1, i);
-      player[i].setCoordination(Math.floor(Math.random() * 500) + 2000, Math.floor(Math.random() * 400) + 400);
+      player[i].init(Math.ceil(Math.random() * 9999999), sangraama[i].getScalingFactor(), 1, 1, i);
+      player[i].setCoordination(Math.floor(Math.random() * 1000) + 1000, Math.floor(Math.random() * 1000) + 400);
 
       // Initialize AIO handler
       aoihandler[i] = new aoihandler();
