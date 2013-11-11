@@ -143,7 +143,7 @@
       ctx2.save();
       ctx2.translate(x, y);
       ctx2.rotate(bullet.da * TO_RADIANS);
-      var image = bulletp1;
+      var image = bullet1;
       switch (bullet.it) {
         case 1:
           image = bullet1;

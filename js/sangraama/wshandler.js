@@ -185,11 +185,14 @@ function WebSocketHandler(hostAddress, wsIndex) {
             /* Player health got zero and remove from the world. Clean and redirect to Plyer's profile */
             console.log(TAG + ' Type(06):' + inPlayer.type + ' close connection in ws:' + wsIndex + ' player defeated.');
             gEngine.drawBlastImage(blast, inPlayer);
-            aoihandler.removeConnectedHost(wsIndex);
-            aoihandler.removeTiles(wsIndex);
-            sangraama.stop();
-            // Go to the player's profile
-            self.location = 'http://localhost/www/sangraama-client/play.html';
+
+            if (player.getUserID() == inPlayer.userID) {
+              aoihandler.removeConnectedHost(wsIndex);
+              aoihandler.removeTiles(wsIndex);
+              sangraama.stop();
+              // Go to the player's profile
+              window.location.href = 'menu.html';
+            }
             break;
 
           case 10:
