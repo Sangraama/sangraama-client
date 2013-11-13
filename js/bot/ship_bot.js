@@ -5,12 +5,12 @@ function bot() {
   var TAG = "Bot : ";
   var z; // Territory ID
 
-  var tolerance;
+  var nav, ai, c;
+  var
+  tolerance;
   var isStart = false;
   var timer;
-  var c = new config();
   var t = 0;
-  var nav, ai;
   var enemies = new Array();
   var enemy;
   var ship;
@@ -37,9 +37,10 @@ function bot() {
       v_y: 0
     };
 
+    c = new config();
     nav = new navigate();
     nav.init(D, z);
-    ai = new BotAI();
+    ai = new botAI();
     ai.init(tolerance, z);
   }
   this.isStart = function() {
@@ -58,6 +59,7 @@ function bot() {
       bot[z].run();
     }, Math.floor(Math.random() * 200) + 900 / c.getUpdateRate());
   }
+
   // Stop bot
   this.stop = function() {
     isStart = false;
@@ -65,32 +67,28 @@ function bot() {
     // clear events
     nav.stopMove();
   }
+
   // Logic
   this.run = function() {
     // console.log(TAG + ' #enemies = ' + enemies.length);
-    console.log(t+++' player[' + z + '] x:' + player[z].getX() + ' y:' + player[z].getY());
+    console.log(t+++' player x:' + player[z].getX() + ' y:' + player[z].getY());
     if (!nav.isRandomNavigate() && enemies.length == 0) {
       nav.randomNavigate();
     } else {
       if (_.contains(enemies, enemy.userID)) { // Enemy is still alive
         var dir = ai.getBestRoute(ship, enemy, t++);
-        var w = Math.abs(enemy.x - ship.x);
-        var h = Math.abs(enemy.y - ship.y);
-        if (w < tolerance + 5 || h < tolerance + 5 || Math.abs(h - w) < tolerance + 70) {
-          if (t % (c.getUpdateRate()) == 0) {
-            player[z].shoot();
-            sangraama[z].triggerEvent();
-            deadLockCnt = 0;
-          }
-        }
+
         if (!_.isEqual(dir, prevDir)) {
           nav.moveOn(dir);
-          deadLockCnt++;
         }
-        if (deadLockCnt > 50) {
-          nav.randomNavigate();
-          deadLockCnt = 0;
+        if (dir.a != -1) {
+          player[z].setAngle(dir.a);
         }
+        if (dir.s) {
+          player[z].shoot();
+          sangraama[z].triggerEvent();
+        }
+
         prevDir = dir;
       } else { // Choose a new enemy
         //@to_implement: Choose min manhattan distance as enemy. IDEA: low computer processing
@@ -100,6 +98,7 @@ function bot() {
       enemies = new Array();
     }
   }
+
   // Set list enemies
   this.setEnemies = function(data) {
     // console.log(data.userID);
@@ -114,6 +113,7 @@ function bot() {
       }
     }
   }
+
   this.getEnemies = function() {
     return enemies;
   }

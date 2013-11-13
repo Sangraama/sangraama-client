@@ -99,8 +99,8 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
 
       console.log("Connection opened");
       // Set AOI and Virtual point in the server
-      wsList[z][wsIndex].send(JSON.stringify(aoihandler[z]._getAOIToJSON()));
-      wsList[z][wsIndex].send(JSON.stringify(aoihandler[z]._getVirtualPointToJSON()));
+      wsList[z][wsIndex].send(JSON.stringify(aoihandler[z]._getAOIToJSON(player[z].getUserID())));
+      wsList[z][wsIndex].send(JSON.stringify(aoihandler[z]._getVirtualPointToJSON(player[z].getUserID())));
     };
 
     ws.onmessage = function(event) {
@@ -273,8 +273,8 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
                 console.log('Set primary connections as ' + sangraama[z].getPrevPrimaryCon() + ' << primary:' + sangraama[z].getPrimaryCon() + ' <<' + sangraama[z].getNextPrimaryCon());
 
                 wsList[z][sangraama[z].getPrimaryCon()].send(JSON.stringify(player[z]._getCreatePlayerToJSON()));
-                wsList[z][sangraama[z].getPrimaryCon()].send(JSON.stringify(aoihandler[z]._getAOIToJSON()));
-                wsList[z][sangraama[z].getPrimaryCon()].send(JSON.stringify(aoihandler[z]._getVirtualPointToJSON()));
+                wsList[z][sangraama[z].getPrimaryCon()].send(JSON.stringify(aoihandler[z]._getAOIToJSON(player[z].getUserID())));
+                wsList[z][sangraama[z].getPrimaryCon()].send(JSON.stringify(aoihandler[z]._getVirtualPointToJSON(player[z].getUserID())));
                 break;
               } else if (wsList[z][dIndex].isReady() == 3) { // if previous ws is closed
                 console.log(dIndex + ' previous ws closed...');
