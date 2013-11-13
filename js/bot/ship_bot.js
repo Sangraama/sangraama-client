@@ -71,7 +71,7 @@ function bot() {
   // Logic
   this.run = function() {
     // console.log(TAG + ' #enemies = ' + enemies.length);
-    console.log(t+++' player x:' + player[z].getX() + ' y:' + player[z].getY());
+    console.log('bot:' + z + '  x:' + player[z].getX() + ' y:' + player[z].getY());
     if (!nav.isRandomNavigate() && enemies.length == 0) {
       nav.randomNavigate();
     } else {

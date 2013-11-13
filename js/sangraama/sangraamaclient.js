@@ -1,6 +1,6 @@
   <!--//
 
-  var numPlayers = 3; // Specify number of player wants to create
+  var numPlayers = 60; // Specify number of player wants to create
 
   var player = new Array();
   var bot = new Array();
@@ -51,7 +51,7 @@
       player[i].setCoordination(user.x, user.y);*/
 
       player[i].init(Math.ceil(Math.random() * 9999999), sangraama[i].getScalingFactor(), 1, 1, i);
-      player[i].setCoordination(Math.floor(Math.random() * 1000) + 1000, Math.floor(Math.random() * 1000) + 400);
+      player[i].setCoordination(Math.floor(Math.random() * 900) + 2000, Math.floor(Math.random() * 1000) + 400);
 
       // Initialize AIO handler
       aoihandler[i] = new aoihandler();

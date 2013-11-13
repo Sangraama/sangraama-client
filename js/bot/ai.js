@@ -3,7 +3,7 @@
 function botAI() {
   var z; // Territory ID
 
-  var range = 100; // Radius
+  var range = 150; // Radius
   var gap = 100; // Gap between inner and outer cycles
   var tolerance = 10;
   var isInRange = false; // true if currently in range and shooting
@@ -58,7 +58,16 @@ function botAI() {
     }
 
     if (hypotenuse > range + gap) {
-      if (h > w + tolerance) {
+      if (h > w) {
+        dir.v_y = dirY;
+        if (w > h / 2)
+          dir.v_x = dirX;
+      } else {
+        dir.v_x = dirX;
+        if (h > w / 2)
+          dir.v_y = dirY;
+      }
+      /*if (h > w + tolerance) {
         if (Math.abs(h - w) > w) { // move to make w == 0 in x direction
           // console.log('######################1 : ' + Math.abs(h - w));
           dir.v_x = dirX;
@@ -80,7 +89,8 @@ function botAI() {
         dir.v_x = dirX;
         dir.v_y = dirY;
         // console.log(t + ' => ' + 'h = w' + ' h :' + h + ' w:' + w);
-      }
+      }*/
+
       // console.log(dir);
       isInRange = false;
     } else {
