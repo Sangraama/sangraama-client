@@ -1,4 +1,4 @@
-var wsSize = 10;
+var wsSize = 20;
 var wsList; // new Array(wsSize);
 /* this structure was built using 1.1 method in tutorial
 http://www.phpied.com/3-ways-to-define-a-javascript-class/ */
@@ -101,6 +101,7 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
       // Set AOI and Virtual point in the server
       wsList[z][wsIndex].send(JSON.stringify(aoihandler[z]._getAOIToJSON(player[z].getUserID())));
       wsList[z][wsIndex].send(JSON.stringify(aoihandler[z]._getVirtualPointToJSON(player[z].getUserID())));
+
     };
 
     ws.onmessage = function(event) {

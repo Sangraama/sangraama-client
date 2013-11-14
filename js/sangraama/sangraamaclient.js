@@ -1,6 +1,8 @@
   <!--//
 
+
   var numPlayers = 60; // Specify number of player wants to create
+
 
   var player = new Array();
   var bot = new Array();
@@ -60,7 +62,7 @@
       aoihandler[i]._setVirtualPoint(player[i]._getX(), player[i]._getY());
       bot[i] = new bot(); // Initialize bot
       bot[i].init(player[i].getUserID(), i);
-      console.log(' initialized player ... ' + i);
+      console.log(' initialized player ... ' + i + 'with id' + player[i].getUserID());
 
       wsList[i] = []; // Make 2D array
     }
