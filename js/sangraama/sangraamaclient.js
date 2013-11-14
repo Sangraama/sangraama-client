@@ -1,8 +1,6 @@
   <!--//
 
-
   var numPlayers = 60; // Specify number of player wants to create
-
 
   var player = new Array();
   var bot = new Array();

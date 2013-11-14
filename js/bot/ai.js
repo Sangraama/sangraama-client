@@ -35,17 +35,6 @@ function botAI() {
       dir.v_y = (h < range) ? (dirY * -1) : (h > 2 * range) ? dirY : 0;
       return dir;
     }
-    /* else if (h < tolerance) { // Get closer to enemy to better shot
-      if (w > range + gap)
-        dir.v_x = dirX; // move along x direction
-      // console.log(t + ' => ' + 'tolerance 1' + ' h :' + h + ' w:' + w);
-      return dir;
-    } else if (w < tolerance) {
-      if (h > range + gap)
-        dir.v_y = dirY; // move along y direction
-      // console.log(t + ' => ' + 'tolerance 2' + ' h :' + h + ' w:' + w);
-      return dir;
-    }*/
 
     // Focus to enemy if currently in range
     if (isInRange && hypotenuse < range + 2 * gap) {
@@ -67,32 +56,8 @@ function botAI() {
         if (h > w / 2)
           dir.v_y = dirY;
       }
-      /*if (h > w + tolerance) {
-        if (Math.abs(h - w) > w) { // move to make w == 0 in x direction
-          // console.log('######################1 : ' + Math.abs(h - w));
-          dir.v_x = dirX;
-        } else { // move to make x == y in y direction
-          // console.log('######################2');
-          dir.v_y = dirY;
-        }
-        // console.log(t + ' => ' + 'h > w' + ' h :' + h + ' w:' + w);
-      } else if (h < w - tolerance) {
-        if (Math.abs(h - w) > h) { // move to make h == 0 in y direction
-          dir.v_y = dirY;
-          // console.log('********1');
-        } else { // move to make x == y in x direction
-          dir.v_x = dirX;
-          // console.log('********2');
-        }
-        // console.log(t + ' => ' + 'h < w' + ' h :' + h + ' w:' + w);
-      } else {
-        dir.v_x = dirX;
-        dir.v_y = dirY;
-        // console.log(t + ' => ' + 'h = w' + ' h :' + h + ' w:' + w);
-      }*/
-
-      // console.log(dir);
       isInRange = false;
+
     } else {
       isInRange = true;
     }

@@ -1,4 +1,4 @@
-var wsSize = 20;
+var wsSize = 10;
 var wsList; // new Array(wsSize);
 /* this structure was built using 1.1 method in tutorial
 http://www.phpied.com/3-ways-to-define-a-javascript-class/ */

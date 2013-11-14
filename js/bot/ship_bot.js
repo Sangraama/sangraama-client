@@ -50,10 +50,6 @@ function bot() {
   this.start = function() {
     isStart = true;
     window.clearInterval(timer);
-    /*window.setTimeout(function() {
-        console.log('Iteration : ' + t++);
-        //run();
-      }, 3000 / c.getUpdateRate());*/
 
     timer = window.setInterval(function() {
       bot[z].run();
@@ -70,8 +66,7 @@ function bot() {
 
   // Logic
   this.run = function() {
-    // console.log(TAG + ' #enemies = ' + enemies.length);
-    // console.log(t+++' player[' + z + '] x:' + player[z].getX() + ' y:' + player[z].getY());
+    // console.log(t +' player[' + z + '] x:' + player[z].getX() + ' y:' + player[z].getY());
     if (!nav.isRandomNavigate() && enemies.length == 0) {
       nav.randomNavigate();
     } else {
