@@ -48,7 +48,7 @@
     player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
     player.setCoordination(user.x, user.y);
 
-  /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
+    /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
     player.setCoordination(Math.floor(Math.random() * 500) + 2000, Math.floor(Math.random() * 200) + 200);*/
 
     // Initialize AIO handler
@@ -100,16 +100,16 @@
      */
     this.stop = function() {
       // Close all opened websockets
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < wsSize; i++) {
         if (wsList[i] != null || wsList[i] != undefined) {
-          if (primaryCon == i) {
-            primaryCon = i - 1;
+          if (sangraama.getPrimaryCon() == i) {
+            sangraama.setPrimaryCon(i - 1);
           }
           console.log('Stopped the connection ' + wsList[i].getHostAddress());
           wsList[i].close(i); // try closing connection
         }
       }
-      primaryCon = 0;
+      sangraama.setPrimaryCon(0);
     }
     /**
      * Get Scaling factor. The ratio of client-side displaying pixels : server side JBox2D physics world units
