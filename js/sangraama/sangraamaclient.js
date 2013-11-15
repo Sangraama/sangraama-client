@@ -86,6 +86,37 @@
       z = Z;
     }
     /**
+     * Start playing game
+     * @return {[type]} [description]
+     */
+    this.play = function() {
+      var hostLocation = 'localhost:8080';
+      var URL = hostLocation + '/sangraama-server/sangraama/player';
+      // start wsList with 0 index
+      window.setTimeout(function(URL, z) {
+        console.log('start : ' + z);
+        wsList[z][0] = new WebSocketHandler(URL, 0, z);
+        wsList[z][0].connect();
+      }.bind(this, URL, z), Math.floor(Math.random() * 7000) + 200);
+    }
+    /**
+     * Stop playing game and clean up
+     * @return {[type]} [description]
+     */
+    this.stop = function() {
+      // Close all opened websockets
+      for (var i = 0; i < wsSize; i++) {
+        if (wsList[z][i] != null || wsList[z][i] != undefined) {
+          if (sangraama[z].getPrimaryCon() == i) {
+            sangraama[z].setPrimaryCon(i - 1);
+          }
+          console.log('Stopped the connection ' + wsList[z][i].getHostAddress());
+          wsList[z][i].close(i); // try closing connection
+        }
+      }
+      sangraama[z].setPrimaryCon(0);
+    }
+    /**
      * Get Scaling factor. The ratio of client-side displaying pixels : server side JBox2D physics world units
      * @return {[type]} [description]
      */
