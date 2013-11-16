@@ -200,9 +200,12 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
             mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
 
-            if (inPlayer.userID == player.getUserID()) {
+            if (inPlayer.userID == player.getUserID()) { // -- Begin og Player if
               console.log(TAG + ' set Virtual point if this is the primary connection as x_vp:' + inPlayer.x_vp + ' y_vp' + inPlayer.y_vp);
               aoihandler._setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
+              // Set Rectrictions of request changing virtual point. Affect on check "aoihandler.isInVBox" method
+              aoihandler._setVBoxRestrictions(JSON.parse(inPlayer.al));
+
               /*player.x = sangraama.scaleUp(inPlayer.x);
                 player.y = sangraama.scaleUp(inPlayer.y);*/
               player._setCoordination(inPlayer.x, inPlayer.y);
@@ -225,7 +228,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   y: val.y
                 }));
               });
-            } else {
+            } // -- End of Player if 
+            else {
               // check whether dummy virtual point coinside with player virtual point
             }
             break;
@@ -247,13 +251,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 20:
-            console.log("## Bullet passing ##");
+            // console.log("## Bullet passing ##");
             var info = JSON.parse(inPlayer.info);
             wsList[aoihandler.getAlreadyConnectWS(info.url).wsIndex].send(JSON.stringify(inPlayer));
             break;
 
           case 21:
-            console.log("## Score Change Passing ##");
+            // console.log("## Score Change Passing ##");
             wsList[sangraama.getPrimaryCon()].send(JSON.stringify(inPlayer));
             break;
 
