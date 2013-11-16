@@ -202,6 +202,9 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
             if (inPlayer.userID == player[z].getUserID()) {
               console.log(TAG + ' set Virtual point if this is the primary connection as x_vp:' + inPlayer.x_vp + ' y_vp' + inPlayer.y_vp);
               aoihandler[z]._setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
+              // Set Rectrictions of request changing virtual point. Affect on check "aoihandler.isInVBox" method
+              aoihandler[z]._setVBoxRestrictions(JSON.parse(inPlayer.al));
+
               /*player[z].x = sangraama.scaleUp(inPlayer.x);
                 player[z].y = sangraama.scaleUp(inPlayer.y);*/
               player[z]._setCoordination(inPlayer.x, inPlayer.y);
