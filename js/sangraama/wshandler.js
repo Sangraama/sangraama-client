@@ -231,8 +231,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 11:
+            /* Sync Dummy Player data */
+            console.log(TAG + ' Type(11):' + inPlayer.type + ' in ws:' + wsIndex);
+            break;
+
+          case 16:
             /* set size of the tiles */
-            console.log(TAG + 'Type(11):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
+            console.log(TAG + 'Type(16):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
             if (inPlayer.tiles != undefined) {
               aoihandler._addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             } else {
