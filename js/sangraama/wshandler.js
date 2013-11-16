@@ -185,6 +185,12 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
 
           case 6:
             /*gEngine.drawBlastImage(blast, inPlayer);*/
+            if (player[z].getUserID() == inPlayer.userID) {
+              aoihandler[z].removeConnectedHost(wsIndex);
+              aoihandler[z].removeTiles(wsIndex);
+              sangraama[z].stop();
+              // WARNING !!!. Should not redirect to a page
+            }
             break;
 
 
@@ -224,6 +230,10 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
             break;
 
           case 11:
+            /* Sync Dummy Player data */
+            break;
+
+          case 16:
             /* set size of the tiles */
             console.log(TAG + 'Type(11):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
             if (inPlayer.tiles != undefined) {
@@ -235,13 +245,13 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
             break;
 
           case 20:
-            console.log("## Bullet passing ##");
+            // console.log("## Bullet passing ##");
             var info = JSON.parse(inPlayer.info);
             wsList[z][aoihandler[z].getAlreadyConnectWS(info.url).wsIndex].send(JSON.stringify(inPlayer));
             break;
 
           case 21:
-            console.log("## Score Change Passing ##");
+            // console.log("## Score Change Passing ##");
             wsList[z][sangraama[z].getPrimaryCon()].send(JSON.stringify(inPlayer));
             break;
 
