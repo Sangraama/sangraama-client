@@ -120,7 +120,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
              * Seperate updates wether send by "primary server - player" OR "secondary server - dummy"
              */
             if (wsIndex == sangraama.getPrimaryCon()) { // Data send by Player
-              gEngine.drawRotatedImage(ship, inPlayer);
+              gEngine.drawShip(inPlayer);
+              if (isBot)
+                bot.setEnemies(inPlayer);
+
               if (player.getUserID() == inPlayer.userID) { // If this is the current player details, then proceed following
                 /*      player.x = sangraama.scaleUp(inPlayer.dx);
                 player.y = sangraama.scaleUp(inPlayer.dy);*/
@@ -136,8 +139,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 // check whether play is inside the virual box. If not, set virtual point as user current location
                 if (!aoihandler.isInVBox(player.getX(), player.getY())) {
                   console.log(TAG + 'player is outside of the virtual box');
-                  aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
-                  wsList[wsIndex].send(JSON.stringify(aoihandler._getVirtualPointToJSON(player.getUserID())));
+                  // aoihandler._setVirtualPoint(inPlayer.dx, inPlayer.dy);
+                  wsList[wsIndex].send(JSON.stringify(aoihandler._createVirtualPointToJSON(player.getUserID(), inPlayer.dx, inPlayer.dy)));
                 }
 
               }
@@ -156,8 +159,9 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 });*/
             } // -- end player
             else { // Data send by Dummy
-              gEngine.drawRotatedImage2(ship, inPlayer);
-
+              gEngine.drawShip2(inPlayer);
+              if (isBot)
+                bot.setEnemies(inPlayer);
             } // -- end dummy
             break;
 
@@ -171,25 +175,37 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
           case 5:
             if (wsIndex == sangraama.getPrimaryCon()) {
-              gEngine.drawRotatedImage(bullet, inPlayer);
+              gEngine.drawBullet(inPlayer);
             } else {
-              gEngine.drawRotatedImage2(bullet, inPlayer);
+              gEngine.drawBullet2(inPlayer);
             }
             break;
 
           case 6:
+            /* Player health got zero and remove from the world. Clean and redirect to Plyer's profile */
+            console.log(TAG + ' Type(06):' + inPlayer.type + ' close connection in ws:' + wsIndex + ' player defeated.');
             gEngine.drawBlastImage(blast, inPlayer);
-            break;
 
+            if (player.getUserID() == inPlayer.userID) {
+              aoihandler.removeConnectedHost(wsIndex);
+              aoihandler.removeTiles(wsIndex);
+              sangraama.stop();
+              // Go to the player's profile
+              window.location.href = 'menu.html';
+            }
+            break;
 
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
             mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
 
-            if (inPlayer.userID == player.getUserID()) {
+            if (inPlayer.userID == player.getUserID()) { // -- Begin og Player if
               console.log(TAG + ' set Virtual point if this is the primary connection as x_vp:' + inPlayer.x_vp + ' y_vp' + inPlayer.y_vp);
               aoihandler._setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
+              // Set Rectrictions of request changing virtual point. Affect on check "aoihandler.isInVBox" method
+              aoihandler._setVBoxRestrictions(JSON.parse(inPlayer.al));
+
               /*player.x = sangraama.scaleUp(inPlayer.x);
                 player.y = sangraama.scaleUp(inPlayer.y);*/
               player._setCoordination(inPlayer.x, inPlayer.y);
@@ -212,14 +228,20 @@ function WebSocketHandler(hostAddress, wsIndex) {
                   y: val.y
                 }));
               });
-            } else {
+            } // -- End of Player if 
+            else {
               // check whether dummy virtual point coinside with player virtual point
             }
             break;
 
           case 11:
+            /* Sync Dummy Player data */
+            console.log(TAG + ' Type(11):' + inPlayer.type + ' in ws:' + wsIndex);
+            break;
+
+          case 16:
             /* set size of the tiles */
-            console.log(TAG + 'Type(11):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
+            console.log(TAG + 'Type(16):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
             if (inPlayer.tiles != undefined) {
               aoihandler._addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
             } else {
@@ -229,13 +251,13 @@ function WebSocketHandler(hostAddress, wsIndex) {
             break;
 
           case 20:
-            console.log("## Bullet passing ##");
+            // console.log("## Bullet passing ##");
             var info = JSON.parse(inPlayer.info);
             wsList[aoihandler.getAlreadyConnectWS(info.url).wsIndex].send(JSON.stringify(inPlayer));
             break;
 
           case 21:
-            console.log("## Score Change Passing ##");
+            // console.log("## Score Change Passing ##");
             wsList[sangraama.getPrimaryCon()].send(JSON.stringify(inPlayer));
             break;
 
