@@ -198,8 +198,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
-            mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
-
+            
             if (inPlayer.userID == player.getUserID()) { // -- Begin og Player if
               console.log(TAG + ' set Virtual point if this is the primary connection as x_vp:' + inPlayer.x_vp + ' y_vp' + inPlayer.y_vp);
               aoihandler._setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
@@ -209,6 +208,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
               /*player.x = sangraama.scaleUp(inPlayer.x);
                 player.y = sangraama.scaleUp(inPlayer.y);*/
               player._setCoordination(inPlayer.x, inPlayer.y);
+              mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
               // Set virtual points of dummy players same as player
               for (var i = 0; i < wsList.length; i++) {
                 if (wsList[i] != undefined && i != wsIndex && wsList[i].isReady() == 1) {

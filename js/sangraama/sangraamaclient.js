@@ -83,12 +83,10 @@
      * Start playing game
      * @return {[type]} [description]
      */
-    this.play = function() { << << << < Updated upstream
+    this.play = function() {
       console.log('Starting Game. Be Ready .... 1 2 Go');
       var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama/sangraama/player'; === === =
-      var hostLocation = '10.8.99.30:8080';
-      var URL = hostLocation + '/sangraama-server/sangraama/player'; >>> >>> > Stashed changes
+      var URL = hostLocation + '/sangraama-server/sangraama/player';
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();
