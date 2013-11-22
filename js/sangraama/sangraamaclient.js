@@ -45,11 +45,12 @@
 
     // Create player location (this will be given by the login server) as a signed msg
     player = new Player();
-    player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
-    player.setCoordination(user.x, user.y);
+    /* player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
+    player.setCoordination(user.x, user.y);*/
 
-    /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 500) + 2000, Math.floor(Math.random() * 200) + 500);*/
+    player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
+    player.setCoordination(Math.floor(Math.random() * 4800) + 200, Math.floor(Math.random() * 4800) + 200);
+
 
     // Initialize AIO handler
     aoihandler = new aoihandler();
@@ -82,10 +83,12 @@
      * Start playing game
      * @return {[type]} [description]
      */
-    this.play = function() {
+    this.play = function() { << << << < Updated upstream
       console.log('Starting Game. Be Ready .... 1 2 Go');
       var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama/sangraama/player';
+      var URL = hostLocation + '/sangraama/sangraama/player'; === === =
+      var hostLocation = '10.8.99.30:8080';
+      var URL = hostLocation + '/sangraama-server/sangraama/player'; >>> >>> > Stashed changes
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();
