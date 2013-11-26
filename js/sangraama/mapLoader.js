@@ -31,7 +31,7 @@ function MapLoader() {
     canvas2 = document.getElementById('layer1');
     ctx2 = canvas2.getContext("2d");
     canvas2.setAttribute('width', width);
-    canvas2.setAttribute('height', height - 50);
+    canvas2.setAttribute('height', height);
 
   }
 

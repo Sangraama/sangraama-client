@@ -43,8 +43,11 @@ function doKeyDown(evt) {
         player.shoot();
         playShoot();
         break;
+      case 13:
+        sangraama.play();
+        break;
       default:
-        //console.log(evt.keyCode);
+        console.log(evt.keyCode);
     }
     prevKey = evt.keyCode;
     sangraama.triggerEvent();

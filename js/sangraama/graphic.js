@@ -25,12 +25,12 @@
       canvas = document.getElementById('layer2');
       ctx = canvas.getContext("2d");
       canvas.setAttribute('width', width);
-      canvas.setAttribute('height', height - 50);
+      canvas.setAttribute('height', height);
 
       canvas2 = document.getElementById('layer3');
       ctx2 = canvas2.getContext("2d");
       canvas2.setAttribute('width', width);
-      canvas2.setAttribute('height', height - 50);
+      canvas2.setAttribute('height', height);
       console.log('Init graphic engine with WIDTH:' + width + ' HEIGHT:' + height);
       scalingFactor = 32;
     }
@@ -80,6 +80,7 @@
       ctx.drawImage(image, -(image.width / 2), -(image.height / 2));
       ctx.restore();
     }
+   
     this.drawShip2 = function(player) {
       var x = (player.dx * scalingFactor - origin.x) % canvasSize.WIDTH;
       var y = (player.dy * scalingFactor - origin.y) % canvasSize.HEIGHT;
