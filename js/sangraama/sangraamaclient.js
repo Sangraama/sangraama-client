@@ -45,7 +45,7 @@
 
     // Create player location (this will be given by the login server) as a signed msg
     player = new Player();
-     player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
+    player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType, user.serverUrl);
     player.setCoordination(user.x, user.y);
 
     /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
@@ -85,8 +85,9 @@
      */
     this.play = function() {
       console.log('Starting Game. Be Ready .... 1 2 Go');
-      var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama/sangraama/player';
+      /*var hostLocation = 'localhost:8080';
+      var URL = hostLocation + '/sangraama/sangraama/player';*/
+      var URL = player.getServerUrl();
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();

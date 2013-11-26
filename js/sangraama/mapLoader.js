@@ -139,11 +139,7 @@ function MapLoader() {
     }
     var imgX = (imgColumn - 1) * pix32;
     var imgY = imgRow * pix32;
-    var start = new Date();
     ctx2.drawImage(mapImage, imgX, imgY, pix32, pix32, canvasX, canvasY, pix32, pix32);
-    var stop = new Date();
-    var result = stop - start;
-    console.log('TIME TO DRAW $$$$$' + result);
 
   }
 }

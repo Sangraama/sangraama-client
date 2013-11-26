@@ -1,12 +1,14 @@
 <!--//
 
 function Player() {
+  var initialUrl;
   var scalingFactor;
   var p;
   var _c; // coordination of the player
 
-  this.init = function(userID, scale, shipType, bulletType) {
+  this.init = function(userID, scale, shipType, bulletType, svrUrl) {
     scalingFactor = scale;
+    initialUrl = svrUrl;
     // use 'this' to access this variable globally
     p = {
       userID: userID,
@@ -22,6 +24,10 @@ function Player() {
       x: 0,
       y: 0
     };
+  }
+
+  this.getServerUrl = function() {
+    return initialUrl;
   }
 
   // Get Events to send server in JSON
