@@ -41,15 +41,15 @@
     bullet3.src = 'img/bullet3.png';
     bullet4.src = 'img/bullet4.png';
     blast.src = 'img/blast.png';
-    mapImage.src = 'assert/map/mapImage.png';
+    mapImage.src = 'assert/map/mapImage.jpg';
 
     // Create player location (this will be given by the login server) as a signed msg
     player = new Player();
-    /* player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
-    player.setCoordination(user.x, user.y);*/
+     player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
+    player.setCoordination(user.x, user.y);
 
-    player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 14800) + 200, Math.floor(Math.random() * 29800) + 200);
+    /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
+    player.setCoordination(Math.floor(Math.random() * 14800) + 200, Math.floor(Math.random() * 29800) + 200);*/
 
 
     // Initialize AIO handler
