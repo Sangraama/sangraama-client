@@ -70,6 +70,34 @@ function Player() {
     };
   }
 
+  this.updateProgress = function(life, score) {
+    var currentLife = $("#life_progress").css('width');
+    currentLife = currentLife.replace('px', '');
+    var newLife = life;
+    if (currentLife != newLife) {
+      if (newLife >= 60 && currentLife < 60) {
+        console.log('success');
+        $("#life_progress").parent(".progress").removeClass("progress-warning")
+        $("#life_progress").parent(".progress").addClass("progress-success")
+      } else if (newLife <= 30 && currentLife > 30) {
+        console.log('danger');
+        $("#life_progress").parent(".progress").removeClass("progress-warning")
+        $("#life_progress").parent(".progress").addClass("progress-danger")
+      } else if ((newLife > 30 && newLife < 60) && (currentLife <= 30 || currentLife >= 60)) {
+        console.log('warning');
+        $("#life_progress").parent(".progress").removeClass("progress-danger")
+        $("#life_progress").parent(".progress").removeClass("progress-success")
+        $("#life_progress").parent(".progress").addClass("progress-warning")
+      }
+      $("#life_progress").css({
+        "width": life
+      })
+    }
+    if ($("#score").text() != score) {
+      $("#score").text(score);
+    }
+  }
+
   // Get create a dummy player (JSON) : only for testing
   this._getDummyPlayerToJSON = function() {
     return {

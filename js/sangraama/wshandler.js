@@ -129,13 +129,10 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 player.y = sangraama.scaleUp(inPlayer.dy);*/
                 player._setCoordination(inPlayer.dx, inPlayer.dy);
                 player.setAngle(inPlayer.da);
-                var life = inPlayer.health + '%';
+                var life = inPlayer.health;
                 var score = inPlayer.score;
-                $("#life_progress").css({
-                  "width": life
-                })
-                $("#score").text(score);
-
+                player.updateProgress(life,score);
+                
                 // check whether play is inside the virual box. If not, set virtual point as user current location
                 if (!aoihandler.isInVBox(player.getX(), player.getY())) {
                   console.log(TAG + 'player is outside of the virtual box');
