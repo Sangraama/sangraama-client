@@ -13,7 +13,7 @@ function MapLoader() {
   var xAbs = -1;
   var yAbs = -1;
   var xDir = -1;
-
+  
 
   this.getMinX = function() {
     return mapMinX;
@@ -36,6 +36,15 @@ function MapLoader() {
   }
 
   this.loadMap = function() {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "assert/map/worldMap.tmx", false);
+    xmlhttp.send();
+    xmlDoc = xmlhttp.responseXML;
+    var txt = xmlDoc.getElementsByTagName("tile");
+    for (var i = 0; i < txt.length; i++) {
+      mapArray[i] = txt[i].getAttribute("gid");
+
+    }
     $.get('assert/map/worldMap.tmx', {}, function(xml) {
       $('layer', xml).each(function(h) {
         if ($(this).attr('name') == 'TileLayer') {
@@ -43,19 +52,18 @@ function MapLoader() {
           mapHeight = parseInt($(this).attr('height'), 10);
           mapMaxX = mapWidth * pix32;
           mapMaxY = mapHeight * pix32;
-          console.log('mytest' + mapMaxX);
         }
       });
 
       var tileCount = 0;
-      console.log('start' + new Date().getTime());
-      $('data', xml).each(function(i) {
-        $('tile', this).each(function(j) {
+      /*$('data', xml).each(function(i) {
+        $('tile', xml).each(function(j) {
+          console.log('$$$' + j);
           var imgId = $(this).attr('gid');
           mapArray[tileCount] = imgId;
           tileCount++;
         });
-      });
+      });*/
     });
   }
 
@@ -108,7 +116,9 @@ function MapLoader() {
         yOffset++;
         currentTile = yOffset * mapWidth + xOffset;
       }
+
       this.drawTile(currentTile, canvasX, canvasY);
+
       xTilePosition++;
       currentTile++;
     }
@@ -116,8 +126,7 @@ function MapLoader() {
   }
 
   this.drawTile = function(currentTile, canvasX, canvasY) {
-    var imageWidth = 80;
-
+    var imageWidth = 83;
     var imgId = mapArray[currentTile];
     var imgRow = 0;
     var imgColumn = 0;
@@ -130,6 +139,11 @@ function MapLoader() {
     }
     var imgX = (imgColumn - 1) * pix32;
     var imgY = imgRow * pix32;
+    var start = new Date();
     ctx2.drawImage(mapImage, imgX, imgY, pix32, pix32, canvasX, canvasY, pix32, pix32);
+    var stop = new Date();
+    var result = stop - start;
+    console.log('TIME TO DRAW $$$$$' + result);
+
   }
 }

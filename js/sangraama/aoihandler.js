@@ -37,6 +37,12 @@ function aoihandler() {
       x_vp: 0,
       y_vp: 0
     };
+    vbox = {
+      x_vp_l: 0, // x left limit
+      x_vp_r: 0, // x right limit
+      y_vp_u: 0, // y upper limit
+      y_vp_d: 0 // y lower limit
+    };
     // this.setVBoxSize(this.aoi.aoi_w, this.aoi.aoi_h);
   }
 
@@ -324,6 +330,7 @@ function aoihandler() {
   /*width of vertual box*/
   var vbox_hw = 0; // virtual box half width
   var vbox_hh = 0; // virtual box half height
+  var vbox;
 
   // set virtual box size
   // parameters w : width of screen
@@ -347,12 +354,22 @@ function aoihandler() {
    * @return {Boolean}   [true if is inside box, false otherwise]
    */
   this.isInVBox = function(x, y) {
-    if ((v_point.x_vp - vbox_hw) <= x && x <= (v_point.x_vp + vbox_hw) &&
-      (v_point.y_vp - vbox_hh) <= y && y <= (v_point.y_vp + vbox_hh)) {
+    if (vbox.x_vp_l <= x && x <= vbox.x_vp_r && vbox.y_vp_u <= y && y <= vbox.y_vp_d) {
       return true;
     } else {
       return false;
     }
+  }
+
+  this._setVBoxRestrictions = function(vp_al) {
+    // Set resctriction on x level at left
+    vbox.x_vp_l = (vp_al.xl == 1) ? (v_point.x_vp - aoi.aoi_w / 2) : (v_point.x_vp - vbox_hw);
+    // Set resctriction on x level at right
+    vbox.x_vp_r = (vp_al.xl == 2) ? (v_point.x_vp + aoi.aoi_w / 2) : (v_point.x_vp + vbox_hw);
+    // Set resctriction on y level at upper
+    vbox.y_vp_u = (vp_al.yl == 1) ? (v_point.y_vp - aoi.aoi_h / 2) : (v_point.y_vp - vbox_hh);
+    // Set resctriction on y level at lower
+    vbox.y_vp_d = (vp_al.yl == 2) ? (v_point.y_vp + aoi.aoi_h / 2) : (v_point.y_vp + vbox_hh);
   }
 
   /**
@@ -362,8 +379,6 @@ function aoihandler() {
    * @param {[type]} call [if ture call _setVirtualPoint() inside]
    */
   this.setVirtualPoint = function(x_vp, y_vp) {
-    x_vp = x_vp;
-    y_vp = y_vp;
     v_point.x_vp = x_vp;
     v_point.y_vp = y_vp;
     console.log(TAG + 'set virtual point x_vp:' + x_vp + ' y_vp:' + y_vp);
@@ -407,6 +422,21 @@ function aoihandler() {
       userID: userID,
       x_vp: _v_point.x_vp,
       y_vp: _v_point.y_vp
+    }
+  }
+  /**
+   * Create Virtual point which can send to server
+   * @param  {[type]} userID [Player ID]
+   * @param  {[type]} x_vp [Virtual point x coordination]
+   * @param  {[type]} y_vp [Virtual point y coordination]
+   * @return {[type]}        [Coordination Object in JSON format]
+   */
+  this._createVirtualPointToJSON = function(userID, x_vp, y_vp) {
+    return {
+      type: 5,
+      userID: userID,
+      x_vp: x_vp,
+      y_vp: y_vp
     }
   }
 

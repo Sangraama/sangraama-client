@@ -1,10 +1,20 @@
+  <!--//
+
   var player;
+  var bot;
+  var isBot = false;
   var gEngine;
   var aoihandler;
   var mapLoader;
   var clickSound;
-  var ship = new Image();
-  var bullet = new Image();
+  var ship1 = new Image();
+  var ship2 = new Image();
+  var ship3 = new Image();
+  var ship4 = new Image();
+  var bullet1 = new Image();
+  var bullet2 = new Image();
+  var bullet3 = new Image();
+  var bullet4 = new Image();
   var blast = new Image();
   var mapImage = new Image();
 
@@ -28,20 +38,25 @@
     mapLoader.loadMap();
 
     clickSound = new Audio('audio/shoot.mp3');
-    ship.src = 'img/ship' + user.shipType + '.png';
-    bullet.src = 'img/bullet' + user.bulletType + '.png';
-    /*ship.src = 'img/ship1.png';
-    bullet.src = 'img/bullet1.png';*/
+    ship1.src = 'img/ship1.png';
+    ship2.src = 'img/ship2.png';
+    ship3.src = 'img/ship3.png';
+    ship4.src = 'img/ship4.png';
+    bullet1.src = 'img/bullet1.png';
+    bullet2.src = 'img/bullet2.png';
+    bullet3.src = 'img/bullet3.png';
+    bullet4.src = 'img/bullet4.png';
     blast.src = 'img/blast.png';
-    mapImage.src = 'assert/map/mapImage.jpg';
+    mapImage.src = 'assert/map/mapImage.png';
 
     // Create player location (this will be given by the login server) as a signed msg
     player = new Player();
-    player.init(user.userId, sangraama.getScalingFactor());
-    player.setCoordination(user.x, user.y);
+    /* player.init(user.userId, sangraama.getScalingFactor(), user.shipType, user.bulletType);
+    player.setCoordination(user.x, user.y);*/
 
-    /*player.init(Math.floor(Math.random() * 99998) + 1, sangraama.getScalingFactor());
-    player.setCoordination(Math.floor(Math.random() * 200) + 2000, Math.floor(Math.random() * 500) + 400);*/
+    player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
+    player.setCoordination(Math.floor(Math.random() * 14800) + 200, Math.floor(Math.random() * 29800) + 200);
+
 
     // Initialize AIO handler
     aoihandler = new aoihandler();
@@ -49,6 +64,8 @@
     aoihandler.setAOI(screenSize.width, screenSize.height);
     aoihandler._setVirtualPoint(player._getX(), player._getY());
     console.log(' initialized window onloads ... ');
+    bot = new bot(); // Initialize bot
+    bot.init(player.getUserID());
   };
 
   function SangraamaClient() {
@@ -67,6 +84,40 @@
       primaryCon = 0;
       nextPrimaryCon = 0;
       prevPrimarycon = 0;
+    }
+    /**
+     * Start playing game
+     * @return {[type]} [description]
+     */
+    this.play = function() {
+      console.log('Starting Game. Be Ready .... 1 2 Go');
+      var hostLocation = 'localhost:8080';
+      var URL = hostLocation + '/sangraama/sangraama/player';
+      // start wsList with 0 index
+      wsList[0] = new WebSocketHandler(URL, 0);
+      wsList[0].connect();
+      // Set initial virtual point location as player location
+      aoihandler._setVirtualPoint(player._getX(), player._getY());
+
+      // Clear the map before start game
+      mapLoader.drawMap(player.getX(), player.getY());
+    }
+    /**
+     * Stop playing game and clean up
+     * @return {[type]} [description]
+     */
+    this.stop = function() {
+      // Close all opened websockets
+      for (var i = 0; i < wsSize; i++) {
+        if (wsList[i] != null || wsList[i] != undefined) {
+          if (sangraama.getPrimaryCon() == i) {
+            sangraama.setPrimaryCon(i - 1);
+          }
+          console.log('Stopped the connection ' + wsList[i].getHostAddress());
+          wsList[i].close(i); // try closing connection
+        }
+      }
+      sangraama.setPrimaryCon(0);
     }
     /**
      * Get Scaling factor. The ratio of client-side displaying pixels : server side JBox2D physics world units
@@ -99,7 +150,7 @@
     }
 
 
-    this.updateServer = function() {
+    this.triggerEvent = function() {
       wsList[primaryCon].send(JSON.stringify(player._getEventToJSON()));
       //console.log('Send update to server ' + primaryCon + ' ' + wsList[primaryCon].getWS().getHostAddress();
     }
