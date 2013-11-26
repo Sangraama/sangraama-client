@@ -209,6 +209,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 player.y = sangraama.scaleUp(inPlayer.y);*/
               player._setCoordination(inPlayer.x, inPlayer.y);
               mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
+             
               // Set virtual points of dummy players same as player
               for (var i = 0; i < wsList.length; i++) {
                 if (wsList[i] != undefined && i != wsIndex && wsList[i].isReady() == 1) {

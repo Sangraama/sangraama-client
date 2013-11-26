@@ -41,7 +41,7 @@
     bullet3.src = 'img/bullet3.png';
     bullet4.src = 'img/bullet4.png';
     blast.src = 'img/blast.png';
-    mapImage.src = 'assert/map/mapImage.jpg';
+    mapImage.src = 'assert/map/mapImage.png';
 
     // Create player location (this will be given by the login server) as a signed msg
     player = new Player();
@@ -49,7 +49,7 @@
     player.setCoordination(user.x, user.y);*/
 
     player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 4800) + 200, Math.floor(Math.random() * 4800) + 200);
+    player.setCoordination(Math.floor(Math.random() * 14800) + 200, Math.floor(Math.random() * 29800) + 200);
 
 
     // Initialize AIO handler
@@ -86,7 +86,7 @@
     this.play = function() {
       console.log('Starting Game. Be Ready .... 1 2 Go');
       var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama-server/sangraama/player';
+      var URL = hostLocation + '/sangraama/sangraama/player';
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();
