@@ -22,8 +22,16 @@
     var stringValue = window.localStorage.getItem("user");
     var user = JSON.parse(stringValue);
     console.log(stringValue);
+
+    /*var hostLocation = 'localhost:8080';
+    var user = {
+      serverUrl: ''
+    };
+    user.serverUrl = hostLocation + '/sangraama/sangraama/player';*/
+
     sangraama = new SangraamaClient();
-    sangraama.init();
+    sangraama.init(user.serverUrl);
+
     mapLoader = new MapLoader();
     gEngine = new GraphicEngine();
     var screenSize = viewport();
@@ -49,7 +57,7 @@
     player.setCoordination(user.x, user.y);
 
     /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 14800) + 200, Math.floor(Math.random() * 29800) + 200);*/
+    player.setCoordination(Math.floor(Math.random() * 2700) + 200, Math.floor(Math.random() * 2700) + 200);*/
 
 
     // Initialize AIO handler
@@ -73,11 +81,13 @@
     var primaryCon; // player only send updates to the primary server
     var nextPrimaryCon; // previous primary connection, for recovering purpose
     var prevPrimarycon; // To store next primary connection, until it's
+    var initURL; // Initial URL to Bootsrap the game                        
 
-    this.init = function() {
+    this.init = function(URL) {
       primaryCon = 0;
       nextPrimaryCon = 0;
       prevPrimarycon = 0;
+      initURL = URL;
     }
     /**
      * Start playing game
@@ -85,11 +95,8 @@
      */
     this.play = function() {
       console.log('Starting Game. Be Ready .... 1 2 Go');
-      /*var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama/sangraama/player';*/
-      var URL = player.getServerUrl();
       // start wsList with 0 index
-      wsList[0] = new WebSocketHandler(URL, 0);
+      wsList[0] = new WebSocketHandler(initURL, 0);
       wsList[0].connect();
       // Set initial virtual point location as player location
       aoihandler._setVirtualPoint(player._getX(), player._getY());
