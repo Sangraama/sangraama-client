@@ -126,6 +126,7 @@ function aoihandler() {
 
     // check left down corner
     if (this._isSubTile(x - _aoi.aoi_w / 2, y - _aoi.aoi_h / 2) < 0) {
+      console.log('check left down corner');
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
@@ -134,7 +135,8 @@ function aoihandler() {
       }));
     }
     // check left upper corner
-    else if (this._isSubTile(x - _aoi.aoi_w / 2, y + _aoi.aoi_h / 2) < 0) {
+   if (this._isSubTile(x - _aoi.aoi_w / 2, y + _aoi.aoi_h / 2) < 0) {
+      console.log('check left upper corner');
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
@@ -143,7 +145,8 @@ function aoihandler() {
       }));
     }
     // check right lower corner
-    else if (this._isSubTile(x + _aoi.aoi_w / 2, y - _aoi.aoi_h / 2) < 0) {
+   if (this._isSubTile(x + _aoi.aoi_w / 2, y - _aoi.aoi_h / 2) < 0) {
+      console.log('check right lower corner');
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
@@ -152,7 +155,8 @@ function aoihandler() {
       }));
     }
     // check right upper corner
-    else if (this._isSubTile(x + _aoi.aoi_w / 2, y + _aoi.aoi_h / 2) < 0) {
+   if (this._isSubTile(x + _aoi.aoi_w / 2, y + _aoi.aoi_h / 2) < 0) {
+      console.log('check right upper corner');
       unFil = _.union(unFil, (function() {
         return _.toArray(arguments);
       })({
@@ -236,6 +240,21 @@ function aoihandler() {
       num.edgeY = num.y + num.h;
       return num;
     });
+    tiles = _.union(tiles, newTiles);
+  }
+  this._intersectTiles = function(wsIndex, host, ts) {
+    var newTiles = _.map(ts, function(num, key) {
+      num.host = host;
+      num.wsIndex = wsIndex;
+      /*num.w = num.w * scalingFactor;
+      num.h = num.h * scalingFactor;
+      num.x = num.x * scalingFactor;
+      num.y = num.y * scalingFactor;*/
+      num.edgeX = num.x + num.w;
+      num.edgeY = num.y + num.h;
+      return num;
+    });
+    this.removeTiles(wsIndex);
     tiles = _.union(tiles, newTiles);
   }
   // Get tile details

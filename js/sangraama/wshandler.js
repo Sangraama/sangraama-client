@@ -131,8 +131,8 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 player.setAngle(inPlayer.da);
                 var life = inPlayer.health;
                 var score = inPlayer.score;
-                player.updateProgress(life,score);
-                
+                player.updateProgress(life, score);
+
                 // check whether play is inside the virual box. If not, set virtual point as user current location
                 if (!aoihandler.isInVBox(player.getX(), player.getY())) {
                   console.log(TAG + 'player is outside of the virtual box');
@@ -195,7 +195,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
           case 10:
             /* set virtual point absolute location of client on the map (sync data) */
             console.log(TAG + ' Type(10):' + inPlayer.type + ' in ws:' + wsIndex);
-            
+
             if (inPlayer.userID == player.getUserID()) { // -- Begin og Player if
               console.log(TAG + ' set Virtual point if this is the primary connection as x_vp:' + inPlayer.x_vp + ' y_vp' + inPlayer.y_vp);
               aoihandler._setVirtualPoint(inPlayer.x_vp, inPlayer.y_vp); // Set new virtual point
@@ -206,7 +206,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
                 player.y = sangraama.scaleUp(inPlayer.y);*/
               player._setCoordination(inPlayer.x, inPlayer.y);
               mapLoader.drawMap(sangraama.scaleUp(inPlayer.x), sangraama.scaleUp(inPlayer.y));
-             
+
               // Set virtual points of dummy players same as player
               for (var i = 0; i < wsList.length; i++) {
                 if (wsList[i] != undefined && i != wsIndex && wsList[i].isReady() == 1) {
@@ -216,6 +216,7 @@ function WebSocketHandler(hostAddress, wsIndex) {
 
               // Idea : control the AOI in client side with "Virtual Box View". Uncommenting this, enable the "filfill the AOI" in client-side
               var want = aoihandler._isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
+              console.log(want);
               _.map(want, function(val, k) {
                 console.log(TAG + 'want area ' + sangraama.scaleUp(val.x) + ' : ' + sangraama.scaleUp(val.y));
                 // Ask for AOI
@@ -242,6 +243,28 @@ function WebSocketHandler(hostAddress, wsIndex) {
             console.log(TAG + 'Type(16):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
             if (inPlayer.tiles != undefined) {
               aoihandler._addTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
+            } else {
+              console.log(TAG + ' tile details are not send by the server');
+              // NOTE: have to identify why is it sending empty tiles
+            }
+            break;
+
+          case 17:
+            /* set size of the tiles */
+            console.log(TAG + 'Type(17):' + inPlayer.type + ' ws:' + wsIndex + ' Set tile size of server : ' + inPlayer.tiles);
+            if (inPlayer.tiles != undefined) {
+              aoihandler._intersectTiles(wsIndex, hostAddress, JSON.parse(inPlayer.tiles));
+              var want = aoihandler._isFulfillAOI(inPlayer.x_vp, inPlayer.y_vp);
+              _.map(want, function(val, k) {
+                console.log(TAG + 'want area ' + sangraama.scaleUp(val.x) + ' : ' + sangraama.scaleUp(val.y));
+                // Ask for AOI
+                wsList[wsIndex].send(JSON.stringify({
+                  type: 2,
+                  userID: player.getUserID(),
+                  x: val.x,
+                  y: val.y
+                }));
+              });
             } else {
               console.log(TAG + ' tile details are not send by the server');
               // NOTE: have to identify why is it sending empty tiles
