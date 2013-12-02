@@ -88,6 +88,7 @@
       var hostLocation = 'localhost:8080';
       var URL = hostLocation + '/sangraama/sangraama/player';
      /* var URL = player.getServerUrl();*/
+
       // start wsList with 0 index
       wsList[0] = new WebSocketHandler(URL, 0);
       wsList[0].connect();

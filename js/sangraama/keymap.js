@@ -2,6 +2,7 @@ var prevKey = 0;
 var D = true;
 
 function doKeyDown(evt) {
+    console.log('$'+prevKey+'#'+evt.keyCode)
   if (prevKey != evt.keyCode) {
     switch (evt.keyCode) {
       case 38:
@@ -28,16 +29,16 @@ function doKeyDown(evt) {
         // if (D)
         // console.log('right pressed');
         break;
-      case 82:
-        /* R was pressed */
+      case 65:
+        /* A was pressed */
         player.rotateR();
         break;
-      case 76:
-        /* L was pressed */
+      case 68:
+        /* D was pressed */
         player.rotateL();
         break;
-      case 32:
-        /* Space was pressed */
+      case 83:
+        /* S was pressed */
         if (D)
           console.log('Player shoot');
         player.shoot();
@@ -73,16 +74,16 @@ function doKeyUp(evt) {
       /* Right arrow was released */
       player.resetV_x();
       break;
-    case 82:
-      /* R was released */
+    case 65:
+      /* A was released */
       player.resetRotate();
       break;
-    case 32:
-      /* Space was released */
+    case 83:
+      /* S was released */
       // Auto Reset
       break;
-    case 76:
-      /* L was released */
+    case 68:
+      /* D was released */
       player.resetRotate();
       break;
     default:
