@@ -24,7 +24,7 @@
     console.log(stringValue);
 
     /*var hostLocation = 'localhost:8080';
-    var user = {
+    user = {
       serverUrl: ''
     };
     user.serverUrl = hostLocation + '/sangraama/sangraama/player';*/
@@ -57,7 +57,7 @@
     player.setCoordination(user.x, user.y);
 
     /*player.init(Math.ceil(Math.random() * 999999), sangraama.getScalingFactor(), 1, 1);
-    player.setCoordination(Math.floor(Math.random() * 2700) + 200, Math.floor(Math.random() * 2700) + 200);*/
+    player.setCoordination(Math.floor(Math.random() * 200) + 4200, Math.floor(Math.random() * 700) + 3000);*/
 
 
     // Initialize AIO handler

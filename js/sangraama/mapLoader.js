@@ -1,5 +1,5 @@
 function MapLoader() {
-  var mapArray = new Array();
+  var mapArray;
   var canvas2;
   var ctx2;
 
@@ -40,11 +40,8 @@ function MapLoader() {
     xmlhttp.open("GET", "assert/map/worldMap.tmx", false);
     xmlhttp.send();
     xmlDoc = xmlhttp.responseXML;
-    var txt = xmlDoc.getElementsByTagName("tile");
-    for (var i = 0; i < txt.length; i++) {
-      mapArray[i] = txt[i].getAttribute("gid");
+    mapArray = xmlDoc.getElementsByTagName("tile");
 
-    }
     $.get('assert/map/worldMap.tmx', {}, function(xml) {
       $('layer', xml).each(function(h) {
         if ($(this).attr('name') == 'TileLayer') {
@@ -127,7 +124,7 @@ function MapLoader() {
 
   this.drawTile = function(currentTile, canvasX, canvasY) {
     var imageWidth = 83;
-    var imgId = mapArray[currentTile];
+    var imgId = mapArray[currentTile].getAttribute("gid");
     var imgRow = 0;
     var imgColumn = 0;
     imgRow = parseInt(imgId / imageWidth, 10);
