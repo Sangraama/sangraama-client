@@ -668,3 +668,12 @@ FOOTER
 	position: relative;
 	bottom: -1px;
 }
+.help_modal{
+	width: 360px;
+}
+.help_row{
+color: red;
+}
+.help_cell{
+
+}
