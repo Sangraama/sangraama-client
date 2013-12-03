@@ -385,8 +385,8 @@ LOGIN FORM
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 .ship .ship_footer {
-	width: 117px;
-	height: 40px;
+	width: 100%;
+	height: 35%;
 	overflow: auto;
 	position: absolute;
 	bottom: 0;
@@ -406,6 +406,19 @@ LOGIN FORM
 	position: fixed;
 	background: red;
 	top: 46%;
+	left:46%;
+	text-align: center;
+	border: 5px solid white;
+	border-radius: 100px;
+	cursor: pointer;
+
+}
+.help_button{
+	width: 7%;
+	height: 13%;
+	position: fixed;
+	background: green;
+	top: 76%;
 	left:46%;
 	text-align: center;
 	border: 5px solid white;
@@ -448,8 +461,8 @@ LOGIN FORM
 	margin-top: 40px;
 }
 .bullet .bullet_footer {
-	width: 117px;
-	height: 40px;
+	width: 100%;
+	height: 35%;
 	overflow: auto;
 	position: absolute;
 	bottom: 0;
@@ -673,6 +686,14 @@ FOOTER
 }
 .help_row{
 color: red;
+border: 1px solid rgb(221, 176, 176);
+	border-radius: 5px;
+	margin-bottom: 5px;
+	padding-top: 5px;
+	width: 100%;
+	padding-bottom: 5px;
+	padding-left: 5px;
+
 }
 .help_cell{
 

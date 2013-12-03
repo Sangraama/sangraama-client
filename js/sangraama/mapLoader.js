@@ -13,7 +13,7 @@ function MapLoader() {
   var xAbs = -1;
   var yAbs = -1;
   var xDir = -1;
-  
+
 
   this.getMinX = function() {
     return mapMinX;
@@ -36,35 +36,30 @@ function MapLoader() {
   }
 
   this.loadMap = function() {
+    var s = new Date();
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "assert/map/worldMap.tmx", false);
     xmlhttp.send();
     xmlDoc = xmlhttp.responseXML;
     var txt = xmlDoc.getElementsByTagName("tile");
+    console.log(s);
     for (var i = 0; i < txt.length; i++) {
       mapArray[i] = txt[i].getAttribute("gid");
 
     }
-    $.get('assert/map/worldMap.tmx', {}, function(xml) {
-      $('layer', xml).each(function(h) {
-        if ($(this).attr('name') == 'TileLayer') {
-          mapWidth = parseInt($(this).attr('width'), 10);
-          mapHeight = parseInt($(this).attr('height'), 10);
-          mapMaxX = mapWidth * pix32;
-          mapMaxY = mapHeight * pix32;
-        }
-      });
+    var e = new Date();
+    console.log(e-s);
+    var layer = xmlDoc.getElementsByTagName("layer");
+    for (var i = 0; i < layer.length; i++) {
+      if (layer[i].getAttribute("name") == "TileLayer") {
+        mapWidth = parseInt(layer[i].getAttribute('width'), 10);
+        mapHeight = parseInt(layer[i].getAttribute('height'), 10);
+        mapMaxX = mapWidth * pix32;
+        mapMaxY = mapHeight * pix32;
+        break;
+      }
+    }
 
-      var tileCount = 0;
-      /*$('data', xml).each(function(i) {
-        $('tile', xml).each(function(j) {
-          console.log('$$$' + j);
-          var imgId = $(this).attr('gid');
-          mapArray[tileCount] = imgId;
-          tileCount++;
-        });
-      });*/
-    });
   }
 
   this.drawMap = function(x, y) {
