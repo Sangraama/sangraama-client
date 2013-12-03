@@ -13,6 +13,7 @@
     font-size: 30px;
     font-style: italic;
     font-weight: bold;
+    color: white;
 }
 
 .score-panel label .progress {
