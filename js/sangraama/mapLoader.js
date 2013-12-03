@@ -36,19 +36,15 @@ function MapLoader() {
   }
 
   this.loadMap = function() {
-    var s = new Date();
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "assert/map/worldMap.tmx", false);
     xmlhttp.send();
     xmlDoc = xmlhttp.responseXML;
     var txt = xmlDoc.getElementsByTagName("tile");
-    console.log(s);
     for (var i = 0; i < txt.length; i++) {
       mapArray[i] = txt[i].getAttribute("gid");
 
     }
-    var e = new Date();
-    console.log(e-s);
     var layer = xmlDoc.getElementsByTagName("layer");
     for (var i = 0; i < layer.length; i++) {
       if (layer[i].getAttribute("name") == "TileLayer") {

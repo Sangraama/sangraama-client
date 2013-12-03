@@ -1,0 +1,10 @@
+CACHE MANIFEST
+assert/map/worldMap.tmx
+NETWORK:
+*
+
+
+
+
+
+
