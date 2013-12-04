@@ -1,5 +1,5 @@
 function MapLoader() {
-  var mapArray = new Array();
+  var mapArray;
   var canvas2;
   var ctx2;
 
@@ -40,11 +40,11 @@ function MapLoader() {
     xmlhttp.open("GET", "assert/map/worldMap.tmx", false);
     xmlhttp.send();
     xmlDoc = xmlhttp.responseXML;
-    var txt = xmlDoc.getElementsByTagName("tile");
-    for (var i = 0; i < txt.length; i++) {
+    mapArray = xmlDoc.getElementsByTagName("tile");
+    /*for (var i = 0; i < txt.length; i++) {
       mapArray[i] = txt[i].getAttribute("gid");
 
-    }
+    }*/
     var layer = xmlDoc.getElementsByTagName("layer");
     for (var i = 0; i < layer.length; i++) {
       if (layer[i].getAttribute("name") == "TileLayer") {
@@ -118,7 +118,7 @@ function MapLoader() {
 
   this.drawTile = function(currentTile, canvasX, canvasY) {
     var imageWidth = 83;
-    var imgId = mapArray[currentTile];
+    var imgId = mapArray[currentTile].getAttribute("gid");
     var imgRow = 0;
     var imgColumn = 0;
     imgRow = parseInt(imgId / imageWidth, 10);
