@@ -51,7 +51,7 @@
       player[i].setCoordination(user.x, user.y);*/
 
       player[i].init(Math.ceil(Math.random() * 9999999), sangraama[i].getScalingFactor(), 1, 1, i);
-      player[i].setCoordination(Math.floor(Math.random() * 4500) + 200, Math.floor(Math.random() * 9500) + 200);
+      player[i].setCoordination(Math.floor(Math.random() * 3000) + 200, Math.floor(Math.random() * 3000) + 200);
 
       // Initialize AIO handler
       aoihandler[i] = new aoihandler();
@@ -91,7 +91,7 @@
      */
     this.play = function() {
       var hostLocation = 'localhost:8080';
-      var URL = hostLocation + '/sangraama-server/sangraama/player';
+      var URL = hostLocation + '/sangraama/sangraama/player';
       // start wsList with 0 index
       window.setTimeout(function(URL, z) {
         console.log('start : ' + z);

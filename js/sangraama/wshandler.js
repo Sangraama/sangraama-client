@@ -184,10 +184,10 @@ function WebSocketHandler(hostAddress, wsIndex, z) {
             break;
 
           case 6:
-            /*gEngine.drawBlastImage(blast, inPlayer);*/
             if (player[z].getUserID() == inPlayer.userID) {
               aoihandler[z].removeConnectedHost(wsIndex);
               aoihandler[z].removeTiles(wsIndex);
+              bot[z].stop();
               sangraama[z].stop();
               // WARNING !!!. Should not redirect to a page
             }
